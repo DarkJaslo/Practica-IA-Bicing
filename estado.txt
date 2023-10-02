@@ -1,0 +1,42 @@
+F furgonetas de hasta 30 bicicletas
+1 viaje por furgoneta que pase por como máximo 2 estaciones sin recargar bicicletas
+dos furgonetas no pueden llevarse bicis de la misma estación
+no hace falta usarlas todas
+
++1 euro cada vez que acerquemos en 1 a la demanda
+-1 euro cada vez que alejemos en 1 a la demanda
+
+coste por kilometro ((nb + 9) div 10) nb = numero bicicletas
+
+si pasas por dos estaciones y dejas bicis, pierdes bicis y pagas menos por km
+
+
+
+el origen de las furgonetas no está determinado
+
+
+una solución dice:
+
+cuántas furgonetas hay
+dónde empiezan las furgonetas
+qué movimientos hace cada una
+
+(máximo de)
+F posiciones iniciales
+F viajes
+un viaje son:
+    -estación inicio
+    -1 o 2 estaciones destino
+    -cuantas bicis pillas
+    -cuantas dejas en cada una de las 1 o 2 estaciones
+
+guardar modificaciones de las estaciones
+e0: +13
+e1:  +0
+e2: -10
+
+guardar asignaciones de furgonetas
+F1 30 est A  est B (13) Est C (17)
+F2 ....
+F3 ...
+F4 ...
