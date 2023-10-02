@@ -1,0 +1,10 @@
+{
+    "java.project.sourcePaths": [
+        ".",
+        "aima"
+    ],
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "aima/AIMA.jar"
+    ]
+}
