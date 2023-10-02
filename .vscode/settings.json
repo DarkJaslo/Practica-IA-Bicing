@@ -5,6 +5,7 @@
     ],
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
-        "aima/AIMA.jar"
+        "aima/AIMA.jar",
+        "Bicing/Bicing.jar"
     ]
 }
