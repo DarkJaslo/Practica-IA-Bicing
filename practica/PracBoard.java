@@ -1,7 +1,6 @@
 package practica;
 import IA.Bicing.Estacion;
 import IA.Bicing.Estaciones;
-import java.util.ArrayList;
 
 /*
  * Propuesta actual, seguro que se puede mejorar
@@ -26,8 +25,8 @@ public class PracBoard {
     /*
      * Constructora
      */
-    public PracBoard(Estaciones est, int maxFurg){
-        estaciones = est;
-        maxFurgonetas = maxFurg;
+    public PracBoard(Estaciones estaciones, int maxFurgonetas){
+        this.estaciones = estaciones;
+        this.maxFurgonetas = maxFurgonetas;
     }
 }
