@@ -17,8 +17,7 @@ import practica.PracSuccessorFunction;
 public class Main {
     public static void main(String args[]) throws Exception{
 
-        /*De momento, inicialización manual */
-
+        /*De momento, inicialización manual. Caso del test para el punto extra */
         int nest = 25;
         int nbic = 1250;
         int dem = Estaciones.EQUILIBRIUM;
@@ -26,8 +25,8 @@ public class Main {
         int maxFurgonetas = 5;
 
         Estaciones estaciones = new Estaciones(nest, nbic, dem, seed);
-         /*Genera solución inicial */
-
+        
+        /*Genera solución inicial mediante magia negra (sin hacer, solución vacía)*/
         PracBoard board = new PracBoard(estaciones, maxFurgonetas);
 
         Problem p = new Problem(board, new PracSuccessorFunction(), new PracGoalTest(), new PracHeuristicFunction());
