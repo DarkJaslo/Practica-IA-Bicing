@@ -10,6 +10,9 @@ import practica.PracBoard;
 
 public class Main {
     public static void main(String args[]) throws Exception{
-        
+        /*
+         * Debería generar un "problema aleatorio", con capacidad de aceptar parámetros tales como
+         * números de estaciones, tipo de demanda, etc
+         */
     }
 };
