@@ -25,7 +25,7 @@ public class PracBoard {
      */
     private int [][] viajes; 
     /*
-     * Parece útil
+     * (Parece útil) furgonetas en esta solución actualmente
      */
     private int furgEnUso;
 
