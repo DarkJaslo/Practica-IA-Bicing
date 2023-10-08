@@ -15,21 +15,24 @@ public class PracBoard {
     private static Estaciones estaciones;
     private static int maxFurgonetas;
 
+    private static final int ORIGEN = 0;
+    private static final int ORIGEN_CANTIDAD = 1;
+    private static final int EST1 = 2;
+    private static final int EST1_CANTIDAD = 3;
+    private static final int EST2 = 4;
+    private static final int EST2_CANTIDAD = 5;
+
     /*
      * Cambios en la ocupación de las estaciones (e1: +2, e2: -30, e3: +12, etc)
      */
     private int [] ocupacion;
-    /*
-     * Que furgonetas han pasado por cada estacion
-     */
-    //private int [] nombreProvisionalAyuda;
     /*
      * Una fila por furgoneta, hasta 3 estaciones y cambio ( inicio y numero bicis, parada 1 y numero bicis, parada 2 y numero bicis ) por columna
      * Ejemplo: eA -20, eB +5, eC +15
      */
     private int [][] viajes; 
     /*
-     * (Parece útil) furgonetas en esta solución actualmente
+     * (Parece útil) furgonetas usadas en esta solución actualmente
      */
     private int furgEnUso;
 
@@ -42,7 +45,15 @@ public class PracBoard {
         this.furgEnUso = 0;
         ocupacion = new int[estaciones.size()];
         viajes = new int[maxFurgonetas][6];
-        creaSolucionBuena();
+        
+        for(int i = 0; i < maxFurgonetas; ++i){
+            viajes[i][ORIGEN] = -1;
+            viajes[i][ORIGEN_CANTIDAD] = 0;
+            viajes[i][EST1] = -1;
+            viajes[i][EST1_CANTIDAD] = 0;
+            viajes[i][EST2] = -1;
+            viajes[i][EST2_CANTIDAD] = 0;
+        }
     }
 
     /* Operadores */
@@ -51,7 +62,7 @@ public class PracBoard {
      * Cambiar origen de una f
      * Cambiar destino 1 de una f
      * Cambiar destino 2 de una f
-     * Swapear destino 1 y destino 2 de una f
+     * Swapear destino 1 y destino 2 de una f (ok)
      * 
      * Swapear destino 1 o 2 de f1 con destino 1 o 2 de f2
      * Swapear origen de f1 con origen de f2   
@@ -75,7 +86,89 @@ public class PracBoard {
      *   En general, nunca coger bicis de más y ya luego si las necesitas las puedes coger al hacer el swap (efecto "invisible" del operador)
     */
 
+    /*
+     * Swap destino 1 y 2 de una furgoneta
+     */
+    public boolean canSwapDest1Dest2(int f)
+    {
+        boolean hasFirst = viajes[f][EST1] != -1;
+        boolean hasSecond = viajes[f][EST2] != -1;
+        return (hasFirst || hasSecond);
+    }
+    public void swapDest1Dest2(int f)
+    {
+        int q1 = viajes[f][EST1_CANTIDAD];
+        int e1 = viajes[f][EST1];
+        viajes[f][EST1_CANTIDAD] = viajes[f][EST2_CANTIDAD];
+        viajes[f][EST1] = viajes[f][EST2];
+        viajes[f][EST2_CANTIDAD] = q1;
+        viajes[f][EST2] = e1;
 
+        /*
+         * To do: asegura que dest1 se queda el máximo de bicis
+         */
+    }
+
+    /*
+     * Cambia estacion de furgoneta
+     */
+    public boolean canChangeEst(int f, int est, int newEst)
+    {
+        //False si newEst se usa de origen en otra furgoneta
+        if(ocupacion[newEst] < 0 && viajes[f][ORIGEN] != newEst) return false; 
+        return true;
+    }
+    public void changeEst(int f, int est, int newEst)
+    {
+        //Cambia la estación est (est == ORIGEN, est == EST1, est == EST2) a newEst
+        /*
+         * Si era de origen, actualiza que ya no te llevas las bicis de la anterior, pon que te llevas tantas como sean necesarias (si son 1,2,11,12,21,22 llevas 0,10 y 20) y ajusta EST1 y EST2, en ese orden.
+         */
+    }
+
+    /*
+     * Swap de estaciones entre furgonetas
+     */
+    public boolean canSwapEst(int f1, int f2, int est1, int est2)
+    {   
+        //Si una es de origen, ambas deben ser de origen
+        if((est1 == ORIGEN || est2 == ORIGEN) && (est1^est2) != 0) return false;
+        else if(f1 == f2) return false;
+        return true;
+    }
+    public void swapEst(int f1, int f2, int est1, int est2)
+    {
+        /*
+         * Si son de origen, cambialas y ajusta origen y destinos como en changeEst
+         */
+        /*
+         * Si son de destino, cambialas y coge/deja bicis del origen si se puede y si es necesario, siguiendo
+         * el criterio del 1,2 de changeEst
+         */
+    }
+
+    /*
+     * Añade una furgoneta nueva
+     */
+    public boolean canAddVan(int origen, int dest1, int dest2)
+    {
+        if(furgEnUso >= maxFurgonetas) return false;
+        else if(origen == dest1 || origen == dest2 || dest1 == dest2) return false;
+        else if(ocupacion[origen] < 0) return false; //Estacion de origen usada ya
+        return true;
+    }
+    public void addVan(int origen, int dest1, int dest2)
+    {
+        viajes[furgEnUso][ORIGEN] = origen;
+        viajes[furgEnUso][EST1] = dest1;
+        viajes[furgEnUso][EST2] = dest2;
+
+        /*
+         * To do: Reparte números entre origen y dest1,dest2, prioriza llenar dest1
+         */
+
+        ++furgEnUso;
+    }
 
 
     /*
@@ -98,7 +191,7 @@ public class PracBoard {
     }
 
     /*Intenta utilizar todas las furgonetas siempre yendo desde una estación donde "sobren" bicis a una donde falten (y a una segunda si aun quedan) para llegar a la prediccion de la hora siguiente*/
-    private void creaSolucionBuena(){
+    public void creaSolucionBuena(){
         Queue<Integer> demandadas = new LinkedList<Integer>();
         Queue<Integer> noDemandadas = new LinkedList<Integer>();
         for (int i = 0; i < estaciones.size(); ++i) {
@@ -115,22 +208,22 @@ public class PracBoard {
             sobrantes = Math.min(sobrantes, 30); //Una furgoneta no puede llevar mas de 30
             
             ocupacion[origen] -= sobrantes;
-            viajes[furgEnUso][0] = origen;
-            viajes[furgEnUso][1] = -sobrantes;
+            viajes[furgEnUso][ORIGEN] = origen;
+            viajes[furgEnUso][ORIGEN_CANTIDAD] = -sobrantes;
 
             int dest1 = demandadas.poll();
             int demanda1 = estaciones.get(dest1).getDemanda()-estaciones.get(dest1).getNumBicicletasNext();
             int anadidas1 = Math.min(demanda1, sobrantes);
             ocupacion[dest1] += anadidas1;
             sobrantes -= anadidas1;
-            viajes[furgEnUso][2] = dest1;
-            viajes[furgEnUso][3] = anadidas1;
+            viajes[furgEnUso][EST1] = dest1;
+            viajes[furgEnUso][EST1_CANTIDAD] = anadidas1;
 
             if (sobrantes > 0 && demandadas.peek() != null) {
                 int dest2 = demandadas.poll();
                 ocupacion[dest2] += sobrantes; //Ahora hay que dejar todas las sobrantes, no podemos hacer desaparecer bicis (o las dejamos en el origen?)
-                viajes[furgEnUso][4] = dest2;
-                viajes[furgEnUso][5] = sobrantes;
+                viajes[furgEnUso][EST2] = dest2;
+                viajes[furgEnUso][EST2_CANTIDAD] = sobrantes;
             }
             furgEnUso++;
         }
