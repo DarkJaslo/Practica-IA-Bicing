@@ -20,6 +20,10 @@ public class PracBoard {
      */
     private int [] ocupacion;
     /*
+     * Que furgonetas han pasado por cada estacion
+     */
+    //private int [] nombreProvisionalAyuda;
+    /*
      * Una fila por furgoneta, hasta 3 estaciones y cambio ( inicio y numero bicis, parada 1 y numero bicis, parada 2 y numero bicis ) por columna
      * Ejemplo: eA -20, eB +5, eC +15
      */
@@ -49,25 +53,26 @@ public class PracBoard {
      * Cambiar destino 2 de una f
      * Swapear destino 1 y destino 2 de una f
      * 
-     * Swapear destino 1,2 de f1 con destino 1,2 de f2
+     * Swapear destino 1 o 2 de f1 con destino 1 o 2 de f2
      * Swapear origen de f1 con origen de f2   
      *
      *  
      * Cosas que seguro que optimizan:
      * 
-     * Quitar furgonetas cuando sobran (redistribuir y borrar)
-     * Añadir furgonetas cuando faltan (añadir y redistribuir)
+     * (((Quitar furgonetas cuando sobran (redistribuir y borrar))))
+     * Añadir furgonetas cuando faltan (añadir y redistribuir) (generar solución inicial con más bien pocas)
      * 
-     * Borrar una furgoneta siempre que se pueda
+     * 
      * 
      * 
      * Qué hacer con los números? Siempre el máximo? 
      *      Llevarte todas las que te puedas llevar
-     *      Dejar todas las que puedas? y la siguiente parada?
+     *      Dejar todas las que puedas en la primera parada
      * 
      * 
-     * En hill climbing vale la pena intentar redistribuir más?
-     * El coste es (nb+9)/10! 39/10 es 3, maximizar siempre el segundo dígito es bueno, llevar 20 eq 29
+     * El coste es (nb+9)/10 39/10 es 3, maximizar siempre el segundo dígito es bueno, llevar 20 eq 29
+     *   Posible margen donde pilles 20 en vez de 21,22,23?..etc
+     *   En general, nunca coger bicis de más y ya luego si las necesitas las puedes coger al hacer el swap (efecto "invisible" del operador)
     */
 
 
