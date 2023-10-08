@@ -1,6 +1,9 @@
 package practica;
 import IA.Bicing.Estacion;
 import IA.Bicing.Estaciones;
+import java.util.Queue;
+import java.util.LinkedList;
+import java.lang.Math;
 
 /*
  * Propuesta actual, seguro que se puede mejorar
@@ -33,6 +36,9 @@ public class PracBoard {
         this.estaciones = estaciones;
         this.maxFurgonetas = maxFurgonetas;
         this.furgEnUso = 0;
+        ocupacion = new int[estaciones.size()];
+        viajes = new int[maxFurgonetas][6];
+        creaSolucionBuena();
     }
 
     /* Operadores */
@@ -84,5 +90,44 @@ public class PracBoard {
 
     public int[][] getViajes(){
         return viajes;
+    }
+
+    /*Intenta utilizar todas las furgonetas siempre yendo desde una estación donde "sobren" bicis a una donde falten (y a una segunda si aun quedan) para llegar a la prediccion de la hora siguiente*/
+    private void creaSolucionBuena(){
+        Queue<Integer> demandadas = new LinkedList<Integer>();
+        Queue<Integer> noDemandadas = new LinkedList<Integer>();
+        for (int i = 0; i < estaciones.size(); ++i) {
+            if (estaciones.get(i).getDemanda() > estaciones.get(i).getNumBicicletasNext()) {
+                demandadas.add(i);
+            } else if (estaciones.get(i).getNumBicicletasNoUsadas() > 0) { //que al menos te puedas llevar una?
+                noDemandadas.add(i);
+            }
+        }
+        while (furgEnUso < maxFurgonetas && noDemandadas.peek() != null && demandadas.peek() != null) {
+            int origen = noDemandadas.poll();
+            //Coge bicis sin dejar la estacion por debajo de la demanda de la siguiente hora y solo cogiendo las que estan "no usadas" (disponibles) la hora actual
+            int sobrantes = Math.min(estaciones.get(origen).getNumBicicletasNext()-estaciones.get(origen).getDemanda(), estaciones.get(origen).getNumBicicletasNoUsadas());
+            sobrantes = Math.min(sobrantes, 30); //Una furgoneta no puede llevar mas de 30
+            
+            ocupacion[origen] -= sobrantes;
+            viajes[furgEnUso][0] = origen;
+            viajes[furgEnUso][1] = -sobrantes;
+
+            int dest1 = demandadas.poll();
+            int demanda1 = estaciones.get(dest1).getDemanda()-estaciones.get(dest1).getNumBicicletasNext();
+            int anadidas1 = Math.min(demanda1, sobrantes);
+            ocupacion[dest1] += anadidas1;
+            sobrantes -= anadidas1;
+            viajes[furgEnUso][2] = dest1;
+            viajes[furgEnUso][3] = anadidas1;
+
+            if (sobrantes > 0 && demandadas.peek() != null) {
+                int dest2 = demandadas.poll();
+                ocupacion[dest2] += sobrantes; //Ahora hay que dejar todas las sobrantes, no podemos hacer desaparecer bicis (o las dejamos en el origen?)
+                viajes[furgEnUso][4] = dest2;
+                viajes[furgEnUso][5] = sobrantes;
+            }
+            furgEnUso++;
+        }
     }
 }
