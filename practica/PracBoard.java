@@ -16,7 +16,7 @@ public class PracBoard {
     private static int maxFurgonetas;
 
     private static final int ORIGEN = 0;
-    private static final int ORIGEN_CANTIDAD = 1;
+    private static final int ORIGEN_CANTIDAD = 1; // = est1_cantidad + est2_cantidad (sobra)
     private static final int EST1 = 2;
     private static final int EST1_CANTIDAD = 3;
     private static final int EST2 = 4;
@@ -87,7 +87,7 @@ public class PracBoard {
     */
 
     /*
-     * Swap destino 1 y 2 de una furgoneta
+     * Swap destino 1 y 2 de una furgoneta (puede que sobre)
      */
     public boolean canSwapDest1Dest2(int f)
     {
@@ -145,6 +145,8 @@ public class PracBoard {
          * Si son de destino, cambialas y coge/deja bicis del origen si se puede y si es necesario, siguiendo
          * el criterio del 1,2 de changeEst
          */
+
+        
     }
 
     /*
@@ -191,7 +193,8 @@ public class PracBoard {
     }
 
     /*Intenta utilizar todas las furgonetas siempre yendo desde una estación donde "sobren" bicis a una donde falten (y a una segunda si aun quedan) para llegar a la prediccion de la hora siguiente*/
-    public void creaSolucionBuena(){
+    public void creaSolucionBuena()
+    {
         Queue<Integer> demandadas = new LinkedList<Integer>();
         Queue<Integer> noDemandadas = new LinkedList<Integer>();
         for (int i = 0; i < estaciones.size(); ++i) {
