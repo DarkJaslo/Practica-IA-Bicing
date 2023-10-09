@@ -37,6 +37,8 @@ public class Main {
         SearchAgent agent = new SearchAgent(p, alg);
         
         /*La solución está en board? */
+
+        System.out.println("Ya toy");
     }
 };
 
