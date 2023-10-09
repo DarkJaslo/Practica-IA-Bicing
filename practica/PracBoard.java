@@ -16,11 +16,10 @@ public class PracBoard {
     private static int maxFurgonetas;
 
     private static final int ORIGEN = 0;
-    private static final int ORIGEN_CANTIDAD = 1; // = est1_cantidad + est2_cantidad (sobra)
-    private static final int EST1 = 2;
-    private static final int EST1_CANTIDAD = 3;
-    private static final int EST2 = 4;
-    private static final int EST2_CANTIDAD = 5;
+    private static final int EST1 = 1;
+    private static final int EST1_CANTIDAD = 2;
+    private static final int EST2 = 3;
+    private static final int EST2_CANTIDAD = 4;
 
     /*
      * Cambios en la ocupación de las estaciones (e1: +2, e2: -30, e3: +12, etc)
@@ -48,7 +47,6 @@ public class PracBoard {
         
         for(int i = 0; i < maxFurgonetas; ++i){
             viajes[i][ORIGEN] = -1;
-            viajes[i][ORIGEN_CANTIDAD] = 0;
             viajes[i][EST1] = -1;
             viajes[i][EST1_CANTIDAD] = 0;
             viajes[i][EST2] = -1;
@@ -212,7 +210,7 @@ public class PracBoard {
             
             ocupacion[origen] -= sobrantes;
             viajes[furgEnUso][ORIGEN] = origen;
-            viajes[furgEnUso][ORIGEN_CANTIDAD] = -sobrantes;
+            //viajes[furgEnUso][ORIGEN_CANTIDAD] = -sobrantes;
 
             int dest1 = demandadas.poll();
             int demanda1 = estaciones.get(dest1).getDemanda()-estaciones.get(dest1).getNumBicicletasNext();
