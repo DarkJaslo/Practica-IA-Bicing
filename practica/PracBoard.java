@@ -93,7 +93,7 @@ public class PracBoard {
     {
         //False si newEst se usa de origen en otra furgoneta
         if(ocupacion[newEst] < 0) return false; 
-        //False si queremos cambiar una estacion por si misma
+        //False si queremos cambiar una estacion por ella misma
         if(viajes[f][whichEst] == newEst) return false;
         return true;
     }
@@ -105,7 +105,7 @@ public class PracBoard {
         int est1 = viajes[f][EST1];
         int est2 = viajes[f][EST2];
 
-        ocupacion[origen] += viajes[f][EST1_CANTIDAD]+viajes[f][EST2_CANTIDAD];
+        if(origen >= 0) ocupacion[origen] += viajes[f][EST1_CANTIDAD]+viajes[f][EST2_CANTIDAD];
         if(est1 >= 0) ocupacion[est1] -= viajes[f][EST1_CANTIDAD];
         if(est2 >= 0) ocupacion[est2] -= viajes[f][EST2_CANTIDAD];
 
@@ -132,9 +132,9 @@ public class PracBoard {
         }
 
         viajes[f][whichEst] = newEst;
-        ocupacion[origen] -= viajes[f][EST1_CANTIDAD]+viajes[f][EST2_CANTIDAD];
-        if(est1 > 0) ocupacion[est1] += viajes[f][EST1_CANTIDAD];
-        if(est2 > 0) ocupacion[est2] += viajes[f][EST2_CANTIDAD];
+        if(origen >= 0) ocupacion[origen] -= viajes[f][EST1_CANTIDAD]+viajes[f][EST2_CANTIDAD];
+        if(est1 >= 0)   ocupacion[est1] += viajes[f][EST1_CANTIDAD];
+        if(est2 >= 0)   ocupacion[est2] += viajes[f][EST2_CANTIDAD];
     }
 
     /*
@@ -151,22 +151,62 @@ public class PracBoard {
     public void swapEst(int f1, int f2, int est1, int est2)
     {
         /*
-         * Si son de origen, cambialas y ajusta origen y destinos como en changeEst
+         * Si son de origen, cambialas y ajusta numeros en origen y destinos
          */
         /*
-         * Si son de destino, cambialas y coge/deja bicis del origen si se puede y si es necesario, siguiendo
-         * el criterio del 1,2 de changeEst
+         * Si son de destino, cambialas y ajusta. Se permiten swaps en una misma furgoneta pero no de exactamente la misma estación
          */
-        if(est1 == ORIGEN && est2 == ORIGEN)
-        {
-            int e1 = viajes[f1][est1];
-            int e2 = viajes[f2][est2];
 
-            if(e1 > 0) ocupacion[e1] -= (viajes[f1][EST1_CANTIDAD] + viajes[f1][EST2_CANTIDAD]);
-            if(e2 > 0) ocupacion[e2] -= (viajes[f2][EST1_CANTIDAD] + viajes[f2][EST2_CANTIDAD]);
+        int o1 = viajes[f1][ORIGEN];
+        int o2 = viajes[f2][ORIGEN];
+
+        int est11 = viajes[f1][EST1];
+        int est12 = viajes[f1][EST2];
+        int est21 = viajes[f2][EST1];
+        int est22 = viajes[f2][EST2];
+
+        if(o1 > 0) ocupacion[o1] += (viajes[f1][EST1_CANTIDAD] + viajes[f1][EST2_CANTIDAD]);
+        if(est11 > 0) ocupacion[est11] -= viajes[f1][EST1_CANTIDAD];
+        if(est12 > 0) ocupacion[est12] -= viajes[f1][EST2_CANTIDAD];
+
+        if(f1 != f2) //Si fueran la misma se actualizaria dos veces
+        {
+            if(o2 > 0) ocupacion[o2] += (viajes[f2][EST1_CANTIDAD] + viajes[f2][EST2_CANTIDAD]);
+            if(est21 > 0) ocupacion[est21] -= viajes[f2][EST1_CANTIDAD];
+            if(est22 > 0) ocupacion[est22] -= viajes[f2][EST2_CANTIDAD];
         }
+        
+        //Intercambio de estaciones
+        int aux = viajes[f1][est1];
+        viajes[f1][est1] = viajes[f2][est2];
+        viajes[f2][est2] = aux;
+
+        //Recalcula todo por simplicidad
+        o1    = viajes[f1][ORIGEN];
+        o2    = viajes[f2][ORIGEN];
+        est11 = viajes[f1][EST1];
+        est12 = viajes[f1][EST2];
+        est21 = viajes[f2][EST1];
+        est22 = viajes[f2][EST2];
 
         
+        int dem11 = demand(est11); int dem12 = demand(est12);
+        distributeBycicles(f1, o1, dem11, dem12);
+
+        if(o1 > 0) ocupacion[o1] -= (viajes[f1][EST1_CANTIDAD] + viajes[f1][EST2_CANTIDAD]);
+        if(est11 > 0) ocupacion[est11] += viajes[f1][EST1_CANTIDAD];
+        if(est12 > 0) ocupacion[est12] += viajes[f1][EST2_CANTIDAD];
+
+        if(f1 != f2) //Si fueran la misma se actualizaria dos veces
+        {
+            //Hay que esperar a que se actualicen las cosas de la otra furgoneta por si vamos a la misma estacion en algun viaje
+            int dem21 = demand(est21); int dem22 = demand(est22);
+            distributeBycicles(f2, o2, dem21, dem22);
+
+            if(o2 > 0) ocupacion[o2] += (viajes[f2][EST1_CANTIDAD] + viajes[f2][EST2_CANTIDAD]);
+            if(est21 > 0) ocupacion[est21] -= viajes[f2][EST1_CANTIDAD];
+            if(est22 > 0) ocupacion[est22] -= viajes[f2][EST2_CANTIDAD];
+        }
     }
 
     /*
