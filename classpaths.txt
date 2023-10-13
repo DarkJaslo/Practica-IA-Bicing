@@ -1,0 +1,1 @@
+.:./practica:./aima/AIMA.jar:./Bicing/Bicing.jar
