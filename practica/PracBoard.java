@@ -92,7 +92,9 @@ public class PracBoard {
     public boolean canChangeEst(int f, int whichEst, int newEst)
     {
         //False si newEst se usa de origen en otra furgoneta
-        if(ocupacion[newEst] < 0 && viajes[f][ORIGEN] != newEst) return false; 
+        if(ocupacion[newEst] < 0) return false; 
+        //False si queremos cambiar una estacion por si misma
+        if(viajes[f][whichEst] == newEst) return false;
         return true;
     }
     public void changeEst(int f, int whichEst, int newEst)
@@ -103,12 +105,12 @@ public class PracBoard {
         int est1 = viajes[f][EST1];
         int est2 = viajes[f][EST2];
 
-        int dem1 = demand(est1);
-        int dem2 = demand(est2);
-
         ocupacion[origen] += viajes[f][EST1_CANTIDAD]+viajes[f][EST2_CANTIDAD];
         if(est1 >= 0) ocupacion[est1] -= viajes[f][EST1_CANTIDAD];
         if(est2 >= 0) ocupacion[est2] -= viajes[f][EST2_CANTIDAD];
+
+        int dem1 = demand(est1);
+        int dem2 = demand(est2);
         
         if(whichEst == ORIGEN)
         {
@@ -141,8 +143,9 @@ public class PracBoard {
     public boolean canSwapEst(int f1, int f2, int est1, int est2)
     {   
         //Si una es de origen, ambas deben ser de origen
-        if((est1 == ORIGEN || est2 == ORIGEN) && (est1^est2) != 0) return false;
-        else if(f1 == f2) return false;
+        if((est1 == ORIGEN || est2 == ORIGEN) && est1 != est2) return false;
+        //Si son la misma furgoneta y se quieren cambiar la misma estación
+        else if(f1 == f2 && est1 == est2) return false;
         return true;
     }
     public void swapEst(int f1, int f2, int est1, int est2)
@@ -154,6 +157,14 @@ public class PracBoard {
          * Si son de destino, cambialas y coge/deja bicis del origen si se puede y si es necesario, siguiendo
          * el criterio del 1,2 de changeEst
          */
+        if(est1 == ORIGEN && est2 == ORIGEN)
+        {
+            int e1 = viajes[f1][est1];
+            int e2 = viajes[f2][est2];
+
+            if(e1 > 0) ocupacion[e1] -= (viajes[f1][EST1_CANTIDAD] + viajes[f1][EST2_CANTIDAD]);
+            if(e2 > 0) ocupacion[e2] -= (viajes[f2][EST1_CANTIDAD] + viajes[f2][EST2_CANTIDAD]);
+        }
 
         
     }
@@ -226,7 +237,7 @@ public class PracBoard {
     private int demand(int est)
     {
         if(est < 0) return 0;
-        return (estaciones.get(est).getDemanda()-estaciones.get(est).getNumBicicletasNext()+ocupacion[est]);
+        return (estaciones.get(est).getDemanda()-estaciones.get(est).getNumBicicletasNext()-ocupacion[est]);
     }
 
 
