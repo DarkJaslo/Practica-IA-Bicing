@@ -6,20 +6,20 @@ Instrucciones de compilación:
 ### Linux:
 
 Dar permisos de ejecución
-chmod +x compila.sh
-chmod +x ejecuta.sh
+<tt>chmod +x compila.sh</tt>
+<tt>chmod +x ejecuta.sh</tt>
 
 Compilar:
-./compila.sh
+<tt>./compila.sh</tt>
 
 Ejecutar:
-./ejecuta.sh
+<tt>./ejecuta.sh</tt>
 
 
 ### Windows:
 
 Compilar:
-compila.bat
+<tt>compila.bat</tt>
 
 Ejecutar:
-ejecuta.bat
+<tt>ejecuta.bat</tt>
