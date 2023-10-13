@@ -3,7 +3,8 @@ Práctica de búsqueda local para IA. Leer EnunciadoBusquedaLocal.pdf para más 
 
 Instrucciones de compilación:
 
-Linux:
+### Linux:
+
 Dar permisos de ejecución
 chmod +x compila.sh
 chmod +x ejecuta.sh
@@ -15,7 +16,8 @@ Ejecutar:
 ./ejecuta.sh
 
 
-Windows:
+### Windows:
+
 Compilar:
 compila.bat
 
