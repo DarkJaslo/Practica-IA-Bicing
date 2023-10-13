@@ -48,7 +48,7 @@ public class PracBoard {
         this.maxFurgonetas = maxFurgonetas;
         this.furgEnUso = 0;
         ocupacion = new int[estaciones.size()];
-        viajes = new int[maxFurgonetas][6];
+        viajes = new int[maxFurgonetas][5];
         
         for(int i = 0; i < maxFurgonetas; ++i){
             viajes[i][ORIGEN] = -1;
