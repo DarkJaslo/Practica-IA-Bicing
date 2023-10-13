@@ -1,6 +1,8 @@
 package practica;
 import IA.Bicing.Estacion;
 import IA.Bicing.Estaciones;
+import aima.basic.MockAgent;
+
 import java.util.Queue;
 import java.util.LinkedList;
 import java.lang.Math;
@@ -85,43 +87,52 @@ public class PracBoard {
     */
 
     /*
-     * Swap destino 1 y 2 de una furgoneta (puede que sobre)
-     */
-    public boolean canSwapDest1Dest2(int f)
-    {
-        boolean hasFirst = viajes[f][EST1] != -1;
-        boolean hasSecond = viajes[f][EST2] != -1;
-        return (hasFirst || hasSecond);
-    }
-    public void swapDest1Dest2(int f)
-    {
-        int q1 = viajes[f][EST1_CANTIDAD];
-        int e1 = viajes[f][EST1];
-        viajes[f][EST1_CANTIDAD] = viajes[f][EST2_CANTIDAD];
-        viajes[f][EST1] = viajes[f][EST2];
-        viajes[f][EST2_CANTIDAD] = q1;
-        viajes[f][EST2] = e1;
-
-        /*
-         * To do: asegura que dest1 se queda el máximo de bicis
-         */
-    }
-
-    /*
      * Cambia estacion de furgoneta
      */
-    public boolean canChangeEst(int f, int est, int newEst)
+    public boolean canChangeEst(int f, int whichEst, int newEst)
     {
         //False si newEst se usa de origen en otra furgoneta
         if(ocupacion[newEst] < 0 && viajes[f][ORIGEN] != newEst) return false; 
         return true;
     }
-    public void changeEst(int f, int est, int newEst)
+    public void changeEst(int f, int whichEst, int newEst)
     {
-        //Cambia la estación est (est == ORIGEN, est == EST1, est == EST2) a newEst
-        /*
-         * Si era de origen, actualiza que ya no te llevas las bicis de la anterior, pon que te llevas tantas como sean necesarias (si son 1,2,11,12,21,22 llevas 0,10 y 20) y ajusta EST1 y EST2, en ese orden.
-         */
+        //Cambia la estación whichEst (whichEst == ORIGEN, whichEst == EST1, whichEst == EST2) a newEst
+
+        int origen = viajes[f][ORIGEN];
+        int est1 = viajes[f][EST1];
+        int est2 = viajes[f][EST2];
+
+        int dem1 = demand(est1);
+        int dem2 = demand(est2);
+
+        ocupacion[origen] += viajes[f][EST1_CANTIDAD]+viajes[f][EST2_CANTIDAD];
+        if(est1 >= 0) ocupacion[est1] -= viajes[f][EST1_CANTIDAD];
+        if(est2 >= 0) ocupacion[est2] -= viajes[f][EST2_CANTIDAD];
+        
+        if(whichEst == ORIGEN)
+        {
+            distributeBycicles(f, newEst, dem1, dem2);
+            origen = newEst;
+        }
+        else //Cambiando alguno de los destinos
+        {            
+            int demandaNewEst = demand(newEst);
+
+            if(whichEst == EST1){
+                distributeBycicles(f, origen, demandaNewEst, dem2);
+                est1 = newEst;
+            }
+            else{ //EST2
+                distributeBycicles(f, origen, dem1, demandaNewEst);
+                est2 = newEst;
+            }
+        }
+
+        viajes[f][whichEst] = newEst;
+        ocupacion[origen] -= viajes[f][EST1_CANTIDAD]+viajes[f][EST2_CANTIDAD];
+        if(est1 > 0) ocupacion[est1] += viajes[f][EST1_CANTIDAD];
+        if(est2 > 0) ocupacion[est2] += viajes[f][EST2_CANTIDAD];
     }
 
     /*
@@ -169,6 +180,55 @@ public class PracBoard {
 
         ++furgEnUso;
     }
+
+    /*
+     * Funciones auxiliares
+     */
+
+    /*
+     * Pretende redondear hacia abajo las bicicletas que una furgoneta se lleva de una estación de origen con tal de aprovechar la fórmula de coste
+     */
+    private int takenBycicles(int intended)
+    {
+        if(intended%10 <= 3) return intended-intended%10;
+        return intended;
+    }
+
+    /*
+     * Se lleva un número entre el máximo de bicicletas posibles y takenBycicles() y las asigna de forma que la primera estación se llena todo lo posible primero
+     */
+    private void distributeBycicles(int f, int origen, int dem1, int dem2)
+    {
+        viajes[f][EST1_CANTIDAD] = 0;
+        viajes[f][EST2_CANTIDAD] = 0;
+
+        int disponibles = 0;
+        if(origen > 0) disponibles = estaciones.get(origen).getNumBicicletasNoUsadas();
+        else return; //No hay origen -> no hay bicicletas para distribuir
+
+        int cogidas = Math.min(Math.min(30, disponibles),takenBycicles(dem1+dem2));
+
+        //Intenta dejar el máximo de bicicletas en Dest1
+        if(dem1 < cogidas)
+        {
+            viajes[f][EST1_CANTIDAD] = dem1;
+            cogidas -= dem1;
+            //Las que sobran se llevan a la estación 2
+            viajes[f][EST2_CANTIDAD] = cogidas;
+        }
+        else{
+            viajes[f][EST1_CANTIDAD] = cogidas;
+        }
+    }
+    /*
+     * Devuelve las bicicletas que hace falta traer a una estación
+     */
+    private int demand(int est)
+    {
+        if(est < 0) return 0;
+        return (estaciones.get(est).getDemanda()-estaciones.get(est).getNumBicicletasNext()+ocupacion[est]);
+    }
+
 
 
     /*
