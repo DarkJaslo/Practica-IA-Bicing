@@ -16,7 +16,7 @@ Ejecutar:
 
 
 Windows:
-Comiplar:
+Compilar:
 compila.bat
 
 Ejecutar:
