@@ -23,6 +23,9 @@ public class PracBoard {
     private static final int EST2 = 3;
     private static final int EST2_CANTIDAD = 4;
 
+    //Ejemplo: si hay que coger 20+REDONDEO o menos, coge 20, pero con 20+REDONDEO+1 ya coge esas
+    private static final int REDONDEO = 2;
+
     /*
      * Cambios en la ocupación de las estaciones (e1: +2, e2: -30, e3: +12, etc)
      */
@@ -241,12 +244,16 @@ public class PracBoard {
      */
     private int takenBycicles(int intended)
     {
-        if(intended%10 <= 3) return intended-intended%10;
+        if(intended%10 <= REDONDEO) return intended-intended%10;
         return intended;
     }
 
     /*
      * Se lleva un número entre el máximo de bicicletas posibles y takenBycicles() y las asigna de forma que la primera estación se llena todo lo posible primero
+     * 
+     * Motivos: 
+     * 1. A priori parece arbitrario
+     * 2. Se viaja mas rato con menos bicicletas
      */
     private void distributeBycicles(int f, int origen, int dem1, int dem2)
     {
