@@ -138,6 +138,9 @@ public class PracBoard {
         if(origen >= 0) ocupacion[origen] -= viajes[f][EST1_CANTIDAD]+viajes[f][EST2_CANTIDAD];
         if(est1 >= 0)   ocupacion[est1] += viajes[f][EST1_CANTIDAD];
         if(est2 >= 0)   ocupacion[est2] += viajes[f][EST2_CANTIDAD];
+
+        
+        swapIfBad(f, origen, est1, est2);
     }
 
     /*
@@ -200,6 +203,9 @@ public class PracBoard {
         if(est11 > 0) ocupacion[est11] += viajes[f1][EST1_CANTIDAD];
         if(est12 > 0) ocupacion[est12] += viajes[f1][EST2_CANTIDAD];
 
+        //Swapea dest1 y dest2 de f1 si se cumplen ciertas condiciones
+        swapIfBad(f1, o1, est11, est12);
+
         if(f1 != f2) //Si fueran la misma se actualizaria dos veces
         {
             //Hay que esperar a que se actualicen las cosas de la otra furgoneta por si vamos a la misma estacion en algun viaje
@@ -209,6 +215,9 @@ public class PracBoard {
             if(o2 > 0) ocupacion[o2] += (viajes[f2][EST1_CANTIDAD] + viajes[f2][EST2_CANTIDAD]);
             if(est21 > 0) ocupacion[est21] -= viajes[f2][EST1_CANTIDAD];
             if(est22 > 0) ocupacion[est22] -= viajes[f2][EST2_CANTIDAD];
+
+            //Swapea dest1 y dest2 de f2 si se cumplen ciertas condiciones
+            swapIfBad(f2, o2, est21, est22);
         }
     }
 
@@ -278,6 +287,31 @@ public class PracBoard {
             viajes[f][EST1_CANTIDAD] = cogidas;
         }
     }
+
+    /*
+     * Hace swap de est1 y est2 de una furgoneta si est2 esta mas cerca de origen que est1 o si est1 es -1
+     */
+    private void swapIfBad(int f, int origen, int est1, int est2)
+    {
+        if(est1 < 0 && est2 > 0)
+        {
+            swapEst(f, f, est1, est2);
+        }
+        else if(origen > 0 && est1 > 0 && est2 > 0)
+        {
+            int x1 = estaciones.get(est1).getCoordX();
+            int y1 = estaciones.get(est1).getCoordY();
+            int x2 = estaciones.get(est2).getCoordX();
+            int y2 = estaciones.get(est2).getCoordY();
+
+            int x0 = estaciones.get(origen).getCoordX();
+            int y0 = estaciones.get(origen).getCoordY();
+
+            if(distance(x0, y0, x1, y1) > distance(x0, y0, x2, y2)){
+                swapEst(f, f, est1, est2);
+            }
+        }
+    }
     /*
      * Devuelve las bicicletas que hace falta traer a una estación
      */
@@ -285,6 +319,14 @@ public class PracBoard {
     {
         if(est < 0) return 0;
         return (estaciones.get(est).getDemanda()-estaciones.get(est).getNumBicicletasNext()-ocupacion[est]);
+    }
+
+    /*
+     * Devuelve la distancia en metros
+     */
+    int distance(int x1, int y1, int x2, int y2)
+    {
+        return (Math.abs(x1-x2)+Math.abs(y1-y2));
     }
 
 
