@@ -1,4 +1,5 @@
 package practica;
+import IA.Bicing.Estacion;
 import IA.Bicing.Estaciones;
 
 import java.util.Queue;
@@ -342,6 +343,55 @@ public class PracBoard{
     }
 
     /*
+     * Devuelve la distancia Manhattan en metros entre dos "Estación" cualesquiera
+     */
+    public int distance(Estacion e1, Estacion e2) {
+        return (Math.abs(e1.getCoordX()-e2.getCoordX()) + Math.abs(e1.getCoordY()-e2.getCoordY()));
+    }
+
+    /*
+     * Devuelve si el id (f) de una furgoneta existe o no
+     */
+    public boolean existeFurgo(int f) {
+        return (f > -1 && f < maxFurgonetas);
+    }
+
+    /*
+     * Devuelve si el id (est) de una estación existe o no
+     */
+    public boolean existeEstacion(int est) {
+        return (est > -1 && est < estaciones.size());
+    }
+
+    /*
+     * Devuelve la distancia recorrida por una furgoneta
+     */
+    public double getTravelDist(int f) {
+        double dist = 0;
+        if (existeFurgo(f) && existeEstacion(viajes[f][ORIGEN])) {
+            //Primer viaje
+            if (existeEstacion(viajes[f][EST1])) {
+                dist += distance(estaciones.get(viajes[f][ORIGEN]), estaciones.get(viajes[f][EST1]));
+
+                //Segundo viaje
+                if (existeEstacion(viajes[f][EST2]))
+                    dist += distance(estaciones.get(viajes[f][EST1]), estaciones.get(viajes[f][EST2]));
+            }
+        }
+        return dist;
+    }
+
+    /*
+     * Devuelve la distancia total recorrida por las furgonetas
+     */
+    public double getTotalTravelDist() {
+        double totalDist = 0;
+        for (int i = 0; i < maxFurgonetas; ++i)
+            totalDist += getTravelDist(i);
+        return totalDist;
+    }
+
+    /*
      * Funciones heurísticas
      */
     public double heuristicFunction(){
@@ -373,16 +423,23 @@ public class PracBoard{
 
         //Minimizar coste de transporte
         double coste_transporte = 0;
-        for (int i = 0; i < viajes.length; ++i) {
-            int bicis = viajes[i][EST1_CANTIDAD] + viajes[i][EST2_CANTIDAD];
-            
-            for (int j = 1; j < viajes[i].length; j += 2) {
-                if (viajes[i][j] > -1) { //Hemos asignado a la furgo un destino (asumimos que tiene una estación origen distinta al destino)
-                    double dist = distance(estaciones.get(viajes[i][j-2]).getCoordX(), estaciones.get(viajes[i][j-2]).getCoordY(), 
-                                           estaciones.get(viajes[i][j]).getCoordX(), estaciones.get(viajes[i][j]).getCoordY());
+        for (int i = 0; i < maxFurgonetas; ++i) {
+            if (existeEstacion(viajes[i][ORIGEN])) {
+                int bicis = viajes[i][EST1_CANTIDAD] + viajes[i][EST2_CANTIDAD];
+                double dist = 0;
+
+                //Primer viaje
+                if (existeEstacion(viajes[i][EST1])) {
+                    dist = distance(estaciones.get(viajes[i][ORIGEN]), estaciones.get(viajes[i][EST1]));
                     coste_transporte += (dist/1000.0) * ((Math.abs(bicis)+9)/10);
-                    bicis -= viajes[i][j+1];
-                }
+                    bicis -= viajes[i][EST1_CANTIDAD];
+
+                    //Segundo viaje
+                    if (existeEstacion(viajes[i][EST2])) {
+                        dist = distance(estaciones.get(viajes[i][EST1]), estaciones.get(viajes[i][EST2]));
+                        coste_transporte += (dist/1000.0) * ((Math.abs(bicis)+9)/10);
+                    }
+                }                
             }
         }
         //Negamos "cobro_transporte" para que ambos criterios sean mínimos
