@@ -1,3 +1,5 @@
+import java.util.List;
+
 import IA.Bicing.Estacion;
 import IA.Bicing.Estaciones;
 import aima.search.framework.GraphSearch;
@@ -35,10 +37,20 @@ public class Main {
         Search alg = new HillClimbingSearch();
 
         SearchAgent agent = new SearchAgent(p, alg);
+        printActions(agent.getActions());
         
         /*La solución está en board? */
 
         System.out.println("Ya toy");
+        System.out.println("Beneficio total: " + board.beneficioTotal(true));
+
+    }
+
+    private static void printActions(List actions) {
+        for (int i = 0; i < actions.size(); i++) {
+            String action = (String) actions.get(i);
+            System.out.println(action);
+        }
     }
 };
 
