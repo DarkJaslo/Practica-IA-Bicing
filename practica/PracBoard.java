@@ -18,11 +18,11 @@ public class PracBoard {
     private static int maxFurgonetas;
 
     private static final int ORIGEN = 0;
-    private static final int ORIGEN_CANTIDAD = 1;
-    private static final int EST1 = 2;
-    private static final int EST1_CANTIDAD = 3;
-    private static final int EST2 = 4;
-    private static final int EST2_CANTIDAD = 5;
+    //private static final int ORIGEN_CANTIDAD = 1;
+    private static final int EST1 = 1;
+    private static final int EST1_CANTIDAD = 2;
+    private static final int EST2 = 3;
+    private static final int EST2_CANTIDAD = 4;
 
     //Ejemplo: si hay que coger 20+REDONDEO o menos, coge 20, pero con 20+REDONDEO+1 ya coge esas
     private static final int REDONDEO = 2;
@@ -49,11 +49,11 @@ public class PracBoard {
         this.maxFurgonetas = maxFurgonetas;
         this.furgEnUso = 0;
         ocupacion = new int[estaciones.size()];
-        viajes = new int[maxFurgonetas][6];
+        viajes = new int[maxFurgonetas][5];
         
         for(int i = 0; i < maxFurgonetas; ++i){
             viajes[i][ORIGEN] = -1;
-            viajes[i][ORIGEN_CANTIDAD] = 0;
+            //viajes[i][ORIGEN_CANTIDAD] = 0;
             viajes[i][EST1] = -1;
             viajes[i][EST1_CANTIDAD] = 0;
             viajes[i][EST2] = -1;
@@ -314,6 +314,7 @@ public class PracBoard {
             }
         }
     }
+
     /*
      * Devuelve las bicicletas que hace falta traer a una estación
      */
@@ -337,6 +338,10 @@ public class PracBoard {
     public double heuristicFunction(){
         return 0.0;
     }
+
+    /*
+
+    (Comentado hasta que esté arreglado y compile)
 
     public double heuristicFunction1Hector() {
         //Maximizar cobro de transporte
@@ -375,6 +380,7 @@ public class PracBoard {
         //Negamos "cobro_transporte" para que ambos criterios sean mínimos
         return coste_transporte - cobro_transporte;
     }
+    */
 
 
     /* Getters */
