@@ -28,17 +28,17 @@ public class PracSuccessorFunction implements SuccessorFunction {
                 if(board.canChangeEst(i, board.origen(), j)){
                     PracBoard auxBoard = PracBoard.copyOf(board);
                     auxBoard.changeEst(i, board.origen(), j);
-                    retval.add(new Successor("changeEst  f:" + i + ", st:ORIGEN, to:" + j, auxBoard));
+                    retval.add(new Successor("change furg " + i + " origen " + j, auxBoard));
                 }
                 if(board.canChangeEst(i, board.destino1(), j)){
                     PracBoard auxBoard = PracBoard.copyOf(board);
                     auxBoard.changeEst(i, board.destino1(), j);
-                    retval.add(new Successor("changeEst  f:" + i + ", st:DEST1, to:" + j, auxBoard));
+                    retval.add(new Successor("change furg " + i + " dest1 " + j, auxBoard));
                 }
                 if(board.canChangeEst(i, board.destino2(), j)){
                     PracBoard auxBoard = PracBoard.copyOf(board);
                     auxBoard.changeEst(i, board.destino2(), j);
-                    retval.add(new Successor("changeEst  f:" + i + ", st:DEST2, to:" + j, auxBoard));
+                    retval.add(new Successor("change furg " + i + " dest2 " + j, auxBoard));
                 }
             }
         }
@@ -62,7 +62,7 @@ public class PracSuccessorFunction implements SuccessorFunction {
                     {
                         PracBoard auxBoard = PracBoard.copyOf(board);
                         auxBoard.swapEst(f1, f2, ests[i], ests[i+1]);
-                        retval.add(new Successor("swapEst  f1:" + f1 + ", f2:" + f2 + ", st1:" + board.getNombreEstacion(ests[i]) + ", st2:" + board.getNombreEstacion(ests[i+1]), auxBoard));
+                        retval.add(new Successor("swap furg " + f1 + " furg " + f2 + " " + board.getNombreEstacion(ests[i]) + " " + board.getNombreEstacion(ests[i+1]), auxBoard));
                     }
                 }
             }
@@ -81,7 +81,7 @@ public class PracSuccessorFunction implements SuccessorFunction {
                     {
                         PracBoard auxBoard = PracBoard.copyOf(board);
                         auxBoard.addVan(o, d1, d2);
-                        retval.add(new Successor("addVan o:" + o + ", d1:" + d1 + ", d2:" + d2, auxBoard));
+                        retval.add(new Successor("add origen " + o + " dest1 " + d1 + " dest2 " + d2, auxBoard));
                     }
                 }
             }

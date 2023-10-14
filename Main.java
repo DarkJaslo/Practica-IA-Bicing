@@ -35,13 +35,14 @@ public class Main {
         Search alg = new HillClimbingSearch();
 
         SearchAgent agent = new SearchAgent(p, alg);
-        printActions(agent.getActions());
         
-        /*La solución está en board? */
+        System.out.println();
+        System.out.println("Actions:");
+        printActions(agent.getActions());
+        System.out.println();
 
-        System.out.println("Ya toy");
-        System.out.println("Beneficio total: " + board.beneficioTotal(true));
-
+        PracBoard finalBoard = (PracBoard)alg.getGoalState();
+        System.out.println("Beneficio total: " + finalBoard.beneficioTotal(true));
     }
 
     private static void printActions(List actions) {

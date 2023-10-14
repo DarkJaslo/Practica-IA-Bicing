@@ -429,11 +429,11 @@ public class PracBoard{
     {
         switch(whichEst){
             case ORIGEN:
-                return "ORIGEN";
+                return "origen";
             case EST1:
-                return "EST1";
+                return "dest1";
             case EST2:
-                return "EST2";
+                return "dest2";
             default:
                 return "ERR";
         }
@@ -513,7 +513,6 @@ public class PracBoard{
 
             if(print) System.out.println("Estacion " + i + ", demanda inicial: " + demStart + ", demanda final: " + demNow + ", ganancia: " + ganancia);
         }
-
         return beneficio;
     }
 }
