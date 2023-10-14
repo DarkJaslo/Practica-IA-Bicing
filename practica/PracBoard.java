@@ -394,9 +394,13 @@ public class PracBoard{
     /*
      * Funciones heurísticas
      */
-    public double heuristicFunction(){
+    public double heuristicFunction() {
         //return 0.0;
-        return -beneficioTotal(false);
+        //return -beneficioTotal(false);
+        //return -heuristicFunction1Hector();
+
+        //Hay que revisar/calibrar el minimizar coste de transporte, genera peor puntuación
+        return heuristicFunction2Hector();
     }
     
     public double heuristicFunction1Hector() {
