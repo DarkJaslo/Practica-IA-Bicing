@@ -1,7 +1,5 @@
 package practica;
-import IA.Bicing.Estacion;
 import IA.Bicing.Estaciones;
-import aima.basic.MockAgent;
 
 import java.util.Queue;
 import java.util.LinkedList;
@@ -44,8 +42,8 @@ public class PracBoard{
      * Constructora
      */
     public PracBoard(Estaciones estaciones, int maxFurgonetas){
-        this.estaciones = estaciones;
-        this.maxFurgonetas = maxFurgonetas;
+        PracBoard.estaciones = estaciones;
+        PracBoard.maxFurgonetas = maxFurgonetas;
         this.furgEnUso = 0;
         ocupacion = new int[estaciones.size()];
         viajes = new int[maxFurgonetas][5];
@@ -355,7 +353,7 @@ public class PracBoard{
 
     //(Comentado hasta que esté arreglado y compile)
 
-    /*
+    
     public double heuristicFunction1Hector() {
         //Maximizar cobro de transporte
         double cobro_transporte = 0;
@@ -380,10 +378,10 @@ public class PracBoard{
 
         //Minimizar coste de transporte
         double coste_transporte = 0;
-        for (int i = 0; i < viajes.size(); ++i) {
+        for (int i = 0; i < viajes.length; ++i) {
             int bicis = viajes[i][EST1_CANTIDAD] + viajes[i][EST2_CANTIDAD];
             
-            for (int j = 1; j < viajes[i].size(); j += 2) {
+            for (int j = 1; j < viajes[i].length; j += 2) {
                 if (viajes[i][j] > -1) { //Hemos asignado a la furgo un destino (asumimos que tiene una estación origen distinta al destino)
                     double dist = distance(estaciones.get(viajes[i][j-2]).getCoordX(), estaciones.get(viajes[i][j-2]).getCoordY(), 
                                            estaciones.get(viajes[i][j]).getCoordX(), estaciones.get(viajes[i][j]).getCoordY());
@@ -395,7 +393,7 @@ public class PracBoard{
         //Negamos "cobro_transporte" para que ambos criterios sean mínimos
         return coste_transporte - cobro_transporte;
     }
-    */
+    
 
 
     /* Getters */

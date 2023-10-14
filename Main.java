@@ -1,8 +1,6 @@
 import java.util.List;
 
-import IA.Bicing.Estacion;
 import IA.Bicing.Estaciones;
-import aima.search.framework.GraphSearch;
 import aima.search.framework.Problem;
 import aima.search.framework.Search;
 import aima.search.framework.SearchAgent;
