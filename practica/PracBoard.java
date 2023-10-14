@@ -147,15 +147,15 @@ public class PracBoard{
     /*
      * Swap de estaciones entre furgonetas
      */
-    public boolean canSwapEst(int f1, int f2, int est1, int est2)
+    public boolean canSwapEst(int f1, int f2, int whichEst1, int whichEst2)
     {   
         //Si una es de origen, ambas deben ser de origen
-        if((est1 == ORIGEN || est2 == ORIGEN) && est1 != est2) return false;
+        if((whichEst1 == ORIGEN || whichEst2 == ORIGEN) && whichEst1 != whichEst2) return false;
         //Si son la misma furgoneta y se quieren cambiar la misma estación
-        else if(f1 == f2 && est1 == est2) return false;
+        else if(f1 == f2 && whichEst1 == whichEst2) return false;
         return true;
     }
-    public void swapEst(int f1, int f2, int est1, int est2)
+    public void swapEst(int f1, int f2, int whichEst1, int whichEst2)
     {
         /*
          * Si son de origen, cambialas y ajusta numeros en origen y destinos
@@ -184,9 +184,9 @@ public class PracBoard{
         }
         
         //Intercambio de estaciones
-        int aux = viajes[f1][est1];
-        viajes[f1][est1] = viajes[f2][est2];
-        viajes[f2][est2] = aux;
+        int aux = viajes[f1][whichEst1];
+        viajes[f1][whichEst1] = viajes[f2][whichEst2];
+        viajes[f2][whichEst2] = aux;
 
         //Recalcula todo por simplicidad
         o1    = viajes[f1][ORIGEN];
@@ -348,11 +348,6 @@ public class PracBoard{
         //return 0.0;
         return -beneficioTotal(false);
     }
-
-    
-
-    //(Comentado hasta que esté arreglado y compile)
-
     
     public double heuristicFunction1Hector() {
         //Maximizar cobro de transporte
