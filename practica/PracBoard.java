@@ -18,7 +18,6 @@ public class PracBoard{
     private static int maxFurgonetas;
 
     private static final int ORIGEN = 0;
-    //private static final int ORIGEN_CANTIDAD = 1;
     private static final int EST1 = 1;
     private static final int EST1_CANTIDAD = 2;
     private static final int EST2 = 3;
@@ -53,7 +52,6 @@ public class PracBoard{
         
         for(int i = 0; i < maxFurgonetas; ++i){
             viajes[i][ORIGEN] = -1;
-            //viajes[i][ORIGEN_CANTIDAD] = 0;
             viajes[i][EST1] = -1;
             viajes[i][EST1_CANTIDAD] = 0;
             viajes[i][EST2] = -1;
@@ -367,15 +365,15 @@ public class PracBoard{
             if (ed >= ef) cobro_transporte += Math.min(ed - ef, ocupacion[i]); //Nos hacen falta más bicis para satisfacer la demanda
             else cobro_transporte += Math.min(0, ef + ocupacion[i] - ed); //Nos sobran bicis (demanda satisfecha)
         }
-        return -cobro_transporte;
+        return cobro_transporte;
     }
 
     public double heuristicFunction2Hector() {
         //Maximizar cobro de transporte
         double cobro_transporte = 0;
         for (int i = 0; i < estaciones.size(); ++i) {
-            int ed = estaciones[i].getDemanda();
-            int ef = estaciones[i].getNumBicicletasNext();
+            int ed = estaciones.get(i).getDemanda();
+            int ef = estaciones.get(i).getNumBicicletasNext();
             if (ed >= ef) cobro_transporte += Math.min(ed - ef, ocupacion[i]); //Nos hacen falta más bicis para satisfacer la demanda
             else cobro_transporte += Math.min(0, ef + ocupacion[i] - ed); //Nos sobran bicis (demanda satisfecha)
         }
@@ -383,12 +381,14 @@ public class PracBoard{
         //Minimizar coste de transporte
         double coste_transporte = 0;
         for (int i = 0; i < viajes.size(); ++i) {
-            for (int j = 2; j < viajes[i].size(); j += 2) {
+            int bicis = viajes[i][EST1_CANTIDAD] + viajes[i][EST2_CANTIDAD];
+            
+            for (int j = 1; j < viajes[i].size(); j += 2) {
                 if (viajes[i][j] > -1) { //Hemos asignado a la furgo un destino (asumimos que tiene una estación origen distinta al destino)
-                    double dist = distance(estaciones[viajes[i][j-2]].getCoordX(), estaciones[viajes[i][j-2]].getCoordY(), 
-                                           estaciones[viajes[i][j]].getCoordX(), estaciones[viajes[i][j]].getCoordY());
-                    int bicis += viajes[i][j-1];
+                    double dist = distance(estaciones.get(viajes[i][j-2]).getCoordX(), estaciones.get(viajes[i][j-2]).getCoordY(), 
+                                           estaciones.get(viajes[i][j]).getCoordX(), estaciones.get(viajes[i][j]).getCoordY());
                     coste_transporte += (dist/1000.0) * ((Math.abs(bicis)+9)/10);
+                    bicis -= viajes[i][j+1];
                 }
             }
         }
@@ -466,7 +466,6 @@ public class PracBoard{
             
             ocupacion[origen] -= sobrantes;
             viajes[furgEnUso][ORIGEN] = origen;
-            //viajes[furgEnUso][ORIGEN_CANTIDAD] = -sobrantes;
 
             int dest1 = demandadas.poll();
             int demanda1 = estaciones.get(dest1).getDemanda()-estaciones.get(dest1).getNumBicicletasNext();
