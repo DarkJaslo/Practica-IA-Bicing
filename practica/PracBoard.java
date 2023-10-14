@@ -64,31 +64,15 @@ public class PracBoard {
     /* Operadores */
 
     /*  
-     * Cambiar origen de una f
-     * Cambiar destino 1 de una f
-     * Cambiar destino 2 de una f
-     * Swapear destino 1 y destino 2 de una f (ok)
+     * Hacer intercambios de estaciones entre ellas
+     * Cambiar una estacion de una furgoneta
+     * Añadir una furgoneta
      * 
-     * Swapear destino 1 o 2 de f1 con destino 1 o 2 de f2
-     * Swapear origen de f1 con origen de f2   
-     *
-     *  
-     * Cosas que seguro que optimizan:
+     * La idea es que si se añade una furgoneta es porque es muy bueno hacerlo y dejamos que sea el algoritmo quien se encarga de hacer una solucion mejor
      * 
-     * (((Quitar furgonetas cuando sobran (redistribuir y borrar))))
-     * Añadir furgonetas cuando faltan (añadir y redistribuir) (generar solución inicial con más bien pocas)
+     * Requisitos para las soluciones iniciales:
      * 
-     * 
-     * 
-     * 
-     * Qué hacer con los números? Siempre el máximo? 
-     *      Llevarte todas las que te puedas llevar
-     *      Dejar todas las que puedas en la primera parada
-     * 
-     * 
-     * El coste es (nb+9)/10 39/10 es 3, maximizar siempre el segundo dígito es bueno, llevar 20 eq 29
-     *   Posible margen donde pilles 20 en vez de 21,22,23?..etc
-     *   En general, nunca coger bicis de más y ya luego si las necesitas las puedes coger al hacer el swap (efecto "invisible" del operador)
+     * -Que usen menos o tantas furgonetas como una "solucion optima"
     */
 
     /*
@@ -228,9 +212,14 @@ public class PracBoard {
      */
     public boolean canAddVan(int origen, int dest1, int dest2) 
     {
+        //Demadiadas furgonetas en uso si añadimos
         if(furgEnUso >= maxFurgonetas) return false;
+        //Si se añade una furgoneta incorrecta (que repite estaciones)
         else if(origen == dest1 || origen == dest2 || dest1 == dest2) return false;
-        else if(ocupacion[origen] < 0) return false; //Estacion de origen usada ya
+        //Estacion de origen usada ya
+        else if(ocupacion[origen] < 0) return false;
+        //Alguno de los destinos es origen de otra furgoneta
+        else if(ocupacion[dest1] < 0 || ocupacion[dest2] < 0) return false;
         return true;
     }
     public void addVan(int origen, int dest1, int dest2)
@@ -239,16 +228,12 @@ public class PracBoard {
         viajes[furgEnUso][EST1] = dest1;
         viajes[furgEnUso][EST2] = dest2;
 
-        /*
-         * To do: Reparte números entre origen y dest1,dest2, prioriza llenar dest1
-         */
-
+        distributeBycicles(furgEnUso, origen, demand(dest1), demand(dest2));
         ++furgEnUso;
     }
 
-    /*
-     * Funciones auxiliares
-     */
+    /*  Funciones auxiliares  */
+
 
     /*
      * Pretende redondear hacia abajo las bicicletas que una furgoneta se lleva de una estación de origen con tal de aprovechar la fórmula de coste
@@ -325,7 +310,7 @@ public class PracBoard {
     }
 
     /*
-     * Devuelve la distancia en metros del punto (x1,y1) al punto (x2,y2)
+     * Devuelve la distancia Manhattan en metros del punto (x1,y1) al punto (x2,y2)
      */
     int distance(int x1, int y1, int x2, int y2)
     {
