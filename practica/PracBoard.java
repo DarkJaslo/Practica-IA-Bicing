@@ -10,7 +10,7 @@ import java.lang.Math;
 /*
  * Propuesta actual, seguro que se puede mejorar
  */
-public class PracBoard {
+public class PracBoard{
     /*
      * Constantes
      */
@@ -59,6 +59,25 @@ public class PracBoard {
             viajes[i][EST2] = -1;
             viajes[i][EST2_CANTIDAD] = 0;
         }
+    }
+
+    public static PracBoard copyOf(PracBoard b)
+    {
+        PracBoard aux = new PracBoard(b.getEstaciones(), b.getMaxFurgonetas());
+        for(int i = 0; i < b.ocupacion.length; ++i)
+        {
+            aux.ocupacion[i] = b.ocupacion[i];
+        }
+        for(int i = 0; i < b.viajes.length; ++i)
+        {
+            aux.viajes[i][ORIGEN]        = b.viajes[i][ORIGEN];
+            aux.viajes[i][EST1]          = b.viajes[i][EST1];
+            aux.viajes[i][EST1_CANTIDAD] = b.viajes[i][EST1_CANTIDAD];
+            aux.viajes[i][EST2]          = b.viajes[i][EST2];
+            aux.viajes[i][EST2_CANTIDAD] = b.viajes[i][EST2_CANTIDAD];
+        }
+        aux.furgEnUso = b.furgEnUso;
+        return aux;
     }
 
     /* Operadores */
@@ -282,7 +301,7 @@ public class PracBoard {
     {
         if(est1 < 0 && est2 > 0)
         {
-            swapEst(f, f, est1, est2);
+            swapEst(f, f, EST1, EST2);
         }
         else if(origen > 0 && est1 > 0 && est2 > 0)
         {
@@ -295,7 +314,7 @@ public class PracBoard {
             int y0 = estaciones.get(origen).getCoordY();
 
             if(distance(x0, y0, x1, y1) > distance(x0, y0, x2, y2)){
-                swapEst(f, f, est1, est2);
+                swapEst(f, f, EST1, EST2);
             }
         }
     }
@@ -310,6 +329,15 @@ public class PracBoard {
     }
 
     /*
+     * Devuelve las bicicletas que hacia falta traer a la estacion al principio
+     */
+    private int demandStart(int est)
+    {
+        if(est < 0) return 0;
+        return (estaciones.get(est).getDemanda()-estaciones.get(est).getNumBicicletasNext());
+    }
+
+    /*
      * Devuelve la distancia Manhattan en metros del punto (x1,y1) al punto (x2,y2)
      */
     int distance(int x1, int y1, int x2, int y2)
@@ -321,23 +349,24 @@ public class PracBoard {
      * Funciones heurísticas
      */
     public double heuristicFunction(){
-        return 0.0;
+        return -beneficioTotal(false);
     }
 
+    
+
+    //(Comentado hasta que esté arreglado y compile)
+
     /*
-
-    (Comentado hasta que esté arreglado y compile)
-
     public double heuristicFunction1Hector() {
         //Maximizar cobro de transporte
         double cobro_transporte = 0;
         for (int i = 0; i < estaciones.size(); ++i) {
-            int ed = estaciones[i].getDemanda();
-            int ef = estaciones[i].getNumBicicletasNext();
+            int ed = estaciones.get(i).getDemanda();
+            int ef = estaciones.get(i).getNumBicicletasNext();
             if (ed >= ef) cobro_transporte += Math.min(ed - ef, ocupacion[i]); //Nos hacen falta más bicis para satisfacer la demanda
             else cobro_transporte += Math.min(0, ef + ocupacion[i] - ed); //Nos sobran bicis (demanda satisfecha)
         }
-        return cobro_transporte;
+        return -cobro_transporte;
     }
 
     public double heuristicFunction2Hector() {
@@ -378,6 +407,44 @@ public class PracBoard {
         return viajes;
     }
 
+    public int getFurgonetasEnUso(){
+        return furgEnUso;
+    }
+
+    public Estaciones getEstaciones(){
+        return estaciones;
+    }
+
+    public int origen(){
+        return ORIGEN;
+    }
+
+    public int destino1(){
+        return EST1;
+    }
+    
+    public int destino2(){
+        return EST2;
+    }
+
+    public int getMaxFurgonetas(){
+        return maxFurgonetas;
+    }
+
+    public String getNombreEstacion(int whichEst)
+    {
+        switch(whichEst){
+            case ORIGEN:
+                return "ORIGEN";
+            case EST1:
+                return "EST1";
+            case EST2:
+                return "EST2";
+            default:
+                return "ERR";
+        }
+    }
+
     /*Intenta utilizar todas las furgonetas siempre yendo desde una estación donde "sobren" bicis a una donde falten (y a una segunda si aun quedan) para llegar a la prediccion de la hora siguiente*/
     public void creaSolucionBuena() 
     {
@@ -416,5 +483,44 @@ public class PracBoard {
             }
             furgEnUso++;
         }
+    }
+
+    /*
+     * El transporte es gratis
+     */
+    public int beneficioTotal(boolean print)
+    {
+        int beneficio = 0;
+
+        for(int i = 0; i < estaciones.size(); ++i)
+        {
+            int demStart = demandStart(i);
+            int demNow = demand(i);
+
+            /*
+             * Si la demanda era 8 y ahora es 4, +4
+             * Si la demanda era -8 y ahora es algo > 0, -algo>0
+             * Si la demanda era -30 y es -12, da igual
+             * Si la demanda era 16 y ahora es -14, +16
+             */
+
+            int ganancia = 0;
+
+            if(demStart > 0)
+            {
+                if(demNow <= 0)
+                    ganancia = demStart;
+                else 
+                    ganancia= demStart-demNow;
+            }
+            else //if demStart <= 0
+                if(demNow > 0) ganancia = -demNow;   
+                
+            beneficio += ganancia;
+
+            if(print) System.out.println("Estacion " + i + ", demanda inicial: " + demStart + ", demanda final: " + demNow + ", ganancia: " + ganancia);
+        }
+
+        return beneficio;
     }
 }
