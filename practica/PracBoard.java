@@ -349,8 +349,8 @@ public class PracBoard{
      * Funciones heurísticas
      */
     public double heuristicFunction(){
-        return 0.0;
-        //return -beneficioTotal(false);
+        //return 0.0;
+        return -beneficioTotal(false);
     }
 
     
