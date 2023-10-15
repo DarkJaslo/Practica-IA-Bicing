@@ -160,8 +160,8 @@ public class PracBoard{
         if((whichEst1 == ORIGEN || whichEst2 == ORIGEN) && whichEst1 != whichEst2) return false;
         //Si son la misma furgoneta y se quieren cambiar la misma estación
         else if(f1 == f2 && whichEst1 == whichEst2) return false;
-        //Si son la misma furgoneta y quiere poner estación nula en la otra posición (no válido)
-        else if(f1 == f2 && (viajes[f1][whichEst1] == -1 || viajes[f1][whichEst2] == -1)) return false;
+        //Si se quiere poner estación nula en la posición 1 (no válido)
+        else if(whichEst1 != whichEst2 && (viajes[f1][whichEst1] < 0 || viajes[f2][whichEst2] < 0)) return false;
         return true;
     }
     public void swapEst(int f1, int f2, int whichEst1, int whichEst2)
@@ -284,7 +284,8 @@ public class PracBoard{
         viajes[f][EST2_CANTIDAD] = 0;
 
         int disponibles = 0;
-        if(origen > 0) disponibles = estaciones.get(origen).getNumBicicletasNoUsadas();
+        if(origen > 0) 
+            disponibles = getBicicletasDisponibles(origen);
         else return; //No hay origen -> no hay bicicletas para distribuir
 
         int cogidas = Math.min(Math.min(30, disponibles),takenBycicles(Math.max(0,dem1)+Math.max(0,dem2)));
@@ -334,6 +335,16 @@ public class PracBoard{
                 swapEst(f, f, EST1, EST2);
             }
         }
+    }
+
+    /*
+     * Devuelve las bicicletas disponibles en una estación de origen
+     */
+    private int getBicicletasDisponibles(int est)
+    {
+        int noUsadasAhora = estaciones.get(est).getNumBicicletasNoUsadas();
+        int noUsadasLuego = estaciones.get(est).getNumBicicletasNext()-estaciones.get(est).getDemanda();
+        return Math.min(noUsadasAhora,  Math.max(0,noUsadasLuego));
     }
 
     /*
@@ -621,6 +632,9 @@ public class PracBoard{
             ocupacion[dest1] -= viajes[f][EST1_CANTIDAD];
 
             distributeBycicles(f, orig, demand(dest1), demand(dest2));
+
+            if(viajes[f][EST2_CANTIDAD] == 0) 
+                viajes[f][EST2] = -1;
 
             ocupacion[orig] -= viajes[f][EST1_CANTIDAD] + viajes[f][EST2_CANTIDAD];
             ocupacion[dest1] += viajes[f][EST1_CANTIDAD];
