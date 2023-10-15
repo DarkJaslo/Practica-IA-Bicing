@@ -571,9 +571,9 @@ public class PracBoard{
     }
 
     /*
-     * Intentaremos poner menos furgonetas de las necesarias
+     * Intentaremos poner menos furgonetas de las necesarias, pero casi misma idea que creaSolucionBuena (excepto porque permite distintas opciones por ser random)
      */
-    public void creaSolucionRandom(int seed)
+    public void creaSolucionBuenaRandom(int seed)
     {
         ArrayList<Integer> estOferta = new ArrayList<Integer>();
         ArrayList<Integer> estDemanda = new ArrayList<Integer>();
@@ -690,7 +690,7 @@ public class PracBoard{
     {
         for(int i = 0; i < furgEnUso; ++i)
         {
-            System.out.println("Furgoneta " + i + ": Origen: " + viajes[i][ORIGEN] + ", dest1: " + viajes[i][EST1] + " (" + viajes[i][EST1_CANTIDAD] + ")" + ", dest2: " + viajes[i][EST2] + " (" + viajes[i][EST2_CANTIDAD] + ")");
+            System.out.println("Furgoneta " + i + ": Origen: " + viajes[i][ORIGEN] + ", dest1: " + viajes[i][EST1] + " (" + viajes[i][EST1_CANTIDAD] + ")" + ", dest2: " + viajes[i][EST2] + " (" + viajes[i][EST2_CANTIDAD] + "). Distancia recorrida: " + getTravelDist(i));
         }
         System.out.println();
     }
