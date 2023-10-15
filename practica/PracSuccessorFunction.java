@@ -75,6 +75,12 @@ public class PracSuccessorFunction implements SuccessorFunction {
         {
             for(int d1 = 0; d1 < board.getEstaciones().size(); ++d1)
             {
+                if(board.canAddVan(o, d1, -1))
+                {
+                    PracBoard auxBoard = PracBoard.copyOf(board);
+                    auxBoard.addVan(o, d1, -1);
+                    retval.add(new Successor("add origen " + o + " dest1 " + d1 + " dest2 no", auxBoard));
+                }
                 for(int d2 = 0; d2 < board.getEstaciones().size(); ++d2)
                 {
                     if(board.canAddVan(o, d1, d2))

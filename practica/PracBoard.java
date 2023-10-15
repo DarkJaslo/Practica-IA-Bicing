@@ -58,6 +58,10 @@ public class PracBoard{
             viajes[i][EST2] = -1;
             viajes[i][EST2_CANTIDAD] = 0;
         }
+        for(int i = 0; i < ocupacion.length; ++i)
+        {
+            ocupacion[i] = 0;
+        }
     }
 
     public static PracBoard copyOf(PracBoard b)
@@ -144,7 +148,7 @@ public class PracBoard{
         if(est2 >= 0)   ocupacion[est2] += viajes[f][EST2_CANTIDAD];
 
         
-        swapIfBad(f, origen, est1, est2);
+        //swapIfBad(f, origen, est1, est2);
     }
 
     /*
@@ -208,7 +212,7 @@ public class PracBoard{
         if(est12 > 0) ocupacion[est12] += viajes[f1][EST2_CANTIDAD];
 
         //Swapea dest1 y dest2 de f1 si se cumplen ciertas condiciones
-        swapIfBad(f1, o1, est11, est12);
+        //swapIfBad(f1, o1, est11, est12);
 
         if(f1 != f2) //Si fueran la misma se actualizaria dos veces
         {
@@ -221,7 +225,7 @@ public class PracBoard{
             if(est22 > 0) ocupacion[est22] += viajes[f2][EST2_CANTIDAD];
 
             //Swapea dest1 y dest2 de f2 si se cumplen ciertas condiciones
-            swapIfBad(f2, o2, est21, est22);
+            //swapIfBad(f2, o2, est21, est22);
         }
     }
 
@@ -237,7 +241,7 @@ public class PracBoard{
         //Estacion de origen usada ya
         else if(ocupacion[origen] < 0) return false;
         //Alguno de los destinos es origen de otra furgoneta
-        else if(ocupacion[dest1] < 0 || ocupacion[dest2] < 0) return false;
+        else if((dest1 >= 0 && ocupacion[dest1] < 0) || (dest2 >= 0 && ocupacion[dest2] < 0)) return false;
         return true;
     }
     public void addVan(int origen, int dest1, int dest2)
@@ -281,18 +285,27 @@ public class PracBoard{
         if(origen > 0) disponibles = estaciones.get(origen).getNumBicicletasNoUsadas();
         else return; //No hay origen -> no hay bicicletas para distribuir
 
-        int cogidas = Math.min(Math.min(30, disponibles),takenBycicles(dem1+dem2));
+        int cogidas = Math.min(Math.min(30, disponibles),takenBycicles(Math.max(0,dem1)+Math.max(0,dem2)));
+        //No se pueden coger bicis negativas
+        if(cogidas <= 0) return;
 
         //Intenta dejar el máximo de bicicletas en Dest1
-        if(dem1 < cogidas)
+        if(dem1 > 0)
         {
-            viajes[f][EST1_CANTIDAD] = dem1;
-            cogidas -= dem1;
-            //Las que sobran se llevan a la estación 2
-            viajes[f][EST2_CANTIDAD] = cogidas;
+            if(dem1 < cogidas)
+            {
+                viajes[f][EST1_CANTIDAD] = dem1;
+                cogidas -= dem1;
+                //Las que sobran se llevan a la estación 2
+                viajes[f][EST2_CANTIDAD] = cogidas;
+            }
+            else{
+                viajes[f][EST1_CANTIDAD] = cogidas;
+            }
         }
-        else{
-            viajes[f][EST1_CANTIDAD] = cogidas;
+        else if(dem2 > 0)
+        {
+            viajes[f][EST2_CANTIDAD] = cogidas;
         }
     }
 
