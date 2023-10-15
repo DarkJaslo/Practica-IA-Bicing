@@ -2,9 +2,11 @@ package practica;
 import IA.Bicing.Estacion;
 import IA.Bicing.Estaciones;
 
+import java.util.ArrayList;
 import java.util.Queue;
 import java.util.LinkedList;
 import java.lang.Math;
+import java.util.Random;
 
 /*
  * Propuesta actual, seguro que se puede mejorar
@@ -110,7 +112,7 @@ public class PracBoard{
         int est1 = viajes[f][EST1];
         int est2 = viajes[f][EST2];
 
-        if(origen >= 0) ocupacion[origen] += viajes[f][EST1_CANTIDAD]+viajes[f][EST2_CANTIDAD];
+        if(origen >= 0) ocupacion[origen] += (viajes[f][EST1_CANTIDAD]+viajes[f][EST2_CANTIDAD]);
         if(est1 >= 0) ocupacion[est1] -= viajes[f][EST1_CANTIDAD];
         if(est2 >= 0) ocupacion[est2] -= viajes[f][EST2_CANTIDAD];
 
@@ -137,7 +139,7 @@ public class PracBoard{
         }
 
         viajes[f][whichEst] = newEst;
-        if(origen >= 0) ocupacion[origen] -= viajes[f][EST1_CANTIDAD]+viajes[f][EST2_CANTIDAD];
+        if(origen >= 0) ocupacion[origen] -= (viajes[f][EST1_CANTIDAD]+viajes[f][EST2_CANTIDAD]);
         if(est1 >= 0)   ocupacion[est1] += viajes[f][EST1_CANTIDAD];
         if(est2 >= 0)   ocupacion[est2] += viajes[f][EST2_CANTIDAD];
 
@@ -214,9 +216,9 @@ public class PracBoard{
             int dem21 = demand(est21); int dem22 = demand(est22);
             distributeBycicles(f2, o2, dem21, dem22);
 
-            if(o2 > 0) ocupacion[o2] += (viajes[f2][EST1_CANTIDAD] + viajes[f2][EST2_CANTIDAD]);
-            if(est21 > 0) ocupacion[est21] -= viajes[f2][EST1_CANTIDAD];
-            if(est22 > 0) ocupacion[est22] -= viajes[f2][EST2_CANTIDAD];
+            if(o2 > 0) ocupacion[o2] -= (viajes[f2][EST1_CANTIDAD] + viajes[f2][EST2_CANTIDAD]);
+            if(est21 > 0) ocupacion[est21] += viajes[f2][EST1_CANTIDAD];
+            if(est22 > 0) ocupacion[est22] += viajes[f2][EST2_CANTIDAD];
 
             //Swapea dest1 y dest2 de f2 si se cumplen ciertas condiciones
             swapIfBad(f2, o2, est21, est22);
@@ -245,6 +247,9 @@ public class PracBoard{
         viajes[furgEnUso][EST2] = dest2;
 
         distributeBycicles(furgEnUso, origen, demand(dest1), demand(dest2));
+        ocupacion[origen] -= (viajes[furgEnUso][EST1_CANTIDAD]+viajes[furgEnUso][EST2_CANTIDAD]);
+        ocupacion[dest1] += viajes[furgEnUso][EST1_CANTIDAD];
+        if(dest2 >= 0) ocupacion[dest2] += viajes[furgEnUso][EST2_CANTIDAD];
         ++furgEnUso;
     }
 
@@ -536,6 +541,78 @@ public class PracBoard{
                 viajes[furgEnUso][EST2_CANTIDAD] = sobrantes;
             }
             furgEnUso++;
+        }
+    }
+
+    /*
+     * Intentaremos poner menos furgonetas de las necesarias
+     */
+    public void creaSolucionRandom(int seed)
+    {
+        ArrayList<Integer> estOferta = new ArrayList<Integer>();
+        ArrayList<Integer> estDemanda = new ArrayList<Integer>();
+        int demandaTotal = 0;
+        //int ofertaTotal = 0;
+
+        /*
+         * Calcula demanda y oferta totales, asi como se guarda las estaciones que puede dar y las que piden
+         */
+        for(int i = 0; i < estaciones.size(); ++i)
+        {
+            int dem = demandStart(i);
+            if(dem>0){
+                demandaTotal += dem;
+                estDemanda.add(i);
+            }
+            else if(dem<0){
+                //ofertaTotal += dem;
+                estOferta.add(i);
+            }
+        }
+
+        //Furgonetas que usara esta solucion, seran siempre menos de las disponibles
+        int nfurg = Math.min(maxFurgonetas-2,demandaTotal/30);
+        Random random = new Random(seed);
+
+        /*
+         * De las estaciones con bicicletas sobrantes, escoge una random
+         * Escoge dos destinos razonables (con demanda de bicicletas) de forma random tambien
+         */
+        for(int f = 0; f < nfurg; ++f)
+        {
+            int r = random.nextInt(estOferta.size());
+            int orig = estOferta.get(r);
+            viajes[f][ORIGEN] = orig;
+            estOferta.remove(r);
+
+            r = random.nextInt(estDemanda.size());
+            int dest1 = estDemanda.get(r);
+            viajes[f][EST1] = dest1;
+            int dest2 = -1;
+            viajes[f][EST2] = dest2;
+
+            distributeBycicles(f, orig, demand(dest1), demand(dest2));
+            ocupacion[dest1] += viajes[f][EST1_CANTIDAD];
+            
+            if(demand(dest1) <= 0) estDemanda.remove(r);
+
+            if(estDemanda.size() > 0)
+            {
+                r = random.nextInt(estDemanda.size());
+                dest2 = estDemanda.get(r);
+            }
+            viajes[f][EST2] = dest2;
+
+            ocupacion[dest1] -= viajes[f][EST1_CANTIDAD];
+
+            distributeBycicles(f, orig, demand(dest1), demand(dest2));
+
+            ocupacion[orig] -= viajes[f][EST1_CANTIDAD] + viajes[f][EST2_CANTIDAD];
+            ocupacion[dest1] += viajes[f][EST1_CANTIDAD];
+            if(dest2 >= 0) ocupacion[dest2] += viajes[f][EST2_CANTIDAD];
+
+            if(dest2 >= 0 && demand(dest2) <= 0) estDemanda.remove(r);
+            ++furgEnUso;
         }
     }
 

@@ -28,7 +28,12 @@ public class Main {
         
         /*Genera solución inicial mediante magia negra (sin hacer, solución vacía)*/
         PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-        board.creaSolucionBuena();
+        //board.creaSolucionBuena();
+        //board.creaSolucionRandom(seed);
+
+        System.out.println("La solucion inicial usa " + board.getFurgonetasEnUso() + " furgonetas");
+        System.out.println("Beneficio por bicis: " + board.beneficioTotal(true));
+        System.out.println("Beneficio real: " + -board.heuristicFunction2Hector());
 
         Problem p = new Problem(board, new PracSuccessorFunction(), new PracGoalTest(), new PracHeuristicFunction());
 
@@ -42,7 +47,10 @@ public class Main {
         System.out.println();
 
         PracBoard finalBoard = (PracBoard)alg.getGoalState();
-        System.out.println("Beneficio total: " + finalBoard.beneficioTotal(true));
+
+        System.out.println("Furgonetas usadas: " + finalBoard.getFurgonetasEnUso());
+        System.out.println("Beneficio por bicis: " + finalBoard.beneficioTotal(true));
+        System.out.println("Beneficio real: " + -finalBoard.heuristicFunction2Hector());
     }
 
     private static void printActions(List actions) {
