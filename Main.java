@@ -49,6 +49,7 @@ public class Main {
         PracBoard finalBoard = (PracBoard)alg.getGoalState();
 
         System.out.println("Furgonetas usadas: " + finalBoard.getFurgonetasEnUso());
+        finalBoard.print();
         System.out.println("Beneficio por bicis: " + finalBoard.beneficioTotal(true));
         System.out.println("Beneficio real: " + -finalBoard.heuristicFunction2Hector());
     }

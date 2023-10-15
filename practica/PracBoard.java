@@ -160,6 +160,8 @@ public class PracBoard{
         if((whichEst1 == ORIGEN || whichEst2 == ORIGEN) && whichEst1 != whichEst2) return false;
         //Si son la misma furgoneta y se quieren cambiar la misma estación
         else if(f1 == f2 && whichEst1 == whichEst2) return false;
+        //Si son la misma furgoneta y quiere poner estación nula en la otra posición (no válido)
+        else if(f1 == f2 && (viajes[f1][whichEst1] == -1 || viajes[f1][whichEst2] == -1)) return false;
         return true;
     }
     public void swapEst(int f1, int f2, int whichEst1, int whichEst2)
@@ -665,5 +667,17 @@ public class PracBoard{
             if(print) System.out.println("Estacion " + i + ", demanda inicial: " + demStart + ", demanda final: " + demNow + ", ganancia: " + ganancia);
         }
         return beneficio;
+    }
+
+    /*
+     * 
+     */
+    public void print()
+    {
+        for(int i = 0; i < furgEnUso; ++i)
+        {
+            System.out.println("Furgoneta " + i + ": Origen: " + viajes[i][ORIGEN] + ", dest1: " + viajes[i][EST1] + " (" + viajes[i][EST1_CANTIDAD] + ")" + ", dest2: " + viajes[i][EST2] + " (" + viajes[i][EST2_CANTIDAD] + ")");
+        }
+        System.out.println();
     }
 }
