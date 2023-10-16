@@ -27,6 +27,9 @@ public class PracBoard{
     //Ejemplo: si hay que coger 20+REDONDEO o menos, coge 20, pero con 20+REDONDEO+1 ya coge esas
     private static final int REDONDEO = 2;
 
+    //Multilica al beneficio en la función heurística
+    private static final double FACTOR_HEURISTICO = 1.5;
+
     /*
      * Cambios en la ocupación de las estaciones (e1: +2, e2: -30, e3: +12, etc)
      */
@@ -104,6 +107,8 @@ public class PracBoard{
     {
         //False si newEst se usa de origen en otra furgoneta
         if(ocupacion[newEst] < 0) return false; 
+        //False si se quiere poner en origen una estacion a la que llevamos bicicletas
+        if(whichEst == ORIGEN && ocupacion[newEst] > 0) return false;
         //False si queremos cambiar una estacion por ella misma
         if(viajes[f][whichEst] == newEst) return false;
         return true;
@@ -308,7 +313,9 @@ public class PracBoard{
         }
         else if(dem2 > 0)
         {
-            viajes[f][EST2_CANTIDAD] = cogidas;
+            viajes[f][EST1] = viajes[f][EST2];
+            viajes[f][EST1_CANTIDAD] = cogidas;
+            viajes[f][EST2] = -1;
         }
     }
 
@@ -431,10 +438,10 @@ public class PracBoard{
         //return -heuristicFunction1Hector();
 
         //Hay que revisar/calibrar el minimizar coste de transporte, genera peor puntuación
-        return heuristicFunction2Hector();
+        return heuristicFunction2();
     }
     
-    public double heuristicFunction1Hector() {
+    public double heuristicFunction1() {
         //Maximizar cobro de transporte
         double cobro_transporte = 0;
         for (int i = 0; i < estaciones.size(); ++i) {
@@ -446,7 +453,7 @@ public class PracBoard{
         return cobro_transporte;
     }
 
-    public double heuristicFunction2Hector() {
+    public double heuristicFunction2() {
         //Maximizar cobro de transporte
         double cobro_transporte = 0;
         for (int i = 0; i < estaciones.size(); ++i) {
@@ -478,9 +485,43 @@ public class PracBoard{
             }
         }
         //Negamos "cobro_transporte" para que ambos criterios sean mínimos
-        return coste_transporte - cobro_transporte;
+        return coste_transporte - FACTOR_HEURISTICO * cobro_transporte;
     }
     
+    public double getBeneficioReal() {
+        //Maximizar cobro de transporte
+        double cobro_transporte = 0;
+        for (int i = 0; i < estaciones.size(); ++i) {
+            int ed = estaciones.get(i).getDemanda();
+            int ef = estaciones.get(i).getNumBicicletasNext();
+            if (ed >= ef) cobro_transporte += Math.min(ed - ef, ocupacion[i]); //Nos hacen falta más bicis para satisfacer la demanda
+            else cobro_transporte += Math.min(0, ef + ocupacion[i] - ed); //Nos sobran bicis (demanda satisfecha)
+        }
+
+        //Minimizar coste de transporte
+        double coste_transporte = 0;
+        for (int i = 0; i < maxFurgonetas; ++i) {
+            if (existeEstacion(viajes[i][ORIGEN])) {
+                int bicis = viajes[i][EST1_CANTIDAD] + viajes[i][EST2_CANTIDAD];
+                double dist = 0;
+
+                //Primer viaje
+                if (existeEstacion(viajes[i][EST1])) {
+                    dist = distance(estaciones.get(viajes[i][ORIGEN]), estaciones.get(viajes[i][EST1]));
+                    coste_transporte += (dist/1000.0) * ((Math.abs(bicis)+9)/10);
+                    bicis -= viajes[i][EST1_CANTIDAD];
+
+                    //Segundo viaje
+                    if (existeEstacion(viajes[i][EST2])) {
+                        dist = distance(estaciones.get(viajes[i][EST1]), estaciones.get(viajes[i][EST2]));
+                        coste_transporte += (dist/1000.0) * ((Math.abs(bicis)+9)/10);
+                    }
+                }                
+            }
+        }
+        //Negamos "cobro_transporte" para que ambos criterios sean mínimos
+        return cobro_transporte - coste_transporte;
+    }
 
 
     /* Getters */
