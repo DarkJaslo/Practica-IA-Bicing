@@ -28,8 +28,9 @@ public class Main {
         
         /*Genera solución inicial mediante magia negra (sin hacer, solución vacía)*/
         PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-        board.creaSolucionBuena();
-        //board.creaSolucionBuenaRandom(seed);
+        board.creaSolucionInicial(PracBoard.TipoSolucion.VACIA);
+        //board.creaSolucionInicial(PracBoard.TipoSolucion.NORMAL);
+        //board.creaSolucionInicial(PracBoard.TipoSolucion.NORMAL_RANDOM,seed);
 
         System.out.println("La solucion inicial usa " + board.getFurgonetasEnUso() + " furgonetas");
         board.print();
@@ -65,6 +66,3 @@ public class Main {
         }
     }
 };
-
-
-

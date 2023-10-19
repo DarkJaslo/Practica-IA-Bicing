@@ -30,6 +30,8 @@ public class PracBoard{
     //Multilica al beneficio en la función heurística
     private static final double FACTOR_HEURISTICO = 1.5;
 
+    public static enum TipoSolucion{ VACIA, NORMAL, NORMAL_RANDOM }
+
     /*
      * Cambios en la ocupación de las estaciones (e1: +2, e2: -30, e3: +12, etc)
      */
@@ -432,16 +434,13 @@ public class PracBoard{
     /*
      * Funciones heurísticas
      */
-    public double heuristicFunction() {
-        //return 0.0;
-        //return -beneficioTotal(false);
-        //return -heuristicFunction1Hector();
-
-        //Hay que revisar/calibrar el minimizar coste de transporte, genera peor puntuación
+    public double heuristicFunction() 
+    {
         return heuristicFunction2();
     }
     
-    public double heuristicFunction1() {
+    public double heuristicFunction1() 
+    {
         //Maximizar cobro de transporte
         double cobro_transporte = 0;
         for (int i = 0; i < estaciones.size(); ++i) {
@@ -453,7 +452,8 @@ public class PracBoard{
         return cobro_transporte;
     }
 
-    public double heuristicFunction2() {
+    public double heuristicFunction2() 
+    {
         //Maximizar cobro de transporte
         double cobro_transporte = 0;
         for (int i = 0; i < estaciones.size(); ++i) {
@@ -488,7 +488,11 @@ public class PracBoard{
         return coste_transporte - FACTOR_HEURISTICO * cobro_transporte;
     }
     
-    public double getBeneficioReal() {
+    /*
+     * Devuelve el beneficio real, es decir, beneficio por mover bicicletas de sitio menos coste de transporte
+     */
+    public double getBeneficioReal() 
+    {
         //Maximizar cobro de transporte
         double cobro_transporte = 0;
         for (int i = 0; i < estaciones.size(); ++i) {
@@ -572,8 +576,38 @@ public class PracBoard{
         }
     }
 
+    public void creaSolucionInicial(TipoSolucion tipoSolucion)
+    {
+        switch(tipoSolucion)
+        {
+            case VACIA:
+                break;
+            case NORMAL:
+                creaSolucionBuena();
+                break;
+            case NORMAL_RANDOM:
+                creaSolucionBuenaRandom(1234);
+                break;
+        }
+    }
+
+    public void creaSolucionInicial(TipoSolucion tipoSolucion, int seedIfRandom)
+    {
+        switch(tipoSolucion)
+        {
+            case VACIA:
+                break;
+            case NORMAL:
+                creaSolucionBuena();
+                break;
+            case NORMAL_RANDOM:
+                creaSolucionBuenaRandom(seedIfRandom);
+                break;
+        }
+    }
+
     /*Intenta utilizar todas las furgonetas siempre yendo desde una estación donde "sobren" bicis a una donde falten (y a una segunda si aun quedan) para llegar a la prediccion de la hora siguiente*/
-    public void creaSolucionBuena() 
+    private void creaSolucionBuena() 
     {
         Queue<Integer> demandadas = new LinkedList<Integer>();
         Queue<Integer> noDemandadas = new LinkedList<Integer>();
@@ -614,7 +648,7 @@ public class PracBoard{
     /*
      * Intentaremos poner menos furgonetas de las necesarias, pero casi misma idea que creaSolucionBuena (excepto porque permite distintas opciones por ser random)
      */
-    public void creaSolucionBuenaRandom(int seed)
+    private void creaSolucionBuenaRandom(int seed)
     {
         ArrayList<Integer> estOferta = new ArrayList<Integer>();
         ArrayList<Integer> estDemanda = new ArrayList<Integer>();

@@ -6,9 +6,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PracSuccessorFunction implements SuccessorFunction {
-    
-    public List getSuccessors(Object state){
 
+    public static enum SearchType{ HillClimbing, SimulatedAnnealing }
+    private SearchType type;
+
+    public PracSuccessorFunction()
+    {
+        type = SearchType.HillClimbing;
+    }
+
+    public PracSuccessorFunction(SearchType type)
+    {
+        this.type = type;
+    }
+    
+    public List getSuccessors(Object state)
+    {
+        switch(type)
+        {
+            case HillClimbing:
+                return getSuccessorsHC(state);
+            case SimulatedAnnealing:
+                return getSuccessorsSA(state);
+            default:
+                ArrayList<Successor> retval = new ArrayList<Successor>();
+                return retval;
+        }
+    }
+
+    /*
+     * Devuelve lista de sucesores para Hill Climbing (todos los posibles)
+     */
+    private List getSuccessorsHC(Object state)
+    {
         System.out.println("Generando sucesores");
 
         ArrayList<Successor> retval = new ArrayList<Successor>();
@@ -93,6 +123,15 @@ public class PracSuccessorFunction implements SuccessorFunction {
             }
         }
 
+        return retval;
+    }
+
+    /*
+     * Devuelve lista de sucesores para Simulated Annealing (uno aleatorio)
+     */
+    private List getSuccessorsSA(Object state)
+    {
+        ArrayList<Successor> retval = new ArrayList<Successor>();
         return retval;
     }
 }
