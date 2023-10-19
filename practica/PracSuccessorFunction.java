@@ -39,8 +39,6 @@ public class PracSuccessorFunction implements SuccessorFunction {
      */
     private List getSuccessorsHC(Object state)
     {
-        System.out.println("Generando sucesores");
-
         ArrayList<Successor> retval = new ArrayList<Successor>();
         PracBoard board = (PracBoard)state;
 

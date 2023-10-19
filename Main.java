@@ -39,7 +39,7 @@ public class Main {
         System.out.println("Distancia total recorrida: " + board.getTotalTravelDist());
         System.out.println();
 
-        Problem p = new Problem(board, new PracSuccessorFunction(), new PracGoalTest(), new PracHeuristicFunction());
+        Problem p = new Problem(board, new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing), new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_2));
 
         Search alg = new HillClimbingSearch();
 

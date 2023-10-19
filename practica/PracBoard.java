@@ -434,10 +434,6 @@ public class PracBoard{
     /*
      * Funciones heurísticas
      */
-    public double heuristicFunction() 
-    {
-        return heuristicFunction2();
-    }
     
     public double heuristicFunction1() 
     {
@@ -449,7 +445,7 @@ public class PracBoard{
             if (ed >= ef) cobro_transporte += Math.min(ed - ef, ocupacion[i]); //Nos hacen falta más bicis para satisfacer la demanda
             else cobro_transporte += Math.min(0, ef + ocupacion[i] - ed); //Nos sobran bicis (demanda satisfecha)
         }
-        return cobro_transporte;
+        return -cobro_transporte;
     }
 
     public double heuristicFunction2() 

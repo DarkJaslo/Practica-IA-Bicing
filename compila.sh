@@ -1,1 +1,1 @@
-javac -cp $(cat classpaths.txt) Main.java
+javac -cp $(cat classpaths.txt) *.java
