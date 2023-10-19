@@ -25,7 +25,13 @@ public class TesterEjemplo
         //Enum para decir que heuristico usar
         PracHeuristicFunction.Function heuristicoHC = PracHeuristicFunction.Function.Heuristico_1;
 
+        long startTime, endTime;
+
+        startTime = System.nanoTime();
         PracBoard hcBoard = PracSearch.hillClimbing(estaciones,maxFurgonetas,heuristicoHC);
+        endTime = System.nanoTime();
+        System.out.println("Execution time (HC): " + (endTime - startTime));
+
         double blabla = hcBoard.beneficioTotal(false);
         double blabla2 = hcBoard.getTotalTravelDist();
         
@@ -37,7 +43,11 @@ public class TesterEjemplo
         //Búsqueda Simulated Annealing (aún no está implementada, ignora los resultados de momento)
         PracHeuristicFunction.Function heuristicoSA = PracHeuristicFunction.Function.Heuristico_2;
 
+        startTime = System.nanoTime();
         PracBoard saBoard = PracSearch.simulatedAnnealing(estaciones, maxFurgonetas, heuristicoSA);
+        endTime = System.nanoTime();
+        System.out.println("Execution time (SA): " + (endTime - startTime));
+
         double blablabla = saBoard.getBeneficioReal();
         double blablabla2 = saBoard.getTotalTravelDist();
 
