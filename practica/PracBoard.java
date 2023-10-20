@@ -31,7 +31,7 @@ public class PracBoard{
     //Multilica al beneficio en la función heurística
     private static final double FACTOR_HEURISTICO = 1.0;
 
-    public static enum TipoSolucion{ VACIA, NORMAL, NORMAL_RANDOM, GREEDY }
+    public static enum TipoSolucion{ VACIA, NORMAL, NORMAL_RANDOM, GREEDY, GREEDY2 }
 
     private class StationDemand implements Comparable<StationDemand> {
         public int id;      //Identificador de la estación
@@ -669,6 +669,9 @@ public class PracBoard{
             case GREEDY:
                 creaSolucionGreedy();
                 break;
+            case GREEDY2:
+                creaSolucionGreedy2();
+                break;
         }
     }
 
@@ -685,6 +688,9 @@ public class PracBoard{
                 creaSolucionBuenaRandom(seedIfRandom);
                 break;
             case GREEDY:
+                creaSolucionGreedy();
+                break;
+            case GREEDY2:
                 creaSolucionGreedy2();
                 break;
         }
