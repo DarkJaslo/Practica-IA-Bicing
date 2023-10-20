@@ -804,6 +804,9 @@ public class PracBoard{
         }
     }
 
+    /*
+     * Crea la solución óptima para el primer criterio/heurístico
+     */
     private void creaSolucionGreedy()
     {
         /*
@@ -889,7 +892,7 @@ public class PracBoard{
             stations.add(new StationDemand(i, - demand(i)));
         }
 
-        MergeSort msort = new MergeSort(stations, MergeSort.SortingOrder.DECR);
+        MergeSort<StationDemand> msort = new MergeSort<StationDemand>(stations, MergeSort.SortingOrder.DECR);
         stations = msort.getResult();
 
         int i = 0;
@@ -988,17 +991,5 @@ public class PracBoard{
             System.out.println("Furgoneta " + i + ": Origen: " + viajes[i][ORIGEN] + ", dest1: " + viajes[i][EST1] + " (" + viajes[i][EST1_CANTIDAD] + ")" + ", dest2: " + viajes[i][EST2] + " (" + viajes[i][EST2_CANTIDAD] + "). Distancia recorrida: " + getTravelDist(i));
         }
         System.out.println();
-    }
-
-    private void checkSolucionCorrecta()
-    {
-        int realOcup[] = new int[ocupacion.length];
-        for(int i = 0; i < furgEnUso; ++i)
-        {
-            int origen = viajes[i][ORIGEN];
-            int dest1 = viajes[i][EST1];
-            int dest2 = viajes[i][EST2];
-
-        }
     }
 }

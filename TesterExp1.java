@@ -8,7 +8,8 @@ import practica.PracSearch;
  */
 public class TesterExp1
 {
-    private static final int NUM_SEEDS = 1000;
+    //El comportamiento raro está entre 125 y 150
+    private static final int NUM_SEEDS = 125;
     private static int seeds[];
     private static double mediaPorTipo[];
     private static double mediaRealPorTipo[];

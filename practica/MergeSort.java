@@ -1,3 +1,5 @@
+package practica;
+
 import java.util.ArrayList;
 
 public class MergeSort<T extends Comparable<T>> {
