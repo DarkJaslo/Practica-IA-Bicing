@@ -121,6 +121,39 @@ public class PracSuccessorFunction implements SuccessorFunction {
             }
         }
 
+        /*
+         * Añade sucesores de change2Est
+         */
+        for(int i = 0; i < board.getFurgonetasEnUso(); ++i)
+        {
+            for(int j = 0; j < board.getEstaciones().size(); ++j)
+            {
+                for(int k = 0; k < board.getEstaciones().size(); ++k)
+                {
+                    /*
+                     * Origen d1
+                     * Origen d2
+                     * D1 D2
+                     */
+                    if(board.canChange2Est(i, board.origen(),board.destino1(), j,k)){
+                        PracBoard auxBoard = PracBoard.copyOf(board);
+                        auxBoard.change2Est(i, board.origen(),board.destino1(), j,k);
+                        retval.add(new Successor("change2 furg " + i + " origen " + j + " dest1 " + k, auxBoard));
+                    }
+                    if(board.canChange2Est(i, board.origen(),board.destino2(), j,k)){
+                        PracBoard auxBoard = PracBoard.copyOf(board);
+                        auxBoard.change2Est(i, board.origen(),board.destino2(), j,k);
+                        retval.add(new Successor("change2 furg " + i + " origen " + j + " dest2 " + k, auxBoard));
+                    }
+                    if(board.canChange2Est(i, board.destino1(),board.destino2(), j,k)){
+                        PracBoard auxBoard = PracBoard.copyOf(board);
+                        auxBoard.change2Est(i, board.destino1(),board.destino2(), j,k);
+                        retval.add(new Successor("change2 furg " + i + " dest1 " + j + " dest2 " + k, auxBoard));
+                    }
+                }
+            }
+        }
+
         return retval;
     }
 

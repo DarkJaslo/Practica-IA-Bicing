@@ -23,6 +23,11 @@ public class PracSearch
     public static PracBoard hillClimbing(Estaciones estaciones, int maxFurgonetas, PracHeuristicFunction.Function function, PracBoard.TipoSolucion tipoSolucion) throws Exception
     {
         PracBoard board = new PracBoard(estaciones, maxFurgonetas);
+        if(function == PracHeuristicFunction.Function.Heuristico_2)
+            board.setRedondeo(2);
+        else
+            board.setRedondeo(0);
+            
         board.creaSolucionInicial(tipoSolucion);
 
         Problem p = new Problem(board, new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing), new PracGoalTest(), new PracHeuristicFunction(function));

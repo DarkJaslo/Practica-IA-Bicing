@@ -25,7 +25,7 @@ public class PracBoard{
     private static final int EST2_CANTIDAD = 4;
 
     //Ejemplo: si hay que coger 20+REDONDEO o menos, coge 20, pero con 20+REDONDEO+1 ya coge esas
-    private static final int REDONDEO = 2;
+    private int REDONDEO = 0;
 
     //Multilica al beneficio en la función heurística
     private static final double FACTOR_HEURISTICO = 1.5;
@@ -42,7 +42,7 @@ public class PracBoard{
      */
     private int [][] viajes; 
     /*
-     * (Parece útil) furgonetas usadas en esta solución actualmente
+     * Furgonetas usadas en esta solución actualmente
      */
     private int furgEnUso;
 
@@ -264,6 +264,33 @@ public class PracBoard{
         ocupacion[dest1] += viajes[furgEnUso][EST1_CANTIDAD];
         if(dest2 >= 0) ocupacion[dest2] += viajes[furgEnUso][EST2_CANTIDAD];
         ++furgEnUso;
+    }
+
+    public boolean canChange2Est(int f, int whichEst1, int whichEst2, int newEst1, int newEst2)
+    {
+        //No se puede cambiar la misma estacion de la furgoneta dos veces
+        if(whichEst1 == whichEst2) return false;
+        //No se puede asignar la misma estacion dos veces
+        if(newEst1 == newEst2) return false;
+        //newEst1 o 2 se usan de origen en otra furgoneta
+        if(ocupacion[newEst1] < 0) return false;
+        if(ocupacion[newEst2] < 0) return false;
+        //False si se quiere poner en origen una estacion a la que llevamos bicicletas
+        if(whichEst1 == ORIGEN && ocupacion[newEst1] > 0) return false;
+        if(whichEst2 == ORIGEN && ocupacion[newEst2] > 0) return false;
+
+        //False si queremos cambiar una estacion por ella misma
+        if(viajes[f][whichEst1] == newEst1) return false;
+        if(viajes[f][whichEst1] == newEst2) return false;
+        if(viajes[f][whichEst2] == newEst2) return false;
+        if(viajes[f][whichEst2] == newEst1) return false;
+        
+        return true;
+    }
+    public void change2Est(int f, int whichEst1, int whichEst2, int newEst1, int newEst2)
+    {
+        changeEst(f, whichEst1, newEst1);
+        changeEst(f, whichEst2, newEst2);
     }
 
     /*  Funciones auxiliares  */
@@ -571,6 +598,17 @@ public class PracBoard{
                 return "ERR";
         }
     }
+
+    /* Setters */
+
+    /*
+     * Espera números entre 0 y 9, en particular pequeños.
+     */
+    public void setRedondeo(int redondeo)
+    {
+        REDONDEO = redondeo;
+    }
+
 
     public void creaSolucionInicial(TipoSolucion tipoSolucion)
     {
