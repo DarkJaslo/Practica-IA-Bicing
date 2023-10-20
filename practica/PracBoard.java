@@ -29,7 +29,7 @@ public class PracBoard{
     private int REDONDEO = 0;
 
     //Multilica al beneficio en la función heurística
-    private static final double FACTOR_HEURISTICO = 1.5;
+    private static final double FACTOR_HEURISTICO = 1.0;
 
     public static enum TipoSolucion{ VACIA, NORMAL, NORMAL_RANDOM, GREEDY }
 
