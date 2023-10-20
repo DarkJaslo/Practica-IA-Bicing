@@ -17,8 +17,8 @@ public class TesterExp1
     public static void main(String args[]) throws Exception
     {
         initVars();
-        PracBoard.TipoSolucion tiposSol[] = {PracBoard.TipoSolucion.VACIA, PracBoard.TipoSolucion.NORMAL, PracBoard.TipoSolucion.NORMAL_RANDOM};
-        String nombresTiposSol[] = {"Vacía", "Normal", "Normal random"};
+        PracBoard.TipoSolucion tiposSol[] = {PracBoard.TipoSolucion.VACIA, PracBoard.TipoSolucion.NORMAL, PracBoard.TipoSolucion.NORMAL_RANDOM, PracBoard.TipoSolucion.GREEDY};
+        String nombresTiposSol[] = {"Vacía", "Normal", "Normal random", "Greedy"};
         
         for(int j = 0; j < tiposSol.length; ++j) //Itera tipos de solución
         {
@@ -87,9 +87,9 @@ public class TesterExp1
             seeds[i] = i*3;
         }
 
-        mediaPorTipo = new double[3];
-        mediaRealPorTipo = new double[3];
-        distPorTipo = new double[3];
+        mediaPorTipo = new double[4];
+        mediaRealPorTipo = new double[4];
+        distPorTipo = new double[4];
     }
 
     static private void printProgreso(int it)

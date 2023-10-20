@@ -7,6 +7,7 @@ import java.util.Queue;
 import java.util.LinkedList;
 import java.lang.Math;
 import java.util.Random;
+import java.util.Arrays;
 
 /*
  * Propuesta actual, seguro que se puede mejorar
@@ -30,7 +31,7 @@ public class PracBoard{
     //Multilica al beneficio en la función heurística
     private static final double FACTOR_HEURISTICO = 1.5;
 
-    public static enum TipoSolucion{ VACIA, NORMAL, NORMAL_RANDOM }
+    public static enum TipoSolucion{ VACIA, NORMAL, NORMAL_RANDOM, GREEDY }
 
     /*
      * Cambios en la ocupación de las estaciones (e1: +2, e2: -30, e3: +12, etc)
@@ -107,7 +108,7 @@ public class PracBoard{
      */
     public boolean canChangeEst(int f, int whichEst, int newEst)
     {
-        //False si newEst se usa de origen en otra furgoneta
+        //False si newEst se usa de origen en alguna furgoneta
         if(ocupacion[newEst] < 0) return false; 
         //False si se quiere poner en origen una estacion a la que llevamos bicicletas
         if(whichEst == ORIGEN && ocupacion[newEst] > 0) return false;
@@ -188,15 +189,15 @@ public class PracBoard{
         int est21 = viajes[f2][EST1];
         int est22 = viajes[f2][EST2];
 
-        if(o1 > 0) ocupacion[o1] += (viajes[f1][EST1_CANTIDAD] + viajes[f1][EST2_CANTIDAD]);
-        if(est11 > 0) ocupacion[est11] -= viajes[f1][EST1_CANTIDAD];
-        if(est12 > 0) ocupacion[est12] -= viajes[f1][EST2_CANTIDAD];
+        if(o1 >= 0) ocupacion[o1] += (viajes[f1][EST1_CANTIDAD] + viajes[f1][EST2_CANTIDAD]);
+        if(est11 >= 0) ocupacion[est11] -= viajes[f1][EST1_CANTIDAD];
+        if(est12 >= 0) ocupacion[est12] -= viajes[f1][EST2_CANTIDAD];
 
         if(f1 != f2) //Si fueran la misma se actualizaria dos veces
         {
-            if(o2 > 0) ocupacion[o2] += (viajes[f2][EST1_CANTIDAD] + viajes[f2][EST2_CANTIDAD]);
-            if(est21 > 0) ocupacion[est21] -= viajes[f2][EST1_CANTIDAD];
-            if(est22 > 0) ocupacion[est22] -= viajes[f2][EST2_CANTIDAD];
+            if(o2 >= 0) ocupacion[o2] += (viajes[f2][EST1_CANTIDAD] + viajes[f2][EST2_CANTIDAD]);
+            if(est21 >= 0) ocupacion[est21] -= viajes[f2][EST1_CANTIDAD];
+            if(est22 >= 0) ocupacion[est22] -= viajes[f2][EST2_CANTIDAD];
         }
         
         //Intercambio de estaciones
@@ -216,9 +217,9 @@ public class PracBoard{
         int dem11 = demand(est11); int dem12 = demand(est12);
         distributeBycicles(f1, o1, dem11, dem12);
 
-        if(o1 > 0) ocupacion[o1] -= (viajes[f1][EST1_CANTIDAD] + viajes[f1][EST2_CANTIDAD]);
-        if(est11 > 0) ocupacion[est11] += viajes[f1][EST1_CANTIDAD];
-        if(est12 > 0) ocupacion[est12] += viajes[f1][EST2_CANTIDAD];
+        if(o1 >= 0) ocupacion[o1] -= (viajes[f1][EST1_CANTIDAD] + viajes[f1][EST2_CANTIDAD]);
+        if(est11 >= 0) ocupacion[est11] += viajes[f1][EST1_CANTIDAD];
+        if(est12 >= 0) ocupacion[est12] += viajes[f1][EST2_CANTIDAD];
 
         //Swapea dest1 y dest2 de f1 si se cumplen ciertas condiciones
         //swapIfBad(f1, o1, est11, est12);
@@ -229,9 +230,9 @@ public class PracBoard{
             int dem21 = demand(est21); int dem22 = demand(est22);
             distributeBycicles(f2, o2, dem21, dem22);
 
-            if(o2 > 0) ocupacion[o2] -= (viajes[f2][EST1_CANTIDAD] + viajes[f2][EST2_CANTIDAD]);
-            if(est21 > 0) ocupacion[est21] += viajes[f2][EST1_CANTIDAD];
-            if(est22 > 0) ocupacion[est22] += viajes[f2][EST2_CANTIDAD];
+            if(o2 >= 0) ocupacion[o2] -= (viajes[f2][EST1_CANTIDAD] + viajes[f2][EST2_CANTIDAD]);
+            if(est21 >= 0) ocupacion[est21] += viajes[f2][EST1_CANTIDAD];
+            if(est22 >= 0) ocupacion[est22] += viajes[f2][EST2_CANTIDAD];
 
             //Swapea dest1 y dest2 de f2 si se cumplen ciertas condiciones
             //swapIfBad(f2, o2, est21, est22);
@@ -272,7 +273,7 @@ public class PracBoard{
         if(whichEst1 == whichEst2) return false;
         //No se puede asignar la misma estacion dos veces
         if(newEst1 == newEst2) return false;
-        //newEst1 o 2 se usan de origen en otra furgoneta
+        //newEst1 o 2 se usan de origen en alguna furgoneta
         if(ocupacion[newEst1] < 0) return false;
         if(ocupacion[newEst2] < 0) return false;
         //False si se quiere poner en origen una estacion a la que llevamos bicicletas
@@ -291,6 +292,32 @@ public class PracBoard{
     {
         changeEst(f, whichEst1, newEst1);
         changeEst(f, whichEst2, newEst2);
+    }
+
+    public boolean canChange3Est(int f, int newOrigen, int newDest1, int newDest2)
+    {
+        //No se pueden poner repetidos
+        if(newOrigen == newDest1 || newOrigen == newDest2 || newDest1 == newDest2) return false;
+        //Si alguna se usa de origen en alguna furgoneta
+        if(ocupacion[newOrigen] < 0 || ocupacion[newDest1] < 0 || ocupacion[newDest2] < 0) return false;
+        //False si se quiere poner en origen una estacion a la que llevamos bicicletas
+        if(ocupacion[newOrigen] > 0) return false;
+
+        //False si queremos cambiar una estacion por ella misma
+        if(viajes[f][ORIGEN] == newOrigen) return false;
+        if(viajes[f][EST1] == newDest1) return false;
+        if(viajes[f][EST2] == newDest2) return false;
+
+        //False si alguna de las estaciones esta involucrada en esta furgoneta (no verifica origen porque ya se hace con el resto)
+        if(viajes[f][EST1] == newDest2) return false;
+        if(viajes[f][EST2] == newDest1) return false;
+        return true;
+    }
+    public void change3Est(int f, int newOrigen, int newDest1, int newDest2)
+    {
+        changeEst(f,ORIGEN,newOrigen);
+        changeEst(f,EST1,newDest1);
+        changeEst(f,EST2,newDest2);
     }
 
     /*  Funciones auxiliares  */
@@ -318,7 +345,7 @@ public class PracBoard{
         viajes[f][EST2_CANTIDAD] = 0;
 
         int disponibles = 0;
-        if(origen > 0) 
+        if(origen >= 0) 
             disponibles = getBicicletasDisponibles(origen);
         else return; //No hay origen -> no hay bicicletas para distribuir
 
@@ -622,6 +649,9 @@ public class PracBoard{
             case NORMAL_RANDOM:
                 creaSolucionBuenaRandom(1234);
                 break;
+            case GREEDY:
+                creaSolucionGreedy();
+                break;
         }
     }
 
@@ -636,6 +666,9 @@ public class PracBoard{
                 break;
             case NORMAL_RANDOM:
                 creaSolucionBuenaRandom(seedIfRandom);
+                break;
+            case GREEDY:
+                creaSolucionGreedy();
                 break;
         }
     }
@@ -754,6 +787,85 @@ public class PracBoard{
         }
     }
 
+    private void creaSolucionGreedy()
+    {
+        /*
+         * Crear solucion buena H1 -> coger el max de bicis de la estacion con max bicis y llevarlas al sitio donde haya mas demanda posible
+         */
+
+        boolean used[] = new boolean[estaciones.size()];
+        for(int i = 0; i < used.length; ++i)
+            used[i] = false;
+        
+        /* Para cada furgoneta */
+        for(int i = 0; i < maxFurgonetas; ++i)
+        {
+            /* Busca estacion no usada con mas bicis disponibles */
+            int estMax = -1;
+            int bicisMax = -1;
+            for(int j = 0; j < estaciones.size(); ++j)
+            {
+                if(!used[j] && getBicicletasDisponibles(j) > bicisMax)
+                {
+                    bicisMax = getBicicletasDisponibles(j);
+                    estMax = j;
+                }
+            }
+            if(estMax == -1) break;
+
+            used[estMax] = true;
+
+            /* Busca estacion dest1 con mayor demanda */
+            int dest1Max = -1;
+            int dem1Max = 0;
+
+            for(int j = 0; j < estaciones.size(); ++j)
+            {
+                if(demand(j) > dem1Max)
+                {
+                    dest1Max = j;
+                    dem1Max = demand(j);
+                }
+            }
+            if(dest1Max == -1) break;
+
+            int decr =  Math.min(30,Math.min(bicisMax,dem1Max));
+            ocupacion[dest1Max] += decr;
+
+            bicisMax-= Math.min(Math.max(0,dem1Max),bicisMax);
+            int dest2Max = -1;
+            int dem2Max = 0;
+
+            if(bicisMax > 0)
+            {
+                /* Busca otra estacion que necesite bicis */
+                for(int j = 0; j < estaciones.size(); ++j)
+                {
+                    if(demand(j) > dem2Max)
+                    {
+                        dest2Max = j;
+                        dem2Max = demand(j);
+                    }
+                }
+            }
+
+            viajes[i][ORIGEN] = estMax;
+            viajes[i][EST1] = dest1Max;
+            viajes[i][EST2] = dest2Max;
+
+            ocupacion[dest1Max] -= decr;
+            distributeBycicles(i, estMax, demand(dest1Max), demand(dest2Max));
+            ocupacion[estMax] -= (viajes[i][EST1_CANTIDAD] + viajes[i][EST2_CANTIDAD]);
+            if(dest1Max >= 0)
+            {
+                ocupacion[dest1Max] += viajes[i][EST1_CANTIDAD];
+            } 
+            if(dest2Max >= 0) ocupacion[dest2Max] += viajes[i][EST2_CANTIDAD];
+
+            ++furgEnUso;
+        }
+    }
+
     /*
      * El transporte es gratis
      */
@@ -787,7 +899,7 @@ public class PracBoard{
                 
             beneficio += ganancia;
 
-            if(print) System.out.println("Estacion " + i + ", demanda inicial: " + demStart + ", demanda final: " + demNow + ", ganancia: " + ganancia);
+            if(print) System.out.println("Est " + i + "\tdem ini: " + demStart + "\toferta ini: " + getBicicletasDisponibles(i) + "\tdem fin: " + demNow + "\tganancia: " + ganancia);
         }
         return beneficio;
     }
@@ -802,5 +914,17 @@ public class PracBoard{
             System.out.println("Furgoneta " + i + ": Origen: " + viajes[i][ORIGEN] + ", dest1: " + viajes[i][EST1] + " (" + viajes[i][EST1_CANTIDAD] + ")" + ", dest2: " + viajes[i][EST2] + " (" + viajes[i][EST2_CANTIDAD] + "). Distancia recorrida: " + getTravelDist(i));
         }
         System.out.println();
+    }
+
+    private void checkSolucionCorrecta()
+    {
+        int realOcup[] = new int[ocupacion.length];
+        for(int i = 0; i < furgEnUso; ++i)
+        {
+            int origen = viajes[i][ORIGEN];
+            int dest1 = viajes[i][EST1];
+            int dest2 = viajes[i][EST2];
+
+        }
     }
 }

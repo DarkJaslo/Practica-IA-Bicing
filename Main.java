@@ -21,16 +21,17 @@ public class Main {
         int nest = 25;
         int nbic = 1250;
         int dem = Estaciones.EQUILIBRIUM;
-        int seed = 1234;
+        int seed = 3;
         int maxFurgonetas = 5;
 
         Estaciones estaciones = new Estaciones(nest, nbic, dem, seed);
         
         /*Genera solución inicial mediante magia negra (sin hacer, solución vacía)*/
         PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-        board.creaSolucionInicial(PracBoard.TipoSolucion.VACIA);
+        //board.creaSolucionInicial(PracBoard.TipoSolucion.VACIA);
         //board.creaSolucionInicial(PracBoard.TipoSolucion.NORMAL);
         //board.creaSolucionInicial(PracBoard.TipoSolucion.NORMAL_RANDOM,seed);
+        board.creaSolucionInicial(PracBoard.TipoSolucion.GREEDY,seed);
 
         System.out.println("La solucion inicial usa " + board.getFurgonetasEnUso() + " furgonetas");
         board.print();
@@ -39,7 +40,7 @@ public class Main {
         System.out.println("Distancia total recorrida: " + board.getTotalTravelDist());
         System.out.println();
 
-        Problem p = new Problem(board, new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing), new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_2));
+        Problem p = new Problem(board, new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing), new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_1));
 
         Search alg = new HillClimbingSearch();
 

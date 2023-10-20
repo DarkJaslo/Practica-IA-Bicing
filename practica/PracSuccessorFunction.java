@@ -122,7 +122,7 @@ public class PracSuccessorFunction implements SuccessorFunction {
         }
 
         /*
-         * Añade sucesores de change2Est
+         * Añade sucesores de change2Est y change3Est
          */
         for(int i = 0; i < board.getFurgonetasEnUso(); ++i)
         {
@@ -130,11 +130,7 @@ public class PracSuccessorFunction implements SuccessorFunction {
             {
                 for(int k = 0; k < board.getEstaciones().size(); ++k)
                 {
-                    /*
-                     * Origen d1
-                     * Origen d2
-                     * D1 D2
-                     */
+                    /*  Origen <-> d1, Origen <-> d2, D1 <-> D2  */
                     if(board.canChange2Est(i, board.origen(),board.destino1(), j,k)){
                         PracBoard auxBoard = PracBoard.copyOf(board);
                         auxBoard.change2Est(i, board.origen(),board.destino1(), j,k);
@@ -149,6 +145,19 @@ public class PracSuccessorFunction implements SuccessorFunction {
                         PracBoard auxBoard = PracBoard.copyOf(board);
                         auxBoard.change2Est(i, board.destino1(),board.destino2(), j,k);
                         retval.add(new Successor("change2 furg " + i + " dest1 " + j + " dest2 " + k, auxBoard));
+                    }
+
+                    /*
+                     * Sección change3Est
+                     */
+                    for(int l = 0; l < board.getEstaciones().size(); ++l)
+                    {
+                        if(board.canChange3Est(i, j, k, l))
+                        {
+                             PracBoard auxBoard = PracBoard.copyOf(board);
+                            auxBoard.change3Est(i, j, k, l);
+                            retval.add(new Successor("change3 furg " + i + " origen " + j + " dest1 " + k + " dest2 " + l, auxBoard));
+                        }
                     }
                 }
             }
