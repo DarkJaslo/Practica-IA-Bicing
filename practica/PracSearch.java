@@ -20,10 +20,10 @@ public class PracSearch
     /*
      * Devuelve el board resultante de hacer la búsqueda con Hill Climbing. No devuelve los operadores aplicados, para eso debes utilizar este código y obtenerlas de agent.
      */
-    public static PracBoard hillClimbing(Estaciones estaciones, int maxFurgonetas, PracHeuristicFunction.Function function) throws Exception
+    public static PracBoard hillClimbing(Estaciones estaciones, int maxFurgonetas, PracHeuristicFunction.Function function, PracBoard.TipoSolucion tipoSolucion) throws Exception
     {
         PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-        board.creaSolucionInicial(PracBoard.TipoSolucion.NORMAL);
+        board.creaSolucionInicial(tipoSolucion);
 
         Problem p = new Problem(board, new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing), new PracGoalTest(), new PracHeuristicFunction(function));
 

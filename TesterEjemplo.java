@@ -24,11 +24,12 @@ public class TesterEjemplo
 
         //Enum para decir que heuristico usar
         PracHeuristicFunction.Function heuristicoHC = PracHeuristicFunction.Function.Heuristico_1;
+        PracBoard.TipoSolucion tipoSolucion = PracBoard.TipoSolucion.VACIA;
 
         long startTime, endTime;
 
         startTime = System.nanoTime();
-        PracBoard hcBoard = PracSearch.hillClimbing(estaciones,maxFurgonetas,heuristicoHC);
+        PracBoard hcBoard = PracSearch.hillClimbing(estaciones,maxFurgonetas,heuristicoHC,tipoSolucion);
         endTime = System.nanoTime();
         System.out.println("Execution time (HC): " + (endTime - startTime));
 
