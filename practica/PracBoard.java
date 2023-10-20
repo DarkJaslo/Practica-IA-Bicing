@@ -33,6 +33,23 @@ public class PracBoard{
 
     public static enum TipoSolucion{ VACIA, NORMAL, NORMAL_RANDOM, GREEDY }
 
+    private class StationDemand implements Comparable<StationDemand> {
+        public int id;      //Identificador de la estación
+        public int demand;  //Demanda de dicha estación
+
+        public StationDemand(int id, int demand) {
+            this.id = id;
+            this.demand = demand;
+        }
+
+        @Override
+        public int compareTo(StationDemand other) {
+            if (demand < other.demand) return -1;
+            if (demand > other.demand) return 1;
+            return 0;
+        }
+    }
+
     /*
      * Cambios en la ocupación de las estaciones (e1: +2, e2: -30, e3: +12, etc)
      */
@@ -668,7 +685,7 @@ public class PracBoard{
                 creaSolucionBuenaRandom(seedIfRandom);
                 break;
             case GREEDY:
-                creaSolucionGreedy();
+                creaSolucionGreedy2();
                 break;
         }
     }
@@ -864,6 +881,63 @@ public class PracBoard{
 
             ++furgEnUso;
         }
+    }    
+
+    public void creaSolucionGreedy2() {
+        ArrayList<StationDemand> stations = new ArrayList<StationDemand>();
+        for (int i = 0; i < estaciones.size(); ++i) {
+            stations.add(new StationDemand(i, - demand(i)));
+        }
+
+        MergeSort msort = new MergeSort(stations, MergeSort.SortingOrder.DECR);
+        stations = msort.getResult();
+
+        int i = 0;
+        int j = stations.size() -1;
+        int f = 0; //furgoneta actual
+
+        while (i < j || i >= maxFurgonetas) {
+            //Comprobamos que la situación actual sea mejorable
+            //En caso contrario no nos interesa cambiarla
+            if (stations.get(i).demand <= 0 || stations.get(j).demand >= 0) return; 
+
+            int bikesOri = Math.min(30, stations.get(i).demand);
+            int bikesSt1 = Math.min(- stations.get(j).demand, bikesOri);
+
+            ocupacion[stations.get(j).id] += bikesSt1;
+            
+            StationDemand sd1 = stations.get(j);
+            sd1.demand += bikesSt1;
+            stations.set(j, sd1);
+
+            bikesOri -= bikesSt1;
+
+            viajes[i][ORIGEN] = stations.get(i).id;
+            viajes[i][EST1]   = stations.get(j).id;
+            viajes[i][EST1_CANTIDAD] += bikesSt1;
+
+            if (stations.get(j).demand <= 0) {
+                --j;
+                if (bikesOri > 0) {
+                    int bikesSt2 = Math.min(- stations.get(j).demand, bikesOri);
+
+                    ocupacion[stations.get(j).id] += bikesSt2;
+
+                    StationDemand sd2 = stations.get(j);
+                    sd2.demand += bikesSt2;
+                    stations.set(j, sd2);
+
+                    bikesOri -= bikesSt2;
+
+                    viajes[j][EST2]   = stations.get(j).id;
+                    viajes[j][EST2_CANTIDAD] += bikesSt2;
+
+                    if (stations.get(j).demand <= 0) --j;
+                }
+            }
+            ++i;
+        }
+        furgEnUso = i;
     }
 
     /*
