@@ -18,7 +18,7 @@ public class TesterExp2
     {
         initVars();
         PracBoard.TipoSolucion tiposSol[] = {PracBoard.TipoSolucion.VACIA, PracBoard.TipoSolucion.NORMAL, PracBoard.TipoSolucion.NORMAL_RANDOM, PracBoard.TipoSolucion.GREEDY};
-        String nombresTiposSol[] = {"Vacía", "Normal", "Normal random", "Greedy"};
+        String nombresTiposSol[] = {"Vacia", "Normal", "Normal random", "Greedy"};
         
         for(int j = 0; j < tiposSol.length; ++j) //Itera tipos de solución
         {
@@ -65,7 +65,7 @@ public class TesterExp2
             distPorTipo[j] = distanciaTotal/seeds.length;
         }
 
-        System.out.println("Número de seeds: " + NUM_SEEDS);
+        System.out.println("Numero de seeds: " + NUM_SEEDS);
         System.out.println();
 
         for(int i = 0; i < mediaPorTipo.length; ++i)

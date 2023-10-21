@@ -19,7 +19,7 @@ public class TesterExp1
 
     public static void main(String args[]) throws Exception
     {
-        PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.NORMAL;
+        PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.VACIA;
         String modos[] = { "Change", "ChangeSwap", "ChangeSwapAdd", "ChangeChange2SwapAdd", "ChangeChange3SwapAdd", "ChangeChange2Change3SwapAdd", "ChangeChange2Change3Swap"};
         initVars(modos.length);
         
@@ -50,6 +50,7 @@ public class TesterExp1
                 setOperadores(successorFunction,modos[j]);
 
                 PracBoard board = new PracBoard(estaciones, maxFurgonetas);
+                board.setRedondeo(4);
                 board.creaSolucionInicial(tipoSol);
 
                 Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_2));
@@ -81,7 +82,7 @@ public class TesterExp1
             tiempoPorTipo[j] = (tiempoTotal/seeds.length)/1000000.0; //A ms
         }
 
-        System.out.println("Número de seeds: " + NUM_SEEDS);
+        System.out.println("Numero de seeds: " + NUM_SEEDS);
         System.out.println();
 
         for(int i = 0; i < mediaPorTipo.length; ++i)
