@@ -37,6 +37,7 @@ public class TesterExp8
             if(i == ejecuciones-1)
             {
                 //Print datos
+                System.out.println("Beneficio sin coste: " + hcBoard.beneficioTotal(false));
                 System.out.println("Beneficio: " + hcBoard.getBeneficioReal());
                 System.out.println("Distancia: " + hcBoard.getTotalTravelDist());
             }
@@ -44,6 +45,6 @@ public class TesterExp8
 
         double mediaTiempo = tiempoTotal/ejecuciones;
         mediaTiempo /= 1000000.0; //Nanosegundos a milisegundos
-        System.out.println("Tiempo medio de " + ejecuciones + " ejecuciones: " + mediaTiempo + "ms");
+        System.out.println("Tiempo medio (" + ejecuciones + " ejecuciones): " + mediaTiempo + "ms");
     }
 }   
