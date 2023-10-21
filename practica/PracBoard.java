@@ -26,7 +26,8 @@ public class PracBoard{
     private static final int EST2_CANTIDAD = 4;
 
     //Ejemplo: si hay que coger 20+REDONDEO o menos, coge 20, pero con 20+REDONDEO+1 ya coge esas
-    private int REDONDEO = 0;
+    //Resultados experimentales informales: 4 es el mejor valor para el beneficio REAL
+    private int REDONDEO = 4;
 
     //Multilica al beneficio en la función heurística
     private static final double FACTOR_HEURISTICO = 1.0;
@@ -90,6 +91,7 @@ public class PracBoard{
     public static PracBoard copyOf(PracBoard b)
     {
         PracBoard aux = new PracBoard(b.getEstaciones(), b.getMaxFurgonetas());
+        aux.REDONDEO = b.REDONDEO;
         for(int i = 0; i < b.ocupacion.length; ++i)
         {
             aux.ocupacion[i] = b.ocupacion[i];
@@ -858,7 +860,7 @@ public class PracBoard{
         }
     }    
 
-    public void creaSolucionGreedy2() {
+    private void creaSolucionGreedy2() {
         ArrayList<StationDemand> stations = new ArrayList<StationDemand>();
         for (int i = 0; i < estaciones.size(); ++i) {
             stations.add(new StationDemand(i, - demand(i)));
