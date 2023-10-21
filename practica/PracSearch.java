@@ -24,7 +24,7 @@ public class PracSearch
     {
         PracBoard board = new PracBoard(estaciones, maxFurgonetas);
         if(function == PracHeuristicFunction.Function.Heuristico_2)
-            board.setRedondeo(2);
+            board.setRedondeo(4);
         else
             board.setRedondeo(0);
             
