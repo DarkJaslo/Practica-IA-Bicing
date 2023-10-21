@@ -863,7 +863,7 @@ public class PracBoard{
     private void creaSolucionGreedy2() {
         ArrayList<StationDemand> stations = new ArrayList<StationDemand>();
         for (int i = 0; i < estaciones.size(); ++i) {
-            stations.add(new StationDemand(i, - demand(i)));
+            stations.add(new StationDemand(i, Math.min(-demandStart(i), getBicicletasDisponibles(i))));
         }
 
         MergeSort<StationDemand> msort = new MergeSort<StationDemand>(stations, MergeSort.SortingOrder.DECR);
@@ -873,16 +873,17 @@ public class PracBoard{
         int j = stations.size() -1;
         int f = 0; //furgoneta actual
 
-        while (i < j || i >= maxFurgonetas) {
+        while (i < j && i < maxFurgonetas) {
             //Comprobamos que la situación actual sea mejorable
             //En caso contrario no nos interesa cambiarla
             if (stations.get(i).demand <= 0 || stations.get(j).demand >= 0) return; 
 
             int bikesOri = Math.min(30, stations.get(i).demand);
-            int bikesSt1 = Math.min(- stations.get(j).demand, bikesOri);
+            int bikesSt1 = Math.min(-stations.get(j).demand, bikesOri);
 
+            ocupacion[stations.get(i).id] -= bikesOri;
             ocupacion[stations.get(j).id] += bikesSt1;
-            
+
             StationDemand sd1 = stations.get(j);
             sd1.demand += bikesSt1;
             stations.set(j, sd1);
@@ -893,23 +894,19 @@ public class PracBoard{
             viajes[i][EST1]   = stations.get(j).id;
             viajes[i][EST1_CANTIDAD] += bikesSt1;
 
-            if (stations.get(j).demand <= 0) {
+            if (stations.get(j).demand >= 0) {
                 --j;
                 if (bikesOri > 0) {
-                    int bikesSt2 = Math.min(- stations.get(j).demand, bikesOri);
-
-                    ocupacion[stations.get(j).id] += bikesSt2;
+                    ocupacion[stations.get(j).id] += bikesOri;
 
                     StationDemand sd2 = stations.get(j);
-                    sd2.demand += bikesSt2;
+                    sd2.demand += bikesOri;
                     stations.set(j, sd2);
 
-                    bikesOri -= bikesSt2;
+                    viajes[i][EST2]   = stations.get(j).id;
+                    viajes[i][EST2_CANTIDAD] += bikesOri;
 
-                    viajes[j][EST2]   = stations.get(j).id;
-                    viajes[j][EST2_CANTIDAD] += bikesSt2;
-
-                    if (stations.get(j).demand <= 0) --j;
+                    if (stations.get(j).demand >= 0) --j;
                 }
             }
             ++i;
