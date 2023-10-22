@@ -1,2 +1,5 @@
 *:Zone.Identifier
 *.class
+.Rhistory
+.RData
+exp*.txt

@@ -1,0 +1,8 @@
+estaciones	tiempo
+25	72
+25	76
+25	81
+...
+50	200
+50	210
+(x10 por cada numero distinto de estaciones)

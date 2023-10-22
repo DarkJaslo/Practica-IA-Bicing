@@ -15,7 +15,7 @@ public class TesterEjemplo
         int numBicis = numEstaciones*50;
         int maxFurgonetas = numEstaciones/5;
         int tipoDemanda = Estaciones.EQUILIBRIUM;
-        int seed = 1234;
+        int seed = 12345;
 
         Estaciones estaciones = new Estaciones(numEstaciones, numBicis, tipoDemanda, seed);
 
@@ -23,7 +23,7 @@ public class TesterEjemplo
         //Búsqueda Hill Climbing
 
         //Enum para decir que heuristico usar
-        PracHeuristicFunction.Function heuristicoHC = PracHeuristicFunction.Function.Heuristico_1;
+        PracHeuristicFunction.Function heuristicoHC = PracHeuristicFunction.Function.Heuristico_2;
         PracBoard.TipoSolucion tipoSolucion = PracBoard.TipoSolucion.VACIA;
 
         long startTime, endTime;
@@ -31,13 +31,13 @@ public class TesterEjemplo
         startTime = System.nanoTime();
         PracBoard hcBoard = PracSearch.hillClimbing(estaciones,maxFurgonetas,heuristicoHC,tipoSolucion);
         endTime = System.nanoTime();
-        System.out.println("Execution time (HC): " + (endTime - startTime));
+        System.out.println("Execution time (HC): " + (endTime - startTime)/1000000 + "ms");
 
         double blabla = hcBoard.beneficioTotal(false);
         double blabla2 = hcBoard.getTotalTravelDist();
         
         //Posible print de debug
-        System.out.println("Beneficio (sin coste) HC: " + hcBoard.beneficioTotal(false) + "  Distancia HC: " + hcBoard.getTotalTravelDist());
+        System.out.println("Beneficio HC: " + hcBoard.getBeneficioReal() + "  Distancia HC: " + hcBoard.getTotalTravelDist());
         //etc
 
 
@@ -47,7 +47,7 @@ public class TesterEjemplo
         startTime = System.nanoTime();
         PracBoard saBoard = PracSearch.simulatedAnnealing(estaciones, maxFurgonetas, heuristicoSA);
         endTime = System.nanoTime();
-        System.out.println("Execution time (SA): " + (endTime - startTime));
+        System.out.println("Execution time (SA): " + (endTime - startTime)/1000000 + "ms");
 
         double blablabla = saBoard.getBeneficioReal();
         double blablabla2 = saBoard.getTotalTravelDist();

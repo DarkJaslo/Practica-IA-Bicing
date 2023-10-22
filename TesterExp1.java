@@ -1,3 +1,8 @@
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import IA.Bicing.Estaciones;
 import aima.search.framework.Problem;
 import aima.search.framework.Search;
@@ -10,7 +15,7 @@ import practica.PracSuccessorFunction;
 
 public class TesterExp1 
 {
-    private static final int NUM_SEEDS = 100;
+    private static final int NUM_SEEDS = 1000;
     private static int seeds[];
     private static double mediaPorTipo[];
     private static double mediaRealPorTipo[];
@@ -19,81 +24,101 @@ public class TesterExp1
 
     public static void main(String args[]) throws Exception
     {
-        PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.VACIA;
-        String modos[] = { "Change", "ChangeSwap", "ChangeSwapAdd", "ChangeChange2SwapAdd", "ChangeChange3SwapAdd", "ChangeChange2Change3SwapAdd", "ChangeChange2Change3Swap"};
-        initVars(modos.length);
-        
-        for(int j = 0; j < modos.length; ++j) //Itera tipos de solución
+        try 
         {
-            System.out.println(modos[j] + ":");
-            double beneficioH1Total = 0.0;
-            double beneficioH2Total = 0.0;
-            double distanciaTotal = 0.0;
-            double tiempoTotal = 0.0;
-            for(int i = 0; i < seeds.length; ++i)
+            PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.VACIA;
+            String modos[] = { "ChangeSwapAdd", "ChangeChange2SwapAdd", "ChangeChange2Change3SwapAdd" };
+            initVars(modos.length);
+
+            String filePath = "./R/exp1.txt";
+            FileWriter fileWriter = new FileWriter(filePath);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            bufferedWriter.write("operadores\tcalidad\tbeneficio\ttiempo\n");
+            
+            for(int j = 0; j < modos.length; ++j) //Itera tipos de solución
             {
-                printProgreso(i);
+                System.out.println(modos[j] + ":");
+                double beneficioH1Total = 0.0;
+                double beneficioH2Total = 0.0;
+                double distanciaTotal = 0.0;
+                double tiempoTotal = 0.0;
+                for(int i = 0; i < seeds.length; ++i)
+                {
+                    printProgreso(i);
 
-                //Inicialización estaciones ( en este caso, solo una vez )
-                int numEstaciones = 25;
-                int numBicis = 1250;
-                int maxFurgonetas = 5;
-                int tipoDemanda = Estaciones.EQUILIBRIUM;
-                int seed = seeds[i];
+                    //Inicialización estaciones ( en este caso, solo una vez )
+                    int numEstaciones = 25;
+                    int numBicis = 1250;
+                    int maxFurgonetas = 5;
+                    int tipoDemanda = Estaciones.EQUILIBRIUM;
+                    int seed = seeds[i];
 
-                Estaciones estaciones = new Estaciones(numEstaciones, numBicis, tipoDemanda, seed);
+                    Estaciones estaciones = new Estaciones(numEstaciones, numBicis, tipoDemanda, seed);
 
-                //Búsqueda Hill Climbing
+                    //Búsqueda Hill Climbing
 
-                //Enum para decir que heuristico usar
-                PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
-                setOperadores(successorFunction,modos[j]);
+                    //Enum para decir que heuristico usar
+                    PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
+                    setOperadores(successorFunction,modos[j]);
 
-                PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-                board.setRedondeo(4);
-                board.creaSolucionInicial(tipoSol);
+                    PracBoard board = new PracBoard(estaciones, maxFurgonetas);
+                    board.setRedondeo(0);
+                    board.creaSolucionInicial(tipoSol);
 
-                Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_2));
+                    Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_1));
 
-                Search alg = new HillClimbingSearch();
+                    Search alg = new HillClimbingSearch();
 
-                double startTime = System.nanoTime();
-                SearchAgent agent = new SearchAgent(p, alg);
-                double endTime = System.nanoTime();
-                PracBoard hcBoard = (PracBoard)alg.getGoalState();
+                    double startTime = System.nanoTime();
+                    SearchAgent agent = new SearchAgent(p, alg);
+                    double endTime = System.nanoTime();
+                    PracBoard hcBoard = (PracBoard)alg.getGoalState();
 
-                /*
-                System.out.println("Combinacion operadores: " + modos[j]);
-                System.out.println("Seed: " + seeds[i]);
-                System.out.println("Beneficio H1: " + hcBoard.beneficioTotal(false));
-                System.out.println("Beneficio H2: " + hcBoard.getBeneficioReal());
-                System.out.println("Distancia: " + hcBoard.getTotalTravelDist());
-                System.out.println();
-                */
+                    /*
+                    System.out.println("Combinacion operadores: " + modos[j]);
+                    System.out.println("Seed: " + seeds[i]);
+                    System.out.println("Beneficio H1: " + hcBoard.beneficioTotal(false));
+                    System.out.println("Beneficio H2: " + hcBoard.getBeneficioReal());
+                    System.out.println("Distancia: " + hcBoard.getTotalTravelDist());
+                    System.out.println();
+                    */
+                    double calidad = hcBoard.beneficioTotal(false);
+                    double benefReal = hcBoard.getBeneficioReal();
+                    double travelDist = hcBoard.getTotalTravelDist();
+                    double tiempo = (endTime-startTime);
 
-                beneficioH1Total += hcBoard.beneficioTotal(false);
-                beneficioH2Total += hcBoard.getBeneficioReal();
-                distanciaTotal += hcBoard.getTotalTravelDist();
-                tiempoTotal += (endTime-startTime);
+                    beneficioH1Total += calidad;
+                    beneficioH2Total += benefReal;
+                    distanciaTotal += travelDist;
+                    tiempoTotal += tiempo;
+
+                    bufferedWriter.write(modos[j] + "\t" + calidad + "\t" + benefReal + "\t" + tiempo/1000000 + "\n");
+                }
+                mediaPorTipo[j] = beneficioH1Total/seeds.length;
+                mediaRealPorTipo[j] = beneficioH2Total/seeds.length;
+                distPorTipo[j] = distanciaTotal/seeds.length;
+                tiempoPorTipo[j] = (tiempoTotal/seeds.length)/1000000.0; //A ms
             }
-            mediaPorTipo[j] = beneficioH1Total/seeds.length;
-            mediaRealPorTipo[j] = beneficioH2Total/seeds.length;
-            distPorTipo[j] = distanciaTotal/seeds.length;
-            tiempoPorTipo[j] = (tiempoTotal/seeds.length)/1000000.0; //A ms
-        }
 
-        System.out.println("Numero de seeds: " + NUM_SEEDS);
-        System.out.println();
-
-        for(int i = 0; i < mediaPorTipo.length; ++i)
-        {
-            System.out.println(modos[i] + ": ");
-            System.out.println("Beneficio medio H1: " + mediaPorTipo[i]);
-            System.out.println("Beneficio medio real: " + mediaRealPorTipo[i]);
-            System.out.println("Distancia media: " + distPorTipo[i]);
-            System.out.println("Tiempo medio: " + tiempoPorTipo[i] + "ms");
+            System.out.println("Numero de seeds: " + NUM_SEEDS);
             System.out.println();
+
+            for(int i = 0; i < mediaPorTipo.length; ++i)
+            {
+                System.out.println(modos[i] + ": ");
+                System.out.println("Beneficio medio H1: " + mediaPorTipo[i]);
+                System.out.println("Beneficio medio real: " + mediaRealPorTipo[i]);
+                System.out.println("Distancia media: " + distPorTipo[i]);
+                System.out.println("Tiempo medio: " + tiempoPorTipo[i] + "ms");
+                System.out.println();
+            }
+
+            bufferedWriter.close();
+        } 
+        catch (IOException e) {
+            e.printStackTrace();
         }
+        
     }
 
     static private void initVars(int size)

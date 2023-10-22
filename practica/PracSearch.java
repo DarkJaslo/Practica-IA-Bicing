@@ -12,10 +12,10 @@ public class PracSearch
     /*
      * Parámetros Simulated Annealing
      */
-    private static final int SIM_ANN_TEMP = 100;
-    private static final int SIM_ANN_ITER = 100;
-    private static final int SIM_ANN_K = 100;
-    private static final double SIM_ANN_LAMBDA = 0.01;
+    private static final int SIM_ANN_TEMP = 2000000000;
+    private static final int SIM_ANN_ITER = 1;
+    private static final int SIM_ANN_K = 1;
+    private static final double SIM_ANN_LAMBDA = 0.001;
 
     /*
      * Devuelve el board resultante de hacer la búsqueda con Hill Climbing. No devuelve los operadores aplicados, para eso debes utilizar este código y obtenerlas de agent.
@@ -47,9 +47,10 @@ public class PracSearch
     public static PracBoard simulatedAnnealing(Estaciones estaciones, int maxFurgonetas, PracHeuristicFunction.Function function) throws Exception
     {
         PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-        board.creaSolucionInicial(PracBoard.TipoSolucion.NORMAL);
+        board.setRedondeo(4);
+        board.creaSolucionInicial(PracBoard.TipoSolucion.GREEDY);
 
-        Problem p = new Problem(board, new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing), new PracGoalTest(), new PracHeuristicFunction(function));
+        Problem p = new Problem(board, new PracSuccessorFunction(PracSuccessorFunction.SearchType.SimulatedAnnealing), new PracGoalTest(), new PracHeuristicFunction(function));
 
         Search alg = new SimulatedAnnealingSearch(SIM_ANN_TEMP,SIM_ANN_ITER,SIM_ANN_K,SIM_ANN_LAMBDA);
 
