@@ -19,20 +19,14 @@ public class TesterExp4
 
     private static final int NUM_SEEDS = SEEDS_PER_ITER * ITERS;
     private static int seeds[];
-    private static double mediaPorTipo[];
-    private static double mediaRealPorTipo[];
-    private static double distPorTipo[];
 
     private static long time_meas[][] = new long[ITERS][SEEDS_PER_ITER];
 
     public static void main(String args[]) throws Exception
     {
         initVars();
-        //PracBoard.TipoSolucion tiposSol[] = {PracBoard.TipoSolucion.VACIA, PracBoard.TipoSolucion.NORMAL, PracBoard.TipoSolucion.NORMAL_RANDOM, PracBoard.TipoSolucion.GREEDY, PracBoard.TipoSolucion.GREEDY2};
-        //String nombresTiposSol[] = {"Vacia", "Normal", "Normal random", "Greedy", "Greedy2"};
         String modos[] = { "Change", "ChangeSwap", "ChangeSwapAdd", "ChangeChange2SwapAdd", "ChangeChange3SwapAdd", "ChangeChange2Change3SwapAdd", "ChangeChange2Change3Swap"};
 
-        //System.out.println(nombresTiposSol[j] + ":");
         int tipoDemanda = Estaciones.EQUILIBRIUM;
 
         System.out.println("Iniciando test...");
@@ -69,11 +63,6 @@ public class TesterExp4
                 PracBoard hcBoard = (PracBoard)alg.getGoalState();
 
                 time_meas[i][j] = (endTime - startTime);
-
-
-                //beneficioH1Total += hcBoard.beneficioTotal(false);
-                //beneficioH2Total += hcBoard.getBeneficioReal();
-                //distanciaTotal += hcBoard.getTotalTravelDist();
             }
         }
 
@@ -83,24 +72,6 @@ public class TesterExp4
             }
             System.out.println();
         }
-
-        /* 
-        mediaPorTipo[j] = beneficioH1Total/seeds.length;
-        mediaRealPorTipo[j] = beneficioH2Total/seeds.length;
-        distPorTipo[j] = distanciaTotal/seeds.length;
-
-        System.out.println("Numero de seeds: " + NUM_SEEDS);
-        System.out.println();
-
-        for(int i = 0; i < mediaPorTipo.length; ++i)
-        {
-            System.out.println(nombresTiposSol[i] + ": ");
-            System.out.println("Beneficio medio H1: " + mediaPorTipo[i]);
-            System.out.println("Beneficio medio real: " + mediaRealPorTipo[i]);
-            System.out.println("Distancia media: " + distPorTipo[i]);
-            System.out.println();
-        }
-        */
     }
 
     static private void initVars()
@@ -111,10 +82,6 @@ public class TesterExp4
         {
             seeds[i] = i*3;
         }
-
-        mediaPorTipo = new double[4];
-        mediaRealPorTipo = new double[4];
-        distPorTipo = new double[4];
     }
 
     static private void printProgreso(int it)
