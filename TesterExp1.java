@@ -62,7 +62,7 @@ public class TesterExp1
                     setOperadores(successorFunction,modos[j]);
 
                     PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-                    board.setRedondeo(4);
+                    board.setRedondeo(0);
                     board.creaSolucionInicial(tipoSol);
 
                     Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_1));
