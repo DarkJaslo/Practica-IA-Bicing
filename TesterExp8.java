@@ -29,7 +29,7 @@ public class TesterExp8
             PracHeuristicFunction.Function heuristicoHC = PracHeuristicFunction.Function.Heuristico_1;
             
             //Tipo de solución inicial
-            PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.VACIA;
+            PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.GREEDY2;
 
             PracBoard board = new PracBoard(estaciones, maxFurgonetas);
             board.setRedondeo(0);
