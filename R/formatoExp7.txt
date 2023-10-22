@@ -1,0 +1,4 @@
+Escenario	furgonetas	beneficio
+Equilibrado	5	20
+...
+HoraPunta	5	30
