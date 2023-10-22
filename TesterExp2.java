@@ -34,7 +34,7 @@ public class TesterExp2
             String filePath = "./R/exp2.txt";
             FileWriter fileWriter = new FileWriter(filePath);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            bufferedWriter.write("sol_ini\tbeneficio\ttiempo\n");
+            bufferedWriter.write("sol_ini\tcalidad\tbeneficio\ttiempo\n");
             
             for(int j = 0; j < tiposSol.length; ++j) //Itera tipos de solución
             {
@@ -81,15 +81,15 @@ public class TesterExp2
 
                     PracBoard hcBoard = (PracBoard)alg.getGoalState();
 
-                    double benef = hcBoard.beneficioTotal(false);
+                    double calidad = hcBoard.beneficioTotal(false);
                     double beneficio = hcBoard.getBeneficioReal();
                     double tiempo = (endTime-startTime);
 
-                    beneficioH1Total += benef;
+                    beneficioH1Total += calidad;
                     beneficioH2Total += beneficio;
                     distanciaTotal += hcBoard.getTotalTravelDist();
 
-                    bufferedWriter.write(nombresTiposSol[j] + "\t" + benef + "\t" + tiempo/1000000 + "\n");
+                    bufferedWriter.write(nombresTiposSol[j] + "\t" + calidad + "\t" + beneficio + "\t" + tiempo/1000000 + "\n");
                 }
                 mediaPorTipo[j] = beneficioH1Total/seeds.length;
                 mediaRealPorTipo[j] = beneficioH2Total/seeds.length;

@@ -50,7 +50,7 @@ public class PracSearch
         board.setRedondeo(4);
         board.creaSolucionInicial(PracBoard.TipoSolucion.GREEDY);
 
-        Problem p = new Problem(board, new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing), new PracGoalTest(), new PracHeuristicFunction(function));
+        Problem p = new Problem(board, new PracSuccessorFunction(PracSuccessorFunction.SearchType.SimulatedAnnealing), new PracGoalTest(), new PracHeuristicFunction(function));
 
         Search alg = new SimulatedAnnealingSearch(SIM_ANN_TEMP,SIM_ANN_ITER,SIM_ANN_K,SIM_ANN_LAMBDA);
 
