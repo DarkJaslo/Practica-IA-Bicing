@@ -33,7 +33,7 @@ public class TesterExp1
             String filePath = "./R/exp1.txt";
             FileWriter fileWriter = new FileWriter(filePath);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            bufferedWriter.write("operadores\tbeneficio\ttiempo\n");
+            bufferedWriter.write("operadores\tcalidad\tbeneficio\ttiempo\n");
             
             for(int j = 0; j < modos.length; ++j) //Itera tipos de solución
             {
@@ -82,17 +82,17 @@ public class TesterExp1
                     System.out.println("Distancia: " + hcBoard.getTotalTravelDist());
                     System.out.println();
                     */
-                    double benef = hcBoard.beneficioTotal(false);
+                    double calidad = hcBoard.beneficioTotal(false);
                     double benefReal = hcBoard.getBeneficioReal();
                     double travelDist = hcBoard.getTotalTravelDist();
                     double tiempo = (endTime-startTime);
 
-                    beneficioH1Total += benef;
+                    beneficioH1Total += calidad;
                     beneficioH2Total += benefReal;
                     distanciaTotal += travelDist;
                     tiempoTotal += tiempo;
 
-                    bufferedWriter.write(modos[j] + "\t" + benef + "\t" + tiempo/1000000 + "\n");
+                    bufferedWriter.write(modos[j] + "\t" + calidad + "\t" + benefReal + "\t" + tiempo/1000000 + "\n");
                 }
                 mediaPorTipo[j] = beneficioH1Total/seeds.length;
                 mediaRealPorTipo[j] = beneficioH2Total/seeds.length;

@@ -53,8 +53,8 @@ public class TesterExp8
             if(i == ejecuciones-1)
             {
                 //Print datos
-                System.out.println("Beneficio por translado de bicis: " + hcBoard.beneficioTotal(false) + "€");
-                System.out.println("Beneficio menos coste: " + hcBoard.getBeneficioReal() + "€");
+                System.out.println("Pago por bicicletas bien transladadas: " + hcBoard.beneficioTotal(false) + "€");
+                System.out.println("Beneficio: " + hcBoard.getBeneficioReal() + "€");
                 System.out.println("Distancia: " + hcBoard.getTotalTravelDist() + "m");
             }
         }
