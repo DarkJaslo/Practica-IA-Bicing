@@ -125,7 +125,7 @@ public class PracSuccessorFunction implements SuccessorFunction {
         /*
          * Añade sucesores de addVan
          */
-        if(addVanEnabled)
+        if(addVanEnabled && board.getFurgonetasEnUso() < board.getMaxFurgonetas())
         {
             for(int o = 0; o < board.getEstaciones().size(); ++o)
             {
