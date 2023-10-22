@@ -82,16 +82,17 @@ public class TesterExp1
                     System.out.println("Distancia: " + hcBoard.getTotalTravelDist());
                     System.out.println();
                     */
+                    double benef = hcBoard.beneficioTotal(false);
                     double benefReal = hcBoard.getBeneficioReal();
                     double travelDist = hcBoard.getTotalTravelDist();
                     double tiempo = (endTime-startTime);
 
-                    beneficioH1Total += hcBoard.beneficioTotal(false);
+                    beneficioH1Total += benef;
                     beneficioH2Total += benefReal;
                     distanciaTotal += travelDist;
                     tiempoTotal += tiempo;
 
-                    bufferedWriter.write(modos[j] + "\t" + benefReal + "\t" + tiempo/1000000 + "\n");
+                    bufferedWriter.write(modos[j] + "\t" + benef + "\t" + tiempo/1000000 + "\n");
                 }
                 mediaPorTipo[j] = beneficioH1Total/seeds.length;
                 mediaRealPorTipo[j] = beneficioH2Total/seeds.length;

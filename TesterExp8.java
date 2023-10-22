@@ -32,7 +32,7 @@ public class TesterExp8
             PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.VACIA;
 
             PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-            board.setRedondeo(4);
+            board.setRedondeo(0);
             board.creaSolucionInicial(tipoSol);
 
             PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
