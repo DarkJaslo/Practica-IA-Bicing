@@ -27,8 +27,8 @@ public class TesterExp2
     {
         try 
         {
-            PracBoard.TipoSolucion tiposSol[] = {PracBoard.TipoSolucion.VACIA, PracBoard.TipoSolucion.NORMAL};
-            String nombresTiposSol[] = {"Vacia", "Normal"};
+            PracBoard.TipoSolucion tiposSol[] = {PracBoard.TipoSolucion.VACIA, PracBoard.TipoSolucion.NORMAL, PracBoard.TipoSolucion.GREEDY2};
+            String nombresTiposSol[] = {"Vacia", "Normal", "Greedy"};
             initVars(tiposSol.length);
 
             String filePath = "./R/exp2.txt";
