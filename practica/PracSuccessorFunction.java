@@ -4,6 +4,7 @@ import aima.search.framework.SuccessorFunction;
 import aima.search.framework.Successor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class PracSuccessorFunction implements SuccessorFunction {
 
@@ -206,8 +207,136 @@ public class PracSuccessorFunction implements SuccessorFunction {
      */
     private List getSuccessorsSA(Object state)
     {
-        ArrayList<Successor> retval = new ArrayList<Successor>();
-        return retval;
+        try {
+            ArrayList<Successor> retval = new ArrayList<Successor>();
+
+            /* Operador aleatorio */
+            //0->change 1->swap 2->change2 3->add
+
+            //Si se puede aplicar, aplica. Si no, busca otro
+
+            boolean found = false;
+            Random random = new Random(System.currentTimeMillis());
+            double probsAdd[] = { 0.2,
+                                0.3,
+                                0.5,
+                                1.0};
+
+            double probsNoAdd[] = {0.4,
+                                    0.6,
+                                    1.0,
+                                    1.1};
+
+            PracBoard board = (PracBoard)state;
+            double probs[];
+
+            if(board.getFurgonetasEnUso() >= board.getMaxFurgonetas())
+            {
+                probs = new double[probsNoAdd.length];
+                for(int i = 0; i < probsNoAdd.length; ++i)
+                    probs[i] = probsNoAdd[i];
+            }
+            else
+            {
+                probs = new double[probsAdd.length];
+                for(int i = 0; i < probsAdd.length; ++i)
+                    probs[i] = probsAdd[i];
+            }
+
+            while(!found)
+            {
+                double rand = random.nextDouble();
+                if(board.getFurgonetasEnUso() == 0 || rand >= probs[3]) //Add
+                {
+                    //System.out.println("Add");
+                    //Random add
+                    int nest = board.getEstaciones().size();
+                    int origen = random.nextInt(nest);
+                    int dest1 = random.nextInt(nest);
+                    int dest2;
+                    if(rand >= 0.5)
+                        dest2 = random.nextInt(nest+1)-1;
+                    else 
+                        dest2 = -1;
+
+                    if(board.canAddVan(origen, dest1, dest2))
+                    {
+                        PracBoard auxBoard = PracBoard.copyOf(board);
+                        auxBoard.addVan(origen, dest1, dest2);
+                        String op = "add origen " + origen + " dest1 " + dest1 + " dest2 ";
+                        if(dest2 == -1) op = op+"no";
+                        else op = op+dest2;
+                        retval.add(new Successor(op, auxBoard));
+                        found = true;
+                    }
+                }
+                else if(rand >= probs[2]) //Change2
+                {
+                    //System.out.println("Change2");
+                    int f = random.nextInt(board.getFurgonetasEnUso());
+                    int which1, which2;
+                    if(rand >= 0.33){ which1 = board.origen(); which2 = board.destino1();}
+                    else if(rand >= 0.66){ which1 = board.origen(); which2 = board.destino2();}
+                    else { which1 = board.destino1(); which2 = board.destino2();}
+
+                    int nest = board.getEstaciones().size();
+                    int est1 = random.nextInt(nest);
+                    int est2 = random.nextInt(nest);
+
+                    if(board.canChange2Est(f,which1,which2,est1,est2))
+                    {
+                        PracBoard auxBoard = PracBoard.copyOf(board);
+                        auxBoard.change2Est(f, which1, which2, est1, est2);
+                        retval.add(new Successor("change2 furg " + f + " " + board.getNombreEstacion(which1) + " " + est1 + "" + board.getNombreEstacion(which2) + " " + est2, auxBoard));
+                        found = true;
+                    }
+                }
+                else if(rand >= probs[1]) //Swap
+                {
+                    //System.out.println("Swap");
+                    int f1 = random.nextInt(board.getFurgonetasEnUso());
+                    int f2 = random.nextInt(board.getFurgonetasEnUso());
+                    int ests[] = {board.origen(),board.origen(),
+                                        board.destino1(),board.destino1(),
+                                        board.destino1(),board.destino2(),
+                                        board.destino2(),board.destino1(),
+                                        board.destino2(),board.destino2()};
+                    int index = 2*random.nextInt(5);
+                    int which1 = ests[index];
+                    int which2 = ests[index+1];
+                    if(board.canSwapEst(f1, f2, which1, which2))
+                    {
+                        PracBoard auxBoard = PracBoard.copyOf(board);
+                        auxBoard.swapEst(f1, f2, which1, which2);
+                        retval.add(new Successor("swap furg " + f1 + " furg " + f2 + " " + board.getNombreEstacion(ests[index]) + " " + board.getNombreEstacion(ests[index+1]), auxBoard));
+                        found = true;
+                    }
+                } 
+                else if(rand >= probs[0]) //Change
+                {
+                    //System.out.println("Change");
+                    int f = random.nextInt(board.getFurgonetasEnUso());
+                    int opts[] = {board.origen(), board.destino1(), board.destino2()};
+                    int which = opts[random.nextInt(3)];
+                    int est = random.nextInt(board.getEstaciones().size());
+
+                    if(board.canChangeEst(f, which, est))
+                    {
+                        PracBoard auxBoard = PracBoard.copyOf(board);
+                        auxBoard.changeEst(f, which, est);
+                        retval.add(new Successor("change furg " + f + " " + board.getNombreEstacion(which) + " " + est, auxBoard));
+                        found = true;
+                    }
+                }
+            }
+
+            return retval;
+        } catch (Exception e) 
+        {
+            ArrayList<Successor> retval = new ArrayList<Successor>();
+            e.printStackTrace();
+            return retval;            
+        }
     }
 
     public void disableChangeEst()

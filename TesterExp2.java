@@ -58,7 +58,7 @@ public class TesterExp2
                     //Búsqueda Hill Climbing
 
                     //Enum para decir que heuristico usar
-                    PracHeuristicFunction.Function heuristicoHC = PracHeuristicFunction.Function.Heuristico_2;
+                    PracHeuristicFunction.Function heuristicoHC = PracHeuristicFunction.Function.Heuristico_1;
                     PracBoard.TipoSolucion tipoSol = tiposSol[j];
 
                     //Búsqueda Hill Climbing

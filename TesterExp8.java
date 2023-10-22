@@ -26,7 +26,7 @@ public class TesterExp8
             Estaciones estaciones = new Estaciones(numEstaciones, numBicis, tipoDemanda, seed);
             
             //Heurístico usado
-            PracHeuristicFunction.Function heuristicoHC = PracHeuristicFunction.Function.Heuristico_2;
+            PracHeuristicFunction.Function heuristicoHC = PracHeuristicFunction.Function.Heuristico_1;
             
             //Tipo de solución inicial
             PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.VACIA;
@@ -53,8 +53,8 @@ public class TesterExp8
             if(i == ejecuciones-1)
             {
                 //Print datos
-                System.out.println("Beneficio sin coste: " + hcBoard.beneficioTotal(false) + "€");
-                System.out.println("Beneficio real: " + hcBoard.getBeneficioReal() + "€");
+                System.out.println("Beneficio por translado de bicis: " + hcBoard.beneficioTotal(false) + "€");
+                System.out.println("Beneficio menos coste: " + hcBoard.getBeneficioReal() + "€");
                 System.out.println("Distancia: " + hcBoard.getTotalTravelDist() + "m");
             }
         }
