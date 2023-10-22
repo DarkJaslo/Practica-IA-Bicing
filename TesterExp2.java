@@ -68,7 +68,7 @@ public class TesterExp2
                     successorFunction.disableChange3Est();
 
                     PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-                    board.setRedondeo(4);
+                    board.setRedondeo(0);
                     board.creaSolucionInicial(tipoSol);
 
                     Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(heuristicoHC));
@@ -81,14 +81,15 @@ public class TesterExp2
 
                     PracBoard hcBoard = (PracBoard)alg.getGoalState();
 
+                    double benef = hcBoard.beneficioTotal(false);
                     double beneficio = hcBoard.getBeneficioReal();
                     double tiempo = (endTime-startTime);
 
-                    beneficioH1Total += hcBoard.beneficioTotal(false);
+                    beneficioH1Total += benef;
                     beneficioH2Total += beneficio;
                     distanciaTotal += hcBoard.getTotalTravelDist();
 
-                    bufferedWriter.write(nombresTiposSol[j] + "\t" + beneficio + "\t" + tiempo/1000000 + "\n");
+                    bufferedWriter.write(nombresTiposSol[j] + "\t" + benef + "\t" + tiempo/1000000 + "\n");
                 }
                 mediaPorTipo[j] = beneficioH1Total/seeds.length;
                 mediaRealPorTipo[j] = beneficioH2Total/seeds.length;
