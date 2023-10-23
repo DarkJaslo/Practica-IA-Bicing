@@ -1,4 +1,4 @@
-alg	heur	benef	tiempo
+alg	heur	calidad beneficio   distancia	tiempo
 HC	1	70	71
 HC	1	57	63
 HC	2	80	74
