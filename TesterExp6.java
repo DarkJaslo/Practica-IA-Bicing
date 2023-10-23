@@ -25,22 +25,21 @@ public class TesterExp6
             String modos[] = { "ChangeSwapAdd", "ChangeChange2SwapAdd", "ChangeChange2Change3SwapAdd" };
             initVars(modos.length);
 
-            String filePath = "./R/exp6.txt";
+            String filePath = "./R/exp6Equi.txt";
             FileWriter fileWriter = new FileWriter(filePath);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             bufferedWriter.write("tiempo\n");
             
+            //Inicialización estaciones ( en este caso, solo una vez )
+            int numEstaciones = 25;
+            int numBicis = 1250;
+            int maxFurgonetas = 5;
+            int tipoDemanda = Estaciones.EQUILIBRIUM;
 
-                
             for(int i = 0; i < seeds.length; ++i)
             {
                 printProgreso(i);
 
-                //Inicialización estaciones ( en este caso, solo una vez )
-                int numEstaciones = 25;
-                int numBicis = 1250;
-                int maxFurgonetas = 5;
-                int tipoDemanda = Estaciones.RUSH_HOUR;
                 int seed = seeds[i];
 
                 Estaciones estaciones = new Estaciones(numEstaciones, numBicis, tipoDemanda, seed);
@@ -52,17 +51,16 @@ public class TesterExp6
                 setOperadores(successorFunction,modos[1]);
 
                 PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-                board.setRedondeo(0);
+                board.setRedondeo(4);
                 board.creaSolucionInicial(tipoSol);
 
-                Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_1));
+                Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_2));
 
                 Search alg = new HillClimbingSearch();
 
                 double startTime = System.nanoTime();
                 SearchAgent agent = new SearchAgent(p, alg);
                 double endTime = System.nanoTime();
-                PracBoard hcBoard = (PracBoard)alg.getGoalState();
 
                 double tiempo = endTime - startTime;
 
