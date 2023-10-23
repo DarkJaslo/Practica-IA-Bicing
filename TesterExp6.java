@@ -25,47 +25,53 @@ public class TesterExp6
             String modos[] = { "ChangeSwapAdd", "ChangeChange2SwapAdd", "ChangeChange2Change3SwapAdd" };
             initVars(modos.length);
 
-            String filePath = "./R/exp6Equi.txt";
+            String filePath = "./R/exp6.txt";
             FileWriter fileWriter = new FileWriter(filePath);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            bufferedWriter.write("demanda\t");
             bufferedWriter.write("tiempo\n");
             
             //Inicialización estaciones ( en este caso, solo una vez )
             int numEstaciones = 25;
             int numBicis = 1250;
             int maxFurgonetas = 5;
-            int tipoDemanda = Estaciones.EQUILIBRIUM;
+            int[] Demanda = {Estaciones.EQUILIBRIUM, Estaciones.RUSH_HOUR};
+            
+            for(int j = 0; j < 2; ++j) {
+                int tipoDemanda = Demanda[j];
+                for(int i = 0; i < seeds.length; ++i)
+                {
+                    printProgreso(i);
+                    if (j == 0) bufferedWriter.write("equilibrada\t");
+                    else bufferedWriter.write("horaPunta\t");
+                    int seed = seeds[i];
 
-            for(int i = 0; i < seeds.length; ++i)
-            {
-                printProgreso(i);
+                    Estaciones estaciones = new Estaciones(numEstaciones, numBicis, tipoDemanda, seed);
 
-                int seed = seeds[i];
+                    //Búsqueda Hill Climbing
 
-                Estaciones estaciones = new Estaciones(numEstaciones, numBicis, tipoDemanda, seed);
+                    //Enum para decir que heuristico usar
+                    PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
+                    setOperadores(successorFunction,modos[1]);
 
-                //Búsqueda Hill Climbing
+                    PracBoard board = new PracBoard(estaciones, maxFurgonetas);
+                    board.setRedondeo(4);
+                    board.creaSolucionInicial(tipoSol);
 
-                //Enum para decir que heuristico usar
-                PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
-                setOperadores(successorFunction,modos[1]);
+                    Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_2));
 
-                PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-                board.setRedondeo(4);
-                board.creaSolucionInicial(tipoSol);
+                    Search alg = new HillClimbingSearch();
 
-                Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_2));
+                    double startTime = System.nanoTime();
+                    SearchAgent agent = new SearchAgent(p, alg);
+                    double endTime = System.nanoTime();
 
-                Search alg = new HillClimbingSearch();
+                    double tiempo = endTime - startTime;
 
-                double startTime = System.nanoTime();
-                SearchAgent agent = new SearchAgent(p, alg);
-                double endTime = System.nanoTime();
-
-                double tiempo = endTime - startTime;
-
-                bufferedWriter.write(tiempo/1000000 + "\n");
+                    bufferedWriter.write(tiempo/1000000 + "\n");
+                }
             }
+            
 
             bufferedWriter.close();
         } 
