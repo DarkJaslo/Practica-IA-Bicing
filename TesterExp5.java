@@ -129,7 +129,7 @@ public class TesterExp5
                     calidadMedia[j+2] += calidad;
                     beneficioMedio[j+2] += benefReal;
 
-                    bufferedWriter.write("HC\t" + "H" + j+1 + "\t" + calidad + "\t" + benefReal + "\t" + travelDist + "\t" + tiempo/1000000 + "\n");
+                    bufferedWriter.write("SA\t" + "H" + (j+1) + "\t" + calidad + "\t" + benefReal + "\t" + travelDist + "\t" + tiempo/1000000 + "\n");
                 }
             }
             bufferedWriter.close();
