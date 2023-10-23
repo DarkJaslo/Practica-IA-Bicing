@@ -18,11 +18,18 @@ public class TesterExp5
 {
     private static final int NUM_SEEDS = 1000;
     private static int seeds[];
+    private static final int    SA_TEMP = 1000000;
+    private static final int    SA_ITER = 1;
+    private static final int    SA_K = 1;
+    private static final double SA_LAMBDA = 0.001;
 
     public static void main(String args[]) throws Exception
     {
         try 
         {
+            double calidadMedia[] = {0.0,0.0,0.0,0.0};
+            double beneficioMedio[] = {0.0,0.0,0.0,0.0};
+
             PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.GREEDY2;
             String modos[] = { "ChangeSwapAdd", "ChangeChange2SwapAdd", "ChangeChange2Change3SwapAdd" };
             PracHeuristicFunction heuristics[] = {
@@ -49,7 +56,7 @@ public class TesterExp5
 
             //Búsqueda Hill Climbing
             successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
-            System.out.println("Realizando búsquedas con Hill Climbing:");
+            System.out.println("Realizando busquedas con Hill Climbing:");
 
             for(int i = 0; i < NUM_SEEDS; ++i) {
                 printProgreso(i);
@@ -78,13 +85,16 @@ public class TesterExp5
                     double travelDist = hcBoard.getTotalTravelDist();
                     double tiempo = (endTime-startTime);
 
+                    calidadMedia[j] += calidad;
+                    beneficioMedio[j] += benefReal;
+
                     bufferedWriter.write("HC\t" + "H" + (j+1) + "\t" + calidad + "\t" + benefReal + "\t" + travelDist + "\t" + tiempo/1000000 + "\n");
                 }
             }
             
 
             //Búsqueda Simulated Annealing
-            System.out.println("Realizando búsquedas con Simulated Annealing:");
+            System.out.println("Realizando busquedas con Simulated Annealing:");
             int TEMP = 1000000;
             int iter = 1;
             successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.SimulatedAnnealing);
@@ -104,7 +114,7 @@ public class TesterExp5
 
                     Problem p = new Problem(board, successorFunction, new PracGoalTest(), heuristics[j]);
 
-                    Search alg = new SimulatedAnnealingSearch();
+                    Search alg = new SimulatedAnnealingSearch(SA_TEMP,SA_ITER,SA_K,SA_LAMBDA);
 
                     double startTime = System.nanoTime();
                     SearchAgent agent = new SearchAgent(p, alg);
@@ -116,10 +126,24 @@ public class TesterExp5
                     double travelDist = hcBoard.getTotalTravelDist();
                     double tiempo = (endTime-startTime);
 
+                    calidadMedia[j+2] += calidad;
+                    beneficioMedio[j+2] += benefReal;
+
                     bufferedWriter.write("HC\t" + "H" + j+1 + "\t" + calidad + "\t" + benefReal + "\t" + travelDist + "\t" + tiempo/1000000 + "\n");
                 }
             }
             bufferedWriter.close();
+
+            for(int i = 0; i < 4; ++i)
+            {
+                calidadMedia[i] /= NUM_SEEDS;
+                beneficioMedio[i] /= NUM_SEEDS;
+            }
+
+            System.out.println("HC Heur 1: " + "calidad: " + calidadMedia[0] + ", benef: " + beneficioMedio[0]);
+            System.out.println("HC Heur 2: " + "calidad: " + calidadMedia[1] + ", benef: " + beneficioMedio[1]);
+            System.out.println("SA Heur 1: " + "calidad: " + calidadMedia[2] + ", benef: " + beneficioMedio[2]);
+            System.out.println("SA Heur 2: " + "calidad: " + calidadMedia[3] + ", benef: " + beneficioMedio[3]);
         } 
         catch (IOException e) {
             e.printStackTrace();
