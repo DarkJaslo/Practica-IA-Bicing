@@ -76,7 +76,7 @@ public class TesterExp3
                         successorFunction.disableChange3Est();
 
                         PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-                        board.setRedondeo(0);
+                        board.setRedondeo(4);
                         board.creaSolucionInicial(tipoSol);
 
                         Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(heuristicoHC));
