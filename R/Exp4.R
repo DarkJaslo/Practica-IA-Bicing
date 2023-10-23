@@ -16,9 +16,7 @@ est8 <- subset(res4, estaciones==200)
 
 meanTiempo <- aggregate(x=res4$tiempo, by=list(res4$estaciones), FUN=mean)
 
-#Comparando beneficios
-#boxplot(est1$tiempo, est2$tiempo, est3$tiempo, names=c("25", "50", "75", "100", "125", "150", "175", "200"), ylab="tiempo")
-
 
 #Evolucion de la media del tiempo
-plot(meanTiempo$x ~ meanTiempo$Group.1, ylab="Tiempo", xlab="Estaciones")
+plot(meanTiempo$x ~ meanTiempo$Group.1, type="b", ylab="Tiempo", xlab="Estaciones")
+
