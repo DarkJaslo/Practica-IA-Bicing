@@ -17,7 +17,7 @@ public class TesterExp4
 {
     private static final int NUM_EST_INI = 25;
 
-    private static final int ITERS = 4;
+    private static final int ITERS = 8;
     private static final int SEEDS_PER_ITER = 50;
 
     private static final int NUM_SEEDS = SEEDS_PER_ITER * ITERS;

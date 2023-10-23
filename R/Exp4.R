@@ -16,14 +16,8 @@ est7 <- subset(res4, estaciones==175)
 est8 <- subset(res4, estaciones==200)
 
 #Comparando beneficios
-boxplot(set1$beneficio, set2$beneficio, set3$beneficio, 
-        names=c("ChangeSwapAdd", "ChangeChange2SwapAdd", "ChangeChange2Change3SwapAdd"), ylab="beneficio")
-dif12 <- sum(set1$benef > set2$benef)
+boxplot(est1$tiempo, est2$tiempo, est3$tiempo, 
+        names=c("25", "50", "75", "100", "125", "150", "175", "200"), ylab="tiempo")
 
-#Probabilidad de que pase esto bajo H0
-dbinom(x=dif12,size=length(set1$benef),prob=0.5)
 
-#Comparando tiempos
-windows()
-boxplot(set1$tiempo, set2$tiempo, set3$tiempo, names=c("set1", "set2"), ylab="ms")
-t.test(set1$tiempo, set2$tiempo, paired=TRUE)
+#Evolucion de la media del tiempo
