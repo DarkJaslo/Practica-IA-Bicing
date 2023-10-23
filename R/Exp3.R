@@ -3,13 +3,106 @@ options(scipen = 10000)
 
 E <- -1
 k <- 20
-l <- 0.0001
+l <- 0.00001
 
 f <- function(t) (exp(E/(k*exp(-l*t))))
 
-t <- 60000
+t <- 1000000
 curve(f,from=0,to=t,n=100,ylim=range(0,1))
 
 exp(E/(k*exp(-l*t)))
+
+
+setwd("C:/Users/Sandra/Documents/Uni/IA/Lab/IA-Practica-Bicing/R")
+if (!require("data.table")) install.packages("data.table")
+library(data.table)
+res3 <- read.table("exp3.txt", header = TRUE, sep = "\t")
+
+par1 <- subset(res3, par=="1|0.1")
+par2 <- subset(res3, par=="1|0.01")
+par3 <- subset(res3, par=="1|0.001")
+par4 <- subset(res3, par=="1|1.0E-4")
+par5 <- subset(res3, par=="1|1.0E-5")
+par6 <- subset(res3, par=="5|0.1")
+par7 <- subset(res3, par=="5|0.01")
+par8 <- subset(res3, par=="5|0.001")
+par9 <- subset(res3, par=="5|1.0E-4")
+par10 <- subset(res3, par=="5|1.0E-5")
+par11 <- subset(res3, par=="10|0.1")
+par12 <- subset(res3, par=="10|0.01")
+par13 <- subset(res3, par=="10|0.001")
+par14 <- subset(res3, par=="10|1.0E-4")
+par15 <- subset(res3, par=="10|1.0E-5")
+par16 <- subset(res3, par=="20|0.1")
+par17 <- subset(res3, par=="20|0.01")
+par18 <- subset(res3, par=="20|0.001")
+par19 <- subset(res3, par=="20|1.0E-4")
+par20 <- subset(res3, par=="20|1.0E-5")
+
+
+mean(par1$beneficio)
+mean(par2$beneficio)
+mean(par3$beneficio)
+mean(par4$beneficio)
+mean(par5$beneficio)
+mean(par6$beneficio)
+mean(par7$beneficio)
+mean(par8$beneficio)
+mean(par9$beneficio)
+mean(par10$beneficio)
+mean(par11$beneficio)
+mean(par12$beneficio)
+mean(par13$beneficio)
+mean(par14$beneficio)
+mean(par15$beneficio)
+mean(par16$beneficio)
+mean(par17$beneficio)
+mean(par18$beneficio)
+mean(par19$beneficio)
+mean(par20$beneficio)
+
+mean(par1$calidad)
+mean(par2$calidad)
+mean(par3$calidad)
+mean(par4$calidad)
+mean(par5$calidad)
+mean(par6$calidad)
+mean(par7$calidad)
+mean(par8$calidad)
+mean(par9$calidad)
+mean(par10$calidad)
+mean(par11$calidad)
+mean(par12$calidad)
+mean(par13$calidad)
+mean(par14$calidad)
+mean(par15$calidad)
+mean(par16$calidad)
+mean(par17$calidad)
+mean(par18$calidad)
+mean(par19$calidad)
+mean(par20$calidad)
+
+mean(par1$tiempo)
+mean(par2$tiempo)
+mean(par3$tiempo)
+mean(par4$tiempo)
+mean(par5$tiempo)
+mean(par6$tiempo)
+mean(par7$tiempo)
+mean(par8$tiempo)
+mean(par9$tiempo)
+mean(par10$tiempo)
+mean(par11$tiempo)
+mean(par12$tiempo)
+mean(par13$tiempo)
+mean(par14$tiempo)
+mean(par15$tiempo)
+mean(par16$tiempo)
+mean(par17$tiempo)
+mean(par18$tiempo)
+mean(par19$tiempo)
+mean(par20$tiempo)
+
+
 
 
