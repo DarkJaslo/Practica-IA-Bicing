@@ -23,8 +23,6 @@ public class TesterExp4
     private static final int NUM_SEEDS = SEEDS_PER_ITER * ITERS;
     private static int seeds[];
 
-    private static long time_meas[][] = new long[ITERS][SEEDS_PER_ITER];
-
     public static void main(String args[]) throws Exception
     {   
         try 
@@ -72,22 +70,15 @@ public class TesterExp4
                     long endTime = System.nanoTime();
                     PracBoard hcBoard = (PracBoard)alg.getGoalState();
 
-                    time_meas[i][j] = (endTime - startTime);
-
                     bufferedWriter.write(numEstaciones + "\t" + (endTime-startTime)/1000000 + "\n");
                 }
             }
 
             bufferedWriter.close();
 
-            for (int i = 0; i < ITERS; ++i) {
-                for (int j = 0; j < SEEDS_PER_ITER; ++j) {
-                    System.out.print(time_meas[i][j] + " ");
-                }
-                System.out.println();
-            }    
         } catch (Exception e) {
             // TODO: handle exception
+            e.printStackTrace();
         }
 
 
