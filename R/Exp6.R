@@ -9,5 +9,5 @@ punta <- subset(res6, demanda=="horaPunta")
 
 boxplot(equi$tiempo, punta$tiempo, names=c("Equilibrada", "Hora punta"), ylim=range(0,55),
         xlab= "Demanda", ylab="tiempo")
-mean(HCH2$tiempo)
-mean(res6$tiempo)
+mean(equi$tiempo);mean(punta$tiempo)
+t.test(equi$tiempo, punta$tiempo, paired=TRUE)
