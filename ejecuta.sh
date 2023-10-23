@@ -4,5 +4,5 @@ if [ "$#" -ne 1 ]; then
   exit 1
 fi
 
-java -cp $(cat classpaths.txt) $1
+java -Xmx8192m -cp $(cat classpaths.txt) $1
 exit 0
