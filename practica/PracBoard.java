@@ -233,7 +233,7 @@ public class PracBoard{
      */
     public boolean canAddVan(int origen, int dest1, int dest2) 
     {
-        //Demadiadas furgonetas en uso si añadimos
+        //Demasiadas furgonetas en uso si añadimos
         if(furgEnUso >= maxFurgonetas) return false;
         //Si se añade una furgoneta incorrecta (que repite estaciones)
         else if(origen == dest1 || origen == dest2 || dest1 == dest2) return false;
@@ -311,7 +311,7 @@ public class PracBoard{
 
 
     /*  Funciones auxiliares  */
-    
+
 
     /*
      * Pretende redondear hacia abajo las bicicletas que una furgoneta se lleva de una estación de origen con tal de aprovechar la fórmula de coste
