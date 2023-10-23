@@ -28,8 +28,8 @@ public class PracBoard{
     //Resultados experimentales informales: 4 es el mejor valor para el beneficio REAL
     private int REDONDEO = 4;
 
-    //Multiplica al beneficio en la función heurística
-    private static final double FACTOR_HEURISTICO = 1.0;
+    //Multiplica a la calidad en la función heurística
+    private static double FACTOR_HEURISTICO = 2.0;
 
     public static enum TipoSolucion{ VACIA, NORMAL, GREEDY, GREEDY2 }
 
@@ -593,6 +593,10 @@ public class PracBoard{
         REDONDEO = redondeo;
     }
 
+    public static void setPonderador(double k)
+    {
+        FACTOR_HEURISTICO = k;
+    }
 
     public void creaSolucionInicial(TipoSolucion tipoSolucion)
     {
