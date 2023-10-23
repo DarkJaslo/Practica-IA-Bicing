@@ -15,10 +15,10 @@ import practica.PracSuccessorFunction;
 public class TesterExp7 
 {
     private static final int FURGO_INICIALES = 5;
-    private static final int NUM_ITERS = 50;
+    private static final int FURGO_MAXIMAS = 20;
     private static final int INC_VAL = 1;
 
-    private static final int NUM_SEEDS = 1000;
+    private static final int NUM_SEEDS = 100;
     private static int seeds[];
 
     public static void main(String args[]) throws Exception
@@ -32,25 +32,28 @@ public class TesterExp7
             String filePath = "./R/exp7.txt";
             FileWriter fileWriter = new FileWriter(filePath);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            bufferedWriter.write("#Problema\tEscenario\tfurgonetas\tcalidad\tbeneficio\n");
+            bufferedWriter.write("demanda\tfurgonetas\tcalidad\tbeneficio\n");
             
             int[] tipoDemanda = new int[] {Estaciones.EQUILIBRIUM, Estaciones.RUSH_HOUR};
-            String[] demandName = new String[] {"Equilibrado","HoraPunta"};
+            String[] demandName = new String[] {"equilibrada","horaPunta"};
             int numEstaciones = 25;
             int numBicis = 1250;
 
             //Enum para decir que heuristico usar
             PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
             setOperadores(successorFunction,modos[1]);
+            for (int k = 0; k < 2; ++k) {
 
-            for(int i = 0; i < NUM_SEEDS; ++i) {
-                int maxFurgonetas = FURGO_INICIALES;
-                printProgreso(i);
+                System.out.println("Demanda "+ tipoDemanda[k]);
 
-                for(int j = 0; j <= NUM_ITERS - FURGO_INICIALES; ++j) {
-                    for (int k = 0; k < 2; ++k) {
+                for(int i = FURGO_INICIALES; i <= FURGO_MAXIMAS; i += INC_VAL) {
+                    int maxFurgonetas = i;
+                    
+                    System.out.println("Numero de furgonetas: "+i);
+                    for(int j = 0; j < NUM_SEEDS; ++j) {
+                        printProgreso(j);
                         //Inicialización estaciones ( en este caso, solo una vez )
-                        int seed = seeds[i];
+                        int seed = seeds[j];
 
                         Estaciones estaciones = new Estaciones(numEstaciones, numBicis, tipoDemanda[k], seed);
 
@@ -59,21 +62,18 @@ public class TesterExp7
                         board.setRedondeo(0);
                         board.creaSolucionInicial(tipoSol);
 
-                        Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_1));
+                        Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_2));
 
                         Search alg = new HillClimbingSearch();
 
-                        double startTime = System.nanoTime();
                         SearchAgent agent = new SearchAgent(p, alg);
-                        double endTime = System.nanoTime();
                         PracBoard hcBoard = (PracBoard)alg.getGoalState();
 
                         double calidad = hcBoard.beneficioTotal(false);
                         double benefReal = hcBoard.getBeneficioReal();
 
-                        bufferedWriter.write(i + "\t" + demandName[k] + "\t" + maxFurgonetas + "\t" + calidad + "\t" + benefReal + "\n");
+                        bufferedWriter.write(demandName[k] + "\t" + maxFurgonetas + "\t" + calidad + "\t" + benefReal + "\n");
                     }
-                    maxFurgonetas += INC_VAL;
                 }
             }
             bufferedWriter.close();
