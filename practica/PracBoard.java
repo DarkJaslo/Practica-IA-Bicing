@@ -6,16 +6,15 @@ import java.util.ArrayList;
 import java.util.Queue;
 import java.util.LinkedList;
 import java.lang.Math;
-import java.util.Random;
-import java.util.Arrays;
 
 /*
- * Propuesta actual, seguro que se puede mejorar
+ * Representación del estado
  */
 public class PracBoard{
     /*
      * Constantes
      */
+
     private static Estaciones estaciones;
     private static int maxFurgonetas;
 
@@ -29,27 +28,10 @@ public class PracBoard{
     //Resultados experimentales informales: 4 es el mejor valor para el beneficio REAL
     private int REDONDEO = 4;
 
-    //Multilica al beneficio en la función heurística
+    //Multiplica al beneficio en la función heurística
     private static final double FACTOR_HEURISTICO = 1.0;
 
-    public static enum TipoSolucion{ VACIA, NORMAL, NORMAL_RANDOM, GREEDY, GREEDY2 }
-
-    private class StationDemand implements Comparable<StationDemand> {
-        public int id;      //Identificador de la estación
-        public int demand;  //Demanda de dicha estación
-
-        public StationDemand(int id, int demand) {
-            this.id = id;
-            this.demand = demand;
-        }
-
-        @Override
-        public int compareTo(StationDemand other) {
-            if (demand < other.demand) return -1;
-            if (demand > other.demand) return 1;
-            return 0;
-        }
-    }
+    public static enum TipoSolucion{ VACIA, NORMAL, GREEDY, GREEDY2 }
 
     /*
      * Cambios en la ocupación de las estaciones (e1: +2, e2: -30, e3: +12, etc)
@@ -113,13 +95,10 @@ public class PracBoard{
     /*  
      * Hacer intercambios de estaciones entre ellas
      * Cambiar una estacion de una furgoneta
+     * Cambiar dos estaciones de una furgoneta
      * Añadir una furgoneta
      * 
      * La idea es que si se añade una furgoneta es porque es muy bueno hacerlo y dejamos que sea el algoritmo quien se encarga de hacer una solucion mejor
-     * 
-     * Requisitos para las soluciones iniciales:
-     * 
-     * -Que usen menos o tantas furgonetas como una "solucion optima"
     */
 
     /*
@@ -330,8 +309,9 @@ public class PracBoard{
         changeEst(f,EST2,newDest2);
     }
 
-    /*  Funciones auxiliares  */
 
+    /*  Funciones auxiliares  */
+    
 
     /*
      * Pretende redondear hacia abajo las bicicletas que una furgoneta se lleva de una estación de origen con tal de aprovechar la fórmula de coste
@@ -396,7 +376,7 @@ public class PracBoard{
     }
 
     /*
-     * Devuelve las bicicletas que hace falta traer a una estación
+     * Devuelve las bicicletas que hace falta traer a una estación teniendo en cuenta los cambios efectuados por esta solución
      */
     private int demand(int est) 
     {
@@ -414,38 +394,30 @@ public class PracBoard{
     }
 
     /*
-     * Devuelve la distancia Manhattan en metros del punto (x1,y1) al punto (x2,y2)
-     */
-    int distance(int x1, int y1, int x2, int y2)
-    {
-        return (Math.abs(x1-x2)+Math.abs(y1-y2));
-    }
-
-    /*
      * Devuelve la distancia Manhattan en metros entre dos "Estación" cualesquiera
      */
-    public int distance(Estacion e1, Estacion e2) {
+    private int distance(Estacion e1, Estacion e2) {
         return (Math.abs(e1.getCoordX()-e2.getCoordX()) + Math.abs(e1.getCoordY()-e2.getCoordY()));
     }
 
     /*
      * Devuelve si el id (f) de una furgoneta existe o no
      */
-    public boolean existeFurgo(int f) {
+    private boolean existeFurgo(int f) {
         return (f > -1 && f < maxFurgonetas);
     }
 
     /*
      * Devuelve si el id (est) de una estación existe o no
      */
-    public boolean existeEstacion(int est) {
+    private boolean existeEstacion(int est) {
         return (est > -1 && est < estaciones.size());
     }
 
     /*
      * Devuelve la distancia recorrida por una furgoneta
      */
-    public double getTravelDist(int f) {
+    private double getTravelDist(int f) {
         double dist = 0;
         if (existeFurgo(f) && existeEstacion(viajes[f][ORIGEN])) {
             //Primer viaje
@@ -631,30 +603,6 @@ public class PracBoard{
             case NORMAL:
                 creaSolucionBuena();
                 break;
-            case NORMAL_RANDOM:
-                creaSolucionBuenaRandom(1234);
-                break;
-            case GREEDY:
-                creaSolucionGreedy();
-                break;
-            case GREEDY2:
-                creaSolucionGreedy2();
-                break;
-        }
-    }
-
-    public void creaSolucionInicial(TipoSolucion tipoSolucion, int seedIfRandom)
-    {
-        switch(tipoSolucion)
-        {
-            case VACIA:
-                break;
-            case NORMAL:
-                creaSolucionBuena();
-                break;
-            case NORMAL_RANDOM:
-                creaSolucionBuenaRandom(seedIfRandom);
-                break;
             case GREEDY:
                 creaSolucionGreedy();
                 break;
@@ -700,81 +648,6 @@ public class PracBoard{
                 viajes[furgEnUso][EST2_CANTIDAD] = sobrantes;
             }
             furgEnUso++;
-        }
-    }
-
-    /*
-     * Intentaremos poner menos furgonetas de las necesarias, pero casi misma idea que creaSolucionBuena (excepto porque permite distintas opciones por ser random)
-     */
-    private void creaSolucionBuenaRandom(int seed)
-    {
-        ArrayList<Integer> estOferta = new ArrayList<Integer>();
-        ArrayList<Integer> estDemanda = new ArrayList<Integer>();
-        int demandaTotal = 0;
-        //int ofertaTotal = 0;
-
-        /*
-         * Calcula demanda y oferta totales, asi como se guarda las estaciones que puede dar y las que piden
-         */
-        for(int i = 0; i < estaciones.size(); ++i)
-        {
-            int dem = demandStart(i);
-            if(dem>0){
-                demandaTotal += dem;
-                estDemanda.add(i);
-            }
-            else if(dem<0){
-                //ofertaTotal += dem;
-                estOferta.add(i);
-            }
-        }
-
-        //Furgonetas que usara esta solucion, seran siempre menos de las disponibles
-        int nfurg = Math.min(maxFurgonetas-2,demandaTotal/30);
-        Random random = new Random(seed);
-
-        /*
-         * De las estaciones con bicicletas sobrantes, escoge una random
-         * Escoge dos destinos razonables (con demanda de bicicletas) de forma random tambien
-         */
-        for(int f = 0; f < nfurg; ++f)
-        {
-            int r = random.nextInt(estOferta.size());
-            int orig = estOferta.get(r);
-            viajes[f][ORIGEN] = orig;
-            estOferta.remove(r);
-
-            r = random.nextInt(estDemanda.size());
-            int dest1 = estDemanda.get(r);
-            viajes[f][EST1] = dest1;
-            int dest2 = -1;
-            viajes[f][EST2] = dest2;
-
-            distributeBycicles(f, orig, demand(dest1), demand(dest2));
-            ocupacion[dest1] += viajes[f][EST1_CANTIDAD];
-            
-            if(demand(dest1) <= 0) estDemanda.remove(r);
-
-            if(estDemanda.size() > 0)
-            {
-                r = random.nextInt(estDemanda.size());
-                dest2 = estDemanda.get(r);
-            }
-            viajes[f][EST2] = dest2;
-
-            ocupacion[dest1] -= viajes[f][EST1_CANTIDAD];
-
-            distributeBycicles(f, orig, demand(dest1), demand(dest2));
-
-            if(viajes[f][EST2_CANTIDAD] == 0) 
-                viajes[f][EST2] = -1;
-
-            ocupacion[orig] -= viajes[f][EST1_CANTIDAD] + viajes[f][EST2_CANTIDAD];
-            ocupacion[dest1] += viajes[f][EST1_CANTIDAD];
-            if(dest2 >= 0) ocupacion[dest2] += viajes[f][EST2_CANTIDAD];
-
-            if(dest2 >= 0 && demand(dest2) <= 0) estDemanda.remove(r);
-            ++furgEnUso;
         }
     }
 
@@ -860,6 +733,23 @@ public class PracBoard{
         }
     }    
 
+    private class StationDemand implements Comparable<StationDemand> {
+        public int id;      //Identificador de la estación
+        public int demand;  //Demanda de dicha estación
+
+        public StationDemand(int id, int demand) {
+            this.id = id;
+            this.demand = demand;
+        }
+
+        @Override
+        public int compareTo(StationDemand other) {
+            if (demand < other.demand) return -1;
+            if (demand > other.demand) return 1;
+            return 0;
+        }
+    }
+
     private void creaSolucionGreedy2() {
         ArrayList<StationDemand> stations = new ArrayList<StationDemand>();
         for (int i = 0; i < estaciones.size(); ++i) {
@@ -871,7 +761,6 @@ public class PracBoard{
 
         int i = 0;
         int j = stations.size() -1;
-        int f = 0; //furgoneta actual
 
         while (i < j && i < maxFurgonetas) {
             //Comprobamos que la situación actual sea mejorable
