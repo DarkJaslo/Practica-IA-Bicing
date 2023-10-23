@@ -1,8 +1,3 @@
-
-/*
- * Tester para Simulated annealing
- */
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
@@ -16,13 +11,15 @@ import practica.PracGoalTest;
 import practica.PracHeuristicFunction;
 import practica.PracSuccessorFunction;
 
+/*
+ * Tester para Simulated annealing
+ */
 public class TesterExp3 
 {
-
     private static final int NUM_SEEDS = 50;
     private static int seeds[];
 
-    static private void initVars()
+    static private void initSeeds()
     {
         seeds = new int[NUM_SEEDS];
 
@@ -38,7 +35,7 @@ public class TesterExp3
         double L[] = {0.1,0.01,0.001,0.0001,0.00001};
         int TEMP = 1000000;
         int iter = 1;
-        initVars();
+        initSeeds();
 
         try 
         {

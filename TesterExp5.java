@@ -1,4 +1,5 @@
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -7,64 +8,63 @@ import aima.search.framework.Problem;
 import aima.search.framework.Search;
 import aima.search.framework.SearchAgent;
 import aima.search.informed.HillClimbingSearch;
+import aima.search.informed.SimulatedAnnealingSearch;
 import practica.PracBoard;
 import practica.PracGoalTest;
 import practica.PracHeuristicFunction;
 import practica.PracSuccessorFunction;
 
-public class TesterExp1 
+public class TesterExp5 
 {
     private static final int NUM_SEEDS = 1000;
     private static int seeds[];
-    private static double mediaPorTipo[];
-    private static double mediaRealPorTipo[];
-    private static double distPorTipo[];
-    private static double tiempoPorTipo[];
 
     public static void main(String args[]) throws Exception
     {
         try 
         {
-            PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.VACIA;
+            PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.GREEDY2;
             String modos[] = { "ChangeSwapAdd", "ChangeChange2SwapAdd", "ChangeChange2Change3SwapAdd" };
+            PracHeuristicFunction heuristics[] = {
+                new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_1),
+                new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_2)
+            };
+
             initVars(modos.length);
 
-            String filePath = "./R/exp1.txt";
+            String filePath = "./R/exp5.txt";
             FileWriter fileWriter = new FileWriter(filePath);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            bufferedWriter.write("operadores\tcalidad\tbeneficio\ttiempo\n");
+            bufferedWriter.write("alg\theur\tcalidad\tbeneficio\tdistancia\ttiempo\n");  //RECORDAR CAMBIAR CABECERA
             
-            for(int j = 0; j < modos.length; ++j) //Itera tipos de solución
-            {
-                System.out.println(modos[j] + ":");
-                double beneficioH1Total = 0.0;
-                double beneficioH2Total = 0.0;
-                double distanciaTotal = 0.0;
-                double tiempoTotal = 0.0;
-                for(int i = 0; i < seeds.length; ++i)
-                {
-                    printProgreso(i);
+            //Inicialización estaciones ( en este caso, solo una vez )
+            int numEstaciones = 25;
+            int numBicis = 1250;
+            int maxFurgonetas = 5;
+            int tipoDemanda = Estaciones.EQUILIBRIUM;
 
-                    //Inicialización estaciones ( en este caso, solo una vez )
-                    int numEstaciones = 25;
-                    int numBicis = 1250;
-                    int maxFurgonetas = 5;
-                    int tipoDemanda = Estaciones.EQUILIBRIUM;
-                    int seed = seeds[i];
+            //double results[][][] = new double[NUM_SEEDS*2][2][4];  //Para cada ejecución guardamos calidad, beneficio, distancia y tiempo
+            PracSuccessorFunction successorFunction;
 
-                    Estaciones estaciones = new Estaciones(numEstaciones, numBicis, tipoDemanda, seed);
 
-                    //Búsqueda Hill Climbing
+            //Búsqueda Hill Climbing
+            successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
+            System.out.println("Realizando búsquedas con Hill Climbing:");
 
-                    //Enum para decir que heuristico usar
-                    PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
-                    setOperadores(successorFunction,modos[j]);
+            for(int i = 0; i < NUM_SEEDS; ++i) {
+                printProgreso(i);
+
+                int seed = seeds[i];
+                Estaciones estaciones = new Estaciones(numEstaciones, numBicis, tipoDemanda, seed);
+
+                for (int j = 0; j < 2; ++j) {
+                    setOperadores(successorFunction,modos[1]);
 
                     PracBoard board = new PracBoard(estaciones, maxFurgonetas);
                     board.setRedondeo(0);
                     board.creaSolucionInicial(tipoSol);
 
-                    Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_1));
+                    Problem p = new Problem(board, successorFunction, new PracGoalTest(), heuristics[j]);
 
                     Search alg = new HillClimbingSearch();
 
@@ -72,46 +72,53 @@ public class TesterExp1
                     SearchAgent agent = new SearchAgent(p, alg);
                     double endTime = System.nanoTime();
                     PracBoard hcBoard = (PracBoard)alg.getGoalState();
-
-                    /*
-                    System.out.println("Combinacion operadores: " + modos[j]);
-                    System.out.println("Seed: " + seeds[i]);
-                    System.out.println("Beneficio H1: " + hcBoard.beneficioTotal(false));
-                    System.out.println("Beneficio H2: " + hcBoard.getBeneficioReal());
-                    System.out.println("Distancia: " + hcBoard.getTotalTravelDist());
-                    System.out.println();
-                    */
+                    
                     double calidad = hcBoard.beneficioTotal(false);
                     double benefReal = hcBoard.getBeneficioReal();
                     double travelDist = hcBoard.getTotalTravelDist();
                     double tiempo = (endTime-startTime);
 
-                    beneficioH1Total += calidad;
-                    beneficioH2Total += benefReal;
-                    distanciaTotal += travelDist;
-                    tiempoTotal += tiempo;
-
-                    bufferedWriter.write(modos[j] + "\t" + calidad + "\t" + benefReal + "\t" + tiempo/1000000 + "\n");
+                    bufferedWriter.write("HC\t" + "H" + (j+1) + "\t" + calidad + "\t" + benefReal + "\t" + travelDist + "\t" + tiempo/1000000 + "\n");
                 }
-                mediaPorTipo[j] = beneficioH1Total/seeds.length;
-                mediaRealPorTipo[j] = beneficioH2Total/seeds.length;
-                distPorTipo[j] = distanciaTotal/seeds.length;
-                tiempoPorTipo[j] = (tiempoTotal/seeds.length)/1000000.0; //A ms
             }
+            
 
-            System.out.println("Numero de seeds: " + NUM_SEEDS);
-            System.out.println();
+            //Búsqueda Simulated Annealing
+            System.out.println("Realizando búsquedas con Simulated Annealing:");
+            int TEMP = 1000000;
+            int iter = 1;
+            successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.SimulatedAnnealing);
 
-            for(int i = 0; i < mediaPorTipo.length; ++i)
-            {
-                System.out.println(modos[i] + ": ");
-                System.out.println("Beneficio medio H1: " + mediaPorTipo[i]);
-                System.out.println("Beneficio medio real: " + mediaRealPorTipo[i]);
-                System.out.println("Distancia media: " + distPorTipo[i]);
-                System.out.println("Tiempo medio: " + tiempoPorTipo[i] + "ms");
-                System.out.println();
+            for(int i = 0; i < NUM_SEEDS; ++i) {
+                printProgreso(i);
+
+                int seed = seeds[i];
+                Estaciones estaciones = new Estaciones(numEstaciones, numBicis, tipoDemanda, seed);
+
+                for (int j = 0; j < 2; ++j) {
+                    setOperadores(successorFunction,modos[1]);
+
+                    PracBoard board = new PracBoard(estaciones, maxFurgonetas);
+                    board.setRedondeo(0);
+                    board.creaSolucionInicial(tipoSol);
+
+                    Problem p = new Problem(board, successorFunction, new PracGoalTest(), heuristics[j]);
+
+                    Search alg = new SimulatedAnnealingSearch();
+
+                    double startTime = System.nanoTime();
+                    SearchAgent agent = new SearchAgent(p, alg);
+                    double endTime = System.nanoTime();
+                    PracBoard hcBoard = (PracBoard)alg.getGoalState();
+                    
+                    double calidad = hcBoard.beneficioTotal(false);
+                    double benefReal = hcBoard.getBeneficioReal();
+                    double travelDist = hcBoard.getTotalTravelDist();
+                    double tiempo = (endTime-startTime);
+
+                    bufferedWriter.write("HC\t" + "H" + j+1 + "\t" + calidad + "\t" + benefReal + "\t" + travelDist + "\t" + tiempo/1000000 + "\n");
+                }
             }
-
             bufferedWriter.close();
         } 
         catch (IOException e) {
@@ -123,16 +130,8 @@ public class TesterExp1
     static private void initVars(int size)
     {
         seeds = new int[NUM_SEEDS];
-
         for(int i = 0; i < seeds.length; ++i)
-        {
             seeds[i] = i*3;
-        }
-
-        mediaPorTipo = new double[size];
-        mediaRealPorTipo = new double[size];
-        distPorTipo = new double[size];
-        tiempoPorTipo = new double[size];
     }
 
     static private void printProgreso(int it)

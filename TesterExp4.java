@@ -77,12 +77,8 @@ public class TesterExp4
             bufferedWriter.close();
 
         } catch (Exception e) {
-            // TODO: handle exception
             e.printStackTrace();
         }
-
-
-        
     }
 
     static private void initVars()

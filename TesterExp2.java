@@ -9,7 +9,6 @@ import aima.search.informed.HillClimbingSearch;
 import practica.PracBoard;
 import practica.PracGoalTest;
 import practica.PracHeuristicFunction;
-import practica.PracSearch;
 import practica.PracSuccessorFunction;
 
 /*
