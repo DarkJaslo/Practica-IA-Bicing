@@ -1,4 +1,3 @@
-#Comparacion de operadores
 
 #Lectura de datos
 setwd("C:/Users/Sandra/Documents/Uni/IA/Lab")
