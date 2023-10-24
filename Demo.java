@@ -44,7 +44,7 @@ public class Demo
         PracSuccessorFunction.SearchType searchType = PracSuccessorFunction.SearchType.HillClimbing;
         if(args[5].equals("HC"))
             searchType = PracSuccessorFunction.SearchType.HillClimbing;
-        else if(args[5] == "SA")
+        else if(args[5].equals("SA"))
             searchType = PracSuccessorFunction.SearchType.SimulatedAnnealing;
         else
         {
