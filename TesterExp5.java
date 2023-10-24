@@ -17,10 +17,10 @@ public class TesterExp5
 {
     private static final int NUM_SEEDS = 100;
     private static int seeds[];
-    private static final int    SA_TEMP = 500000;
+    private static final int    SA_TEMP = 700000;
     private static final int    SA_ITER = 1;
-    private static final int    SA_K = 1;
-    private static final double SA_LAMBDA = 0.001;
+    private static final int    SA_K = 5;
+    private static final double SA_LAMBDA = 0.01;
 
     public static void main(String args[]) throws Exception
     {
