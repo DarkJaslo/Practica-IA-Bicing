@@ -130,9 +130,12 @@ public class Demo
             }
         }        
 
-        System.out.println("Operadores aplicados:");
-        printActions(mejorAgent.getActions());
-        System.out.println();
+        if(searchType == PracSuccessorFunction.SearchType.HillClimbing)
+        {
+            System.out.println("Operadores aplicados:");
+            printActions(mejorAgent.getActions());
+            System.out.println();
+        }
 
         mejorBoard.print();
         mejorBoard.beneficioTotal(true);
