@@ -1,0 +1,19 @@
+Practica IA Q1 2023/24, Busqueda Local, por Jon Campillo, Hector Garcia y Sandra Vazquez.
+
+Proporcionamos ficheros shell y batch para compilar y ejecutar las clases de la practica. El directorio R contiene los scripts R usados para los experimentos.
+
+Batch:
+compila.bat
+ejecuta.bat (se encargara de dar instrucciones adicionales si no se dan parametros)
+
+Shell:
+chmod +x compila.sh
+chmod +x ejecuta.sh
+
+./compila.sh
+./ejecuta.sh (se encargara de dar instrucciones adicionales si no se dan parametros)
+
+
+Esta hecho de forma que todos los testers y Demo tienen funcion main. 
+Los testers sirven para los experimentos y no recomendamos ejecutarlos, pero existe la clase Demo que si se puede ejecutar de una forma mas "amigable". 
+Si se ejecuta Demo, este dira que parametros, en que orden y en que formato hay que darle.
