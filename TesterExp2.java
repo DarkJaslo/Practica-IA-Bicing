@@ -18,21 +18,21 @@ import practica.PracSuccessorFunction;
 public class TesterExp2
 {
     private static final int NUM_SEEDS = 100;
+    private static final int PRUEBAS_RANDOM = 5;
     private static int seeds[];
     private static double mediaPorTipo[];
     private static double mediaRealPorTipo[];
     private static double distPorTipo[];
-    private static final int PRUEBAS_RANDOM = 5;
 
-    private static final PracHeuristicFunction.Function HEUR = PracHeuristicFunction.Function.Heuristico_2;
+    private static final PracHeuristicFunction.Function HEUR = PracHeuristicFunction.Function.Heuristico_1;
 
     public static void main(String args[]) throws Exception
     {
         try 
         {
             //IMPORTANTE! LA SOLUCION RANDOM DEBE SER LA ULTIMA DEL ARRAY
-            PracBoard.TipoSolucion tiposSol[] = {PracBoard.TipoSolucion.VACIA, PracBoard.TipoSolucion.NORMAL, PracBoard.TipoSolucion.GREEDY2, PracBoard.TipoSolucion.RANDOM};
-            String nombresTiposSol[] = {"Vacia", "Normal", "Greedy", "Random"};
+            PracBoard.TipoSolucion tiposSol[] = {PracBoard.TipoSolucion.VACIA, PracBoard.TipoSolucion.GREEDY2, PracBoard.TipoSolucion.RANDOM};
+            String nombresTiposSol[] = {"Vacia", "Greedy", "Random"};
             initVars(tiposSol.length);
 
             String filePath = "./R/exp2.txt";

@@ -16,7 +16,7 @@ import practica.PracSuccessorFunction;
  */
 public class TesterExp3 
 {
-    private static final int NUM_SEEDS = 50;
+    private static final int NUM_SEEDS = 100;
     private static int seeds[];
 
     static private void initSeeds()
@@ -32,8 +32,8 @@ public class TesterExp3
     public static void main(String args[])
     {
         int K[] = {1,5,10,20};
-        double L[] = {0.1,0.01,0.001,0.0001,0.00001}; //{0.01,0.001,0.0005,0.0001,0.00001};
-        int TEMP = 1000000; //500000;
+        double L[] = {0.1,0.01,0.001,0.0001,0.00001};
+        int TEMP = 500000;
         int iter = 1;
         initSeeds();
 
@@ -63,7 +63,7 @@ public class TesterExp3
                         //Búsqueda Hill Climbing
 
                         //Enum para decir que heuristico usar
-                        PracHeuristicFunction.Function heuristicoHC = PracHeuristicFunction.Function.Heuristico_2;
+                        PracHeuristicFunction.Function heuristicoHC = PracHeuristicFunction.Function.Heuristico_1;
                         PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.GREEDY2;
 
                         //Búsqueda Hill Climbing
