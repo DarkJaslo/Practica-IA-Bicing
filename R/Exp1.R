@@ -12,7 +12,7 @@ set3 <- subset(res1, operadores=="ChangeChange2Change3SwapAdd")
 
 #Comparando beneficios
 boxplot(set1$calidad, set2$calidad, set3$calidad, 
-        names=c("ChangeSwapAdd", "ChangeChange2SwapAdd", "ChangeChange2Change3SwapAdd"), ylab="calidad")
+        names=c("Conjunto 1", "Conjunto 2", "Conjunto 3"), ylab="Calidad")
 mas12 <- sum(set1$calidad == set2$calidad)
 mas23 <- sum(set2$calidad > set3$calidad)
 

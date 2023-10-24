@@ -1,6 +1,5 @@
 options(scipen = 10000)
 
-
 E <- -1
 k <- 50
 l <- 0.00001
@@ -17,7 +16,7 @@ setwd("C:/Users/Sandra/Documents/Uni/IA/Lab/IA-Practica-Bicing/R")
 if (!require("data.table")) install.packages("data.table")
 library(data.table)
 res3 <- read.table("exp3Final.txt", header = TRUE, sep = "\t")
-
+#############################################################################
 par1 <- subset(res3, par=="1|0.1")
 par2 <- subset(res3, par=="1|0.01")
 par3 <- subset(res3, par=="1|0.001")
@@ -38,6 +37,11 @@ par17 <- subset(res3, par=="20|0.01")
 par18 <- subset(res3, par=="20|0.001")
 par19 <- subset(res3, par=="20|1.0E-4")
 par20 <- subset(res3, par=="20|1.0E-5")
+par21 <- subset(res3, par=="50|0.1")
+par22 <- subset(res3, par=="50|0.01")
+par23 <- subset(res3, par=="50|0.001")
+par24 <- subset(res3, par=="50|1.0E-4")
+par25 <- subset(res3, par=="50|1.0E-5")
 
 
 mean(par1$beneficio)
@@ -60,6 +64,11 @@ mean(par17$beneficio)
 mean(par18$beneficio)
 mean(par19$beneficio)
 mean(par20$beneficio)
+mean(par21$beneficio)
+mean(par22$beneficio)
+mean(par23$beneficio)
+mean(par24$beneficio)
+mean(par25$beneficio)
 
 mean(par1$calidad)
 mean(par2$calidad)
@@ -81,6 +90,11 @@ mean(par17$calidad)
 mean(par18$calidad)
 mean(par19$calidad)
 mean(par20$calidad)
+mean(par21$calidad)
+mean(par22$calidad)
+mean(par23$calidad)
+mean(par24$calidad)
+mean(par25$calidad)
 
 mean(par1$tiempo)
 mean(par2$tiempo)
@@ -102,7 +116,12 @@ mean(par17$tiempo)
 mean(par18$tiempo)
 mean(par19$tiempo)
 mean(par20$tiempo)
+mean(par21$tiempo)
+mean(par22$tiempo)
+mean(par23$tiempo)
+mean(par24$tiempo)
+mean(par25$tiempo)
+################################################################################
 
-
-
+dif <- sum(par2$calidad < par7$calidad)
 

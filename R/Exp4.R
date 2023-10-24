@@ -3,7 +3,7 @@
 setwd("C:/Users/Sandra/Documents/Uni/IA/Lab/IA-Practica-Bicing/R")
 if (!require("data.table")) install.packages("data.table")
 library(data.table)
-res4 <- read.table("exp4.txt", header = TRUE, sep = "\t")
+res4 <- read.table("exp4Final.txt", header = TRUE, sep = "\t")
 
 est1 <- subset(res4, estaciones==25)
 est2 <- subset(res4, estaciones==50)
