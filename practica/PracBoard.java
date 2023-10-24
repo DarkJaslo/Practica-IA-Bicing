@@ -444,6 +444,14 @@ public class PracBoard{
         return totalDist;
     }
 
+    public double heuristicFunction(PracHeuristicFunction.Function functionType)
+    {
+        if(functionType == PracHeuristicFunction.Function.Heuristico_1)
+            return heuristicFunction1();
+        else
+            return heuristicFunction2();
+    }
+
     /*
      * Funciones heurísticas
      */
@@ -848,7 +856,7 @@ public class PracBoard{
         while (i < j && i < maxFurgonetas) {
             //Comprobamos que la situación actual sea mejorable
             //En caso contrario no nos interesa cambiarla
-            if (stations.get(i).demand <= 0 || stations.get(j).demand >= 0) return; 
+            if (stations.get(i).demand <= 0 || stations.get(j).demand >= 0) break; 
 
             int bikesOri = Math.min(30, stations.get(i).demand);
             int bikesSt1 = Math.min(-stations.get(j).demand, bikesOri);
@@ -931,7 +939,7 @@ public class PracBoard{
     {
         for(int i = 0; i < furgEnUso; ++i)
         {
-            System.out.println("Furgoneta " + i + ": Origen: " + viajes[i][ORIGEN] + ", dest1: " + viajes[i][EST1] + " (" + viajes[i][EST1_CANTIDAD] + ")" + ", dest2: " + viajes[i][EST2] + " (" + viajes[i][EST2_CANTIDAD] + "). Distancia recorrida: " + getTravelDist(i));
+            System.out.println("Furgoneta " + i + ":\tOrigen: " + viajes[i][ORIGEN] + ",\tdest1: " + viajes[i][EST1] + " (" + viajes[i][EST1_CANTIDAD] + ")" + ",\tdest2: " + viajes[i][EST2] + " (" + viajes[i][EST2_CANTIDAD] + ").\tDistancia recorrida: " + getTravelDist(i));
         }
         System.out.println();
     }
