@@ -1,5 +1,6 @@
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.util.Random;
 
 import IA.Bicing.Estaciones;
 import aima.search.framework.Problem;
@@ -16,18 +17,22 @@ import practica.PracSuccessorFunction;
  */
 public class TesterExp2
 {
-    private static final int NUM_SEEDS = 1000;
+    private static final int NUM_SEEDS = 100;
     private static int seeds[];
     private static double mediaPorTipo[];
     private static double mediaRealPorTipo[];
     private static double distPorTipo[];
+    private static final int PRUEBAS_RANDOM = 5;
+
+    private static final PracHeuristicFunction.Function HEUR = PracHeuristicFunction.Function.Heuristico_2;
 
     public static void main(String args[]) throws Exception
     {
         try 
         {
-            PracBoard.TipoSolucion tiposSol[] = {PracBoard.TipoSolucion.VACIA, PracBoard.TipoSolucion.NORMAL, PracBoard.TipoSolucion.GREEDY2};
-            String nombresTiposSol[] = {"Vacia", "Normal", "Greedy"};
+            //IMPORTANTE! LA SOLUCION RANDOM DEBE SER LA ULTIMA DEL ARRAY
+            PracBoard.TipoSolucion tiposSol[] = {PracBoard.TipoSolucion.VACIA, PracBoard.TipoSolucion.NORMAL, PracBoard.TipoSolucion.GREEDY2, PracBoard.TipoSolucion.RANDOM};
+            String nombresTiposSol[] = {"Vacia", "Normal", "Greedy", "Random"};
             initVars(tiposSol.length);
 
             String filePath = "./R/exp2.txt";
@@ -35,7 +40,7 @@ public class TesterExp2
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             bufferedWriter.write("sol_ini\tcalidad\tbeneficio\ttiempo\n");
             
-            for(int j = 0; j < tiposSol.length; ++j) //Itera tipos de solución
+            for(int j = 0; j < tiposSol.length-1; ++j) //Itera tipos de solución
             {
                 System.out.println(nombresTiposSol[j] + ":");
                 double beneficioH1Total = 0.0;
@@ -57,7 +62,6 @@ public class TesterExp2
                     //Búsqueda Hill Climbing
 
                     //Enum para decir que heuristico usar
-                    PracHeuristicFunction.Function heuristicoHC = PracHeuristicFunction.Function.Heuristico_1;
                     PracBoard.TipoSolucion tipoSol = tiposSol[j];
 
                     //Búsqueda Hill Climbing
@@ -67,10 +71,9 @@ public class TesterExp2
                     successorFunction.disableChange3Est();
 
                     PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-                    board.setRedondeo(0);
-                    board.creaSolucionInicial(tipoSol);
+                    board.creaSolucionInicial(tipoSol,seed);
 
-                    Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(heuristicoHC));
+                    Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(HEUR));
 
                     Search alg = new HillClimbingSearch();
                     
@@ -95,14 +98,99 @@ public class TesterExp2
                 distPorTipo[j] = distanciaTotal/seeds.length;
             }
 
+            for(int j = tiposSol.length-1; j < tiposSol.length; ++j)
+            {
+                System.out.println(nombresTiposSol[j] + ":");
+                double calidadTotal = 0.0;
+                double beneficioTotal = 0.0;
+                double distanciaTotal = 0.0;
+                
+                for(int i = 0; i < seeds.length; ++i)
+                {
+                    int seed = seeds[i];
+                    Random random = new Random(seed);
+
+                    double calidadMax = 0.0;
+                    double beneficioMax = 0.0;
+                    double distanciaMax = 0.0;
+                    double tiempoTotal = 0.0;
+                    double heurMin = 100000.0;
+
+                    printProgreso(i);
+
+                    //Inicialización estaciones ( en este caso, solo una vez )
+                    int numEstaciones = 25;
+                    int numBicis = 1250;
+                    int maxFurgonetas = 5;
+                    int tipoDemanda = Estaciones.EQUILIBRIUM;
+
+                    Estaciones estaciones = new Estaciones(numEstaciones, numBicis, tipoDemanda, seed);
+
+                    for(int k = 0; k < PRUEBAS_RANDOM; ++k)
+                    {
+                        int seedSolIni = random.nextInt();
+
+                        //Búsqueda Hill Climbing
+
+                        //Enum para decir que heuristico usar
+                        PracBoard.TipoSolucion tipoSol = tiposSol[j];
+
+                        //Búsqueda Hill Climbing
+
+                        //Enum para decir que heuristico usar
+                        PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
+                        successorFunction.disableChange3Est();
+
+                        PracBoard board = new PracBoard(estaciones, maxFurgonetas);
+                        board.creaSolucionInicial(tipoSol,seedSolIni);
+
+                        Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(HEUR));
+
+                        Search alg = new HillClimbingSearch();
+                        
+                        double startTime = System.nanoTime();
+                        SearchAgent agent = new SearchAgent(p, alg);
+                        double endTime = System.nanoTime();
+
+                        PracBoard hcBoard = (PracBoard)alg.getGoalState();
+
+                        double calidad = hcBoard.beneficioTotal(false);
+                        double beneficio = hcBoard.getBeneficioReal();
+                        double tiempo = (endTime-startTime);
+                        tiempoTotal += tiempo;
+
+                        double heur = 0.0;
+                        if(HEUR == PracHeuristicFunction.Function.Heuristico_1) 
+                            heur = hcBoard.heuristicFunction1();
+                        else heur = hcBoard.heuristicFunction2();
+
+                        if(heur < heurMin)
+                        {
+                            heurMin = heur;
+                            calidadMax = calidad;
+                            beneficioMax = beneficio;
+                            distanciaMax = hcBoard.getTotalTravelDist();
+                        }
+                    }
+                    calidadTotal += calidadMax;
+                    beneficioTotal += beneficioMax;
+                    distanciaTotal += distanciaMax;
+
+                    bufferedWriter.write(nombresTiposSol[j] + "\t" + calidadMax + "\t" + beneficioMax + "\t" + tiempoTotal/1000000 + "\n");
+                }
+                mediaPorTipo[j] = calidadTotal/seeds.length;
+                mediaRealPorTipo[j] = beneficioTotal/seeds.length;
+                distPorTipo[j] = distanciaTotal/seeds.length;            
+            }
+
             System.out.println("Numero de seeds: " + NUM_SEEDS);
             System.out.println();
 
             for(int i = 0; i < mediaPorTipo.length; ++i)
             {
                 System.out.println(nombresTiposSol[i] + ": ");
-                System.out.println("Beneficio medio H1: " + mediaPorTipo[i]);
-                System.out.println("Beneficio medio real: " + mediaRealPorTipo[i]);
+                System.out.println("Calidad media: " + mediaPorTipo[i]);
+                System.out.println("Beneficio medio: " + mediaRealPorTipo[i]);
                 System.out.println("Distancia media: " + distPorTipo[i]);
                 System.out.println();
             }

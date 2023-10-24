@@ -68,10 +68,8 @@ public class TesterExp5
                     setOperadores(successorFunction,modos[1]);
 
                     PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-                    if (j == 0) board.setRedondeo(0);
-                    else board.setRedondeo(4);
                     
-                    board.creaSolucionInicial(tipoSol);
+                    board.creaSolucionInicial(tipoSol,seed);
 
                     Problem p = new Problem(board, successorFunction, new PracGoalTest(), heuristics[j]);
 
@@ -97,8 +95,6 @@ public class TesterExp5
 
             //Búsqueda Simulated Annealing
             System.out.println("Realizando búsquedas con Simulated Annealing:");
-            int TEMP = 1000000;
-            int iter = 1;
             successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.SimulatedAnnealing);
 
             for(int i = 0; i < NUM_SEEDS; ++i) {
@@ -111,10 +107,8 @@ public class TesterExp5
                     setOperadores(successorFunction,modos[1]);
 
                     PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-                    if (j == 0) board.setRedondeo(0);
-                    else board.setRedondeo(4);
                     
-                    board.creaSolucionInicial(tipoSol);
+                    board.creaSolucionInicial(tipoSol,seed);
 
                     Problem p = new Problem(board, successorFunction, new PracGoalTest(), heuristics[j]);
 

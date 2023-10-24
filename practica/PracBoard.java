@@ -4,6 +4,7 @@ import IA.Bicing.Estaciones;
 
 import java.util.ArrayList;
 import java.util.Queue;
+import java.util.Random;
 import java.util.LinkedList;
 import java.lang.Math;
 
@@ -26,12 +27,12 @@ public class PracBoard{
 
     //Ejemplo: si hay que coger 20+REDONDEO o menos, coge 20, pero con 20+REDONDEO+1 ya coge esas
     //Resultados experimentales informales: 4 es el mejor valor para el beneficio REAL
-    private int REDONDEO = 4;
+    private static final int REDONDEO = 0;
 
     //Multiplica a la calidad en la función heurística
     private static double FACTOR_HEURISTICO = 2.0;
 
-    public static enum TipoSolucion{ VACIA, NORMAL, GREEDY, GREEDY2 }
+    public static enum TipoSolucion{ VACIA, NORMAL, RANDOM, GREEDY, GREEDY2 }
 
     /*
      * Cambios en la ocupación de las estaciones (e1: +2, e2: -30, e3: +12, etc)
@@ -73,7 +74,6 @@ public class PracBoard{
     public static PracBoard copyOf(PracBoard b)
     {
         PracBoard aux = new PracBoard(b.getEstaciones(), b.getMaxFurgonetas());
-        aux.REDONDEO = b.REDONDEO;
         for(int i = 0; i < b.ocupacion.length; ++i)
         {
             aux.ocupacion[i] = b.ocupacion[i];
@@ -112,6 +112,8 @@ public class PracBoard{
         if(whichEst == ORIGEN && ocupacion[newEst] > 0) return false;
         //False si queremos cambiar una estacion por ella misma
         if(viajes[f][whichEst] == newEst) return false;
+        //False si queremos poner una estación en dest2 pero no tenemos dest1
+        if(viajes[f][EST1] == -1 && whichEst == EST2) return false;
         return true;
     }
     public void changeEst(int f, int whichEst, int newEst)
@@ -585,20 +587,12 @@ public class PracBoard{
 
     /* Setters */
 
-    /*
-     * Espera números entre 0 y 9, en particular pequeños.
-     */
-    public void setRedondeo(int redondeo)
-    {
-        REDONDEO = redondeo;
-    }
-
     public static void setPonderador(double k)
     {
         FACTOR_HEURISTICO = k;
     }
 
-    public void creaSolucionInicial(TipoSolucion tipoSolucion)
+    public void creaSolucionInicial(TipoSolucion tipoSolucion, int seed)
     {
         switch(tipoSolucion)
         {
@@ -606,6 +600,9 @@ public class PracBoard{
                 break;
             case NORMAL:
                 creaSolucionBuena();
+                break;
+            case RANDOM:
+                creaSolucionRandom(seed);
                 break;
             case GREEDY:
                 creaSolucionGreedy();
@@ -652,6 +649,88 @@ public class PracBoard{
                 viajes[furgEnUso][EST2_CANTIDAD] = sobrantes;
             }
             furgEnUso++;
+        }
+    }
+
+     /*
+     * Intentaremos poner menos furgonetas de las necesarias, pero casi misma idea que creaSolucionBuena (excepto porque permite distintas opciones por ser random)
+     */
+    private void creaSolucionRandom(int seed)
+    {
+        ArrayList<Integer> estOferta = new ArrayList<Integer>();
+        ArrayList<Integer> estDemanda = new ArrayList<Integer>();
+        //int demandaTotal = 0;
+        //int ofertaTotal = 0;
+
+        /*
+         * Calcula demanda y oferta totales, asi como se guarda las estaciones que puede dar y las que piden
+         */
+        for(int i = 0; i < estaciones.size(); ++i)
+        {
+            int dem = demandStart(i);
+            if(dem>0){
+                //demandaTotal += dem;
+                estDemanda.add(i);
+            }
+            else if(dem<0){
+                //ofertaTotal += dem;
+                estOferta.add(i);
+            }
+        }
+
+        Random random = new Random(seed);
+        //Furgonetas que usara esta solucion, seran siempre menos de las disponibles
+        int nfurg = random.nextInt(maxFurgonetas);
+
+        /*
+         * De las estaciones con bicicletas sobrantes, escoge una random
+         * Escoge dos destinos razonables (con demanda de bicicletas) de forma random tambien
+         */
+        for(int f = 0; f < nfurg; ++f)
+        {
+            int r = random.nextInt(estOferta.size());
+            int orig = estOferta.get(r);
+            viajes[f][ORIGEN] = orig;
+            estOferta.remove(r);
+            ++furgEnUso;
+
+            if(estOferta.size() == 0)
+            {
+                break;
+            }
+
+            
+            r = random.nextInt(estDemanda.size());
+            int dest1 = estDemanda.get(r);
+            viajes[f][EST1] = dest1;
+            int dest2 = -1;
+            viajes[f][EST2] = dest2;
+
+            distributeBycicles(f, orig, demand(dest1), demand(dest2));
+            ocupacion[dest1] += viajes[f][EST1_CANTIDAD];
+
+            if(demand(dest1) <= 0) estDemanda.remove(r);
+
+            /*if(estDemanda.size() > 0)
+            {
+                r = random.nextInt(estDemanda.size());
+                dest2 = estDemanda.get(r);
+            }
+            viajes[f][EST2] = dest2;
+            */
+
+            ocupacion[dest1] -= viajes[f][EST1_CANTIDAD];
+
+            distributeBycicles(f, orig, demand(dest1), demand(dest2));
+
+            if(viajes[f][EST2_CANTIDAD] == 0) 
+                viajes[f][EST2] = -1;
+
+            ocupacion[orig] -= viajes[f][EST1_CANTIDAD] + viajes[f][EST2_CANTIDAD];
+            ocupacion[dest1] += viajes[f][EST1_CANTIDAD];
+            if(dest2 >= 0) ocupacion[dest2] += viajes[f][EST2_CANTIDAD];
+
+            //if(dest2 >= 0 && demand(dest2) <= 0) estDemanda.remove(r);
         }
     }
 

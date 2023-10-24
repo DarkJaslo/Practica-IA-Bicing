@@ -32,8 +32,7 @@ public class TesterExp8
             PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.GREEDY2;
 
             PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-            board.setRedondeo(0);
-            board.creaSolucionInicial(tipoSol);
+            board.creaSolucionInicial(tipoSol,seed);
 
             PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
             successorFunction.disableChange3Est();
@@ -77,8 +76,7 @@ public class TesterExp8
             PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.GREEDY2;
 
             PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-            board.setRedondeo(4);
-            board.creaSolucionInicial(tipoSol);
+            board.creaSolucionInicial(tipoSol,seed);
 
             PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
             successorFunction.disableChange3Est();

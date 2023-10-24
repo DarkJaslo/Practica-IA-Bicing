@@ -59,8 +59,7 @@ public class TesterExp7
 
                         //Búsqueda Hill Climbing
                         PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-                        board.setRedondeo(0);
-                        board.creaSolucionInicial(tipoSol);
+                        board.creaSolucionInicial(tipoSol,seed);
 
                         Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_2));
 

@@ -28,8 +28,8 @@ public class Main {
         
         /*Genera solución inicial mediante magia negra (sin hacer, solución vacía)*/
         PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-        //board.creaSolucionInicial(PracBoard.TipoSolucion.VACIA);
-        board.creaSolucionInicial(PracBoard.TipoSolucion.NORMAL);
+        //board.creaSolucionInicial(PracBoard.TipoSolucion.VACIA,seed);
+        board.creaSolucionInicial(PracBoard.TipoSolucion.NORMAL,seed);
         //board.creaSolucionInicial(PracBoard.TipoSolucion.NORMAL_RANDOM,seed);
         //board.creaSolucionInicial(PracBoard.TipoSolucion.GREEDY,seed);
 

@@ -58,8 +58,7 @@ public class TesterExp4
 
                     PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.GREEDY2;
                     PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-                    board.setRedondeo(0);
-                    board.creaSolucionInicial(tipoSol);
+                    board.creaSolucionInicial(tipoSol,seed);
 
                     Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_1));
 
