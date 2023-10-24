@@ -1,5 +1,4 @@
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -16,12 +15,12 @@ import practica.PracSuccessorFunction;
 
 public class TesterExp5 
 {
-    private static final int NUM_SEEDS = 1000;
+    private static final int NUM_SEEDS = 100;
     private static int seeds[];
     private static final int    SA_TEMP = 500000;
     private static final int    SA_ITER = 1;
     private static final int    SA_K = 1;
-    private static final double SA_LAMBDA = 0.0005;
+    private static final double SA_LAMBDA = 0.001;
 
     public static void main(String args[]) throws Exception
     {
@@ -42,7 +41,7 @@ public class TesterExp5
             String filePath = "./R/exp5.txt";
             FileWriter fileWriter = new FileWriter(filePath);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            bufferedWriter.write("alg\theur\tcalidad\tbeneficio\tdistancia\ttiempo\n");  //RECORDAR CAMBIAR CABECERA
+            bufferedWriter.write("alg\theur\tcalidad\tbeneficio\tdistancia\ttiempo\n");
             
             //Inicialización estaciones ( en este caso, solo una vez )
             int numEstaciones = 25;
@@ -50,13 +49,8 @@ public class TesterExp5
             int maxFurgonetas = 5;
             int tipoDemanda = Estaciones.EQUILIBRIUM;
 
-            //double results[][][] = new double[NUM_SEEDS*2][2][4];  //Para cada ejecución guardamos calidad, beneficio, distancia y tiempo
-            PracSuccessorFunction successorFunction;
-
-
-            //Búsqueda Hill Climbing
-            successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
-            System.out.println("Realizando búsquedas con Hill Climbing:");
+            PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
+            System.out.println("Realizando busquedas con Hill Climbing:");
 
             for(int i = 0; i < NUM_SEEDS; ++i) {
                 printProgreso(i);
@@ -94,7 +88,7 @@ public class TesterExp5
             
 
             //Búsqueda Simulated Annealing
-            System.out.println("Realizando búsquedas con Simulated Annealing:");
+            System.out.println("Realizando busquedas con Simulated Annealing:");
             successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.SimulatedAnnealing);
 
             for(int i = 0; i < NUM_SEEDS; ++i) {

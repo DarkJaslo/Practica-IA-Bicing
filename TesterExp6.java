@@ -14,7 +14,7 @@ import practica.PracSuccessorFunction;
 
 public class TesterExp6
 {
-    private static final int NUM_SEEDS = 1000;
+    private static final int NUM_SEEDS = 100;
     private static int seeds[];
 
     public static void main(String args[]) throws Exception
@@ -70,14 +70,12 @@ public class TesterExp6
                     bufferedWriter.write(tiempo/1000000 + "\n");
                 }
             }
-            
 
             bufferedWriter.close();
         } 
         catch (IOException e) {
             e.printStackTrace();
         }
-        
     }
 
     static private void initVars(int size)
