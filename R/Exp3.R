@@ -2,12 +2,12 @@ options(scipen = 10000)
 
 
 E <- -1
-k <- 20
+k <- 50
 l <- 0.00001
 
 f <- function(t) (exp(E/(k*exp(-l*t))))
 
-t <- 1000000
+t <- 700000
 curve(f,from=0,to=t,n=100,ylim=range(0,1))
 
 exp(E/(k*exp(-l*t)))
@@ -16,7 +16,7 @@ exp(E/(k*exp(-l*t)))
 setwd("C:/Users/Sandra/Documents/Uni/IA/Lab/IA-Practica-Bicing/R")
 if (!require("data.table")) install.packages("data.table")
 library(data.table)
-res3 <- read.table("exp3.txt", header = TRUE, sep = "\t")
+res3 <- read.table("exp3Final.txt", header = TRUE, sep = "\t")
 
 par1 <- subset(res3, par=="1|0.1")
 par2 <- subset(res3, par=="1|0.01")

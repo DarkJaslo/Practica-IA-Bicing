@@ -4,21 +4,23 @@
 setwd("C:/Users/Sandra/Documents/Uni/IA/Lab/IA-Practica-Bicing/R")
 if (!require("data.table")) install.packages("data.table")
 library(data.table)
-res1 <- read.table("exp1.txt", header = TRUE, sep = "\t")
+res1 <- read.table("exp1Final.txt", header = TRUE, sep = "\t")
 
 set1 <- subset(res1, operadores=="ChangeSwapAdd")
 set2 <- subset(res1, operadores=="ChangeChange2SwapAdd")
 set3 <- subset(res1, operadores=="ChangeChange2Change3SwapAdd")
 
 #Comparando beneficios
-boxplot(set1$beneficio, set2$beneficio, set3$beneficio, 
-        names=c("ChangeSwapAdd", "ChangeChange2SwapAdd", "ChangeChange2Change3SwapAdd"), ylab="beneficio")
-dif12 <- sum(set1$benef > set2$benef)
+boxplot(set1$calidad, set2$calidad, set3$calidad, 
+        names=c("ChangeSwapAdd", "ChangeChange2SwapAdd", "ChangeChange2Change3SwapAdd"), ylab="calidad")
+mas12 <- sum(set1$calidad == set2$calidad)
+mas23 <- sum(set2$calidad > set3$calidad)
 
 #Probabilidad de que pase esto bajo H0
-dbinom(x=dif12,size=length(set1$benef),prob=0.5)
+dbinom(x=mas12,size=length(set1$calidad),prob=0.5)
+dbinom(x=mas23,size=length(set2$calidad),prob=0.5)
 
 #Comparando tiempos
-windows()
-boxplot(set1$tiempo, set2$tiempo, set3$tiempo, names=c("set1", "set2"), ylab="ms")
+boxplot(set1$tiempo, set2$tiempo, set3$tiempo, names=c("Conjunto 1", "Conjunto 2", "Conjunto 3"), ylab="tiempo (ms)")
 t.test(set1$tiempo, set2$tiempo, paired=TRUE)
+t.test(set3$tiempo, set2$tiempo, paired=TRUE)
