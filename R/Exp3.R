@@ -7,10 +7,11 @@ l <- 0.00001
 f <- function(t) (exp(E/(k*exp(-l*t))))
 
 t <- 700000
-curve(f,from=0,to=t,n=100,ylim=range(0,1))
+curve(f,from=0,to=t,n=100,ylim=range(0,1), xlab = "T", ylab = "F(T)")
 
 exp(E/(k*exp(-l*t)))
 
+exp(E/(k*exp(-l*600000)))
 
 setwd("C:/Users/Sandra/Documents/Uni/IA/Lab/IA-Practica-Bicing/R")
 if (!require("data.table")) install.packages("data.table")

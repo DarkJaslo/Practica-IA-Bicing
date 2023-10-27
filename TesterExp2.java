@@ -1,5 +1,6 @@
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Random;
 
 import IA.Bicing.Estaciones;
@@ -40,6 +41,9 @@ public class TesterExp2
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             bufferedWriter.write("sol_ini\tcalidad\tbeneficio\ttiempo\n");
             
+            //Para que la primera ejecución no tenga un tiempo mucho mayor que el resto
+            cargaEnCache();
+
             for(int j = 0; j < tiposSol.length-1; ++j) //Itera tipos de solución
             {
                 System.out.println(nombresTiposSol[j] + ":");
@@ -225,6 +229,35 @@ public class TesterExp2
             {
                 System.out.println("Progreso: " + (i+1)*2 + "0%");
             }
+        }
+    }
+
+    static private void cargaEnCache() throws Exception {
+        try
+        {
+            int seed = -1;
+            int numEstaciones = 25;
+            int numBicis = 1250;
+            int maxFurgonetas = 5;
+
+            Estaciones estaciones = new Estaciones(numEstaciones, numBicis, Estaciones.EQUILIBRIUM, seed);
+
+            //Búsqueda Hill Climbing
+
+            //Enum para decir que heuristico usar
+            PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
+            successorFunction.disableChange3Est();
+
+            PracBoard board = new PracBoard(estaciones, maxFurgonetas);
+            board.creaSolucionInicial(PracBoard.TipoSolucion.GREEDY2,seed);
+
+            Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_1));
+
+            Search alg = new HillClimbingSearch();
+            SearchAgent agent = new SearchAgent(p, alg);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

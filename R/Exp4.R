@@ -18,5 +18,5 @@ meanTiempo <- aggregate(x=res4$tiempo, by=list(res4$estaciones), FUN=mean)
 
 
 #Evolucion de la media del tiempo
-plot(meanTiempo$x ~ meanTiempo$Group.1, type="b", ylab="Tiempo", xlab="Estaciones")
+plot(meanTiempo$x ~ meanTiempo$Group.1, type="b", ylab="Tiempo (ms)", xlab="Estaciones")
 

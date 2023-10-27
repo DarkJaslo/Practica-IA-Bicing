@@ -2,7 +2,7 @@
 setwd("C:/Users/Sandra/Documents/Uni/IA/Lab/IA-Practica-Bicing/R")
 if (!require("data.table")) install.packages("data.table")
 library(data.table)
-res5 <- read.table("exp5Final.txt", header = TRUE, sep = "\t")
+res5 <- read.table("exp5.txt", header = TRUE, sep = "\t")
 
 HCH1 <- subset(res5, alg=="HC" & heur=="H1")
 HCH2 <- subset(res5, alg=="HC" & heur=="H2")
@@ -23,3 +23,4 @@ dbinom(x=dif12,size=length(sol1$benef),prob=0.5)
 boxplot(HCH1$tiempo, HCH2$tiempo, SAH1$tiempo, SAH2$tiempo, 
         names=c("HC H1", "HC H2", "SA H1", "SA H2"), ylab="Tiempo")
 t.test(sol1$tiempo, sol2$tiempo, paired=TRUE)
+

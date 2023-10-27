@@ -36,6 +36,9 @@ public class TesterExp6
             int numBicis = 1250;
             int maxFurgonetas = 5;
             int[] Demanda = {Estaciones.EQUILIBRIUM, Estaciones.RUSH_HOUR};
+
+            //Para que la primera ejecución no tenga un tiempo mucho mayor que el resto
+            cargaEnCache();
             
             for(int j = 0; j < 2; ++j) {
                 int tipoDemanda = Demanda[j];
@@ -137,6 +140,35 @@ public class TesterExp6
         else if(ops == "ChangeChange2Change3Swap")
         {
             successorFunction.disableAddVan();
+        }
+    }
+
+    static private void cargaEnCache() throws Exception {
+        try
+        {
+            int seed = -1;
+            int numEstaciones = 25;
+            int numBicis = 1250;
+            int maxFurgonetas = 5;
+
+            Estaciones estaciones = new Estaciones(numEstaciones, numBicis, Estaciones.EQUILIBRIUM, seed);
+
+            //Búsqueda Hill Climbing
+
+            //Enum para decir que heuristico usar
+            PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
+            setOperadores(successorFunction,"ChangeChange2SwapAdd");
+
+            PracBoard board = new PracBoard(estaciones, maxFurgonetas);
+            board.creaSolucionInicial(PracBoard.TipoSolucion.GREEDY2,seed);
+
+            Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_2));
+
+            Search alg = new HillClimbingSearch();
+            SearchAgent agent = new SearchAgent(p, alg);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
