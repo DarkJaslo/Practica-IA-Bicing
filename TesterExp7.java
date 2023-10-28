@@ -1,6 +1,7 @@
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Random;
 
 import IA.Bicing.Estaciones;
 import aima.search.framework.Problem;
@@ -19,13 +20,15 @@ public class TesterExp7
     private static final int INC_VAL = 1;
 
     private static final int NUM_SEEDS = 100;
+    private static final int PRUEBAS_RANDOM = 5;
+    private static final PracHeuristicFunction.Function HEUR = PracHeuristicFunction.Function.Heuristico_2;
     private static int seeds[];
 
     public static void main(String args[]) throws Exception
     {
         try 
         {
-            PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.GREEDY2;
+            PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.RANDOM;
             String modos[] = { "ChangeSwapAdd", "ChangeChange2SwapAdd", "ChangeChange2Change3SwapAdd" };
             initVars();
 
@@ -53,24 +56,38 @@ public class TesterExp7
                     System.out.println("Numero de furgonetas: "+i);
                     for(int j = 0; j < NUM_SEEDS; ++j) {
                         printProgreso(j);
-                        //Inicialización estaciones ( en este caso, solo una vez )
+                        //Inicialización estaciones
                         int seed = seeds[j];
 
                         Estaciones estaciones = new Estaciones(numEstaciones, numBicis, tipoDemanda[k], seed);
 
-                        //Búsqueda Hill Climbing
-                        PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-                        board.creaSolucionInicial(tipoSol,seed);
+                        double calidad = 0.0;
+                        double benefReal = 0.0;
+                        double heuristico = 100000.0;
+                        Random random = new Random(seed);
 
-                        Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_2));
+                        for(int l = 0; l < PRUEBAS_RANDOM; ++l)
+                        {
+                            int solSeed = random.nextInt();
+                            //Búsqueda Hill Climbing
+                            PracBoard board = new PracBoard(estaciones, maxFurgonetas);
+                            board.creaSolucionInicial(tipoSol,solSeed);
 
-                        Search alg = new HillClimbingSearch();
+                            Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(HEUR));
 
-                        SearchAgent agent = new SearchAgent(p, alg);
-                        PracBoard hcBoard = (PracBoard)alg.getGoalState();
+                            Search alg = new HillClimbingSearch();
 
-                        double calidad = hcBoard.beneficioTotal(false);
-                        double benefReal = hcBoard.getBeneficioReal();
+                            SearchAgent agent = new SearchAgent(p, alg);
+                            PracBoard hcBoard = (PracBoard)alg.getGoalState();
+
+                            double heur = hcBoard.heuristicFunction(HEUR);
+                            if(heur < heuristico)
+                            {
+                                calidad = hcBoard.beneficioTotal(false);
+                                benefReal = hcBoard.getBeneficioReal();
+                                heuristico = heur;
+                            }
+                        }
 
                         bufferedWriter.write(demandName[k] + "\t" + maxFurgonetas + "\t" + calidad + "\t" + benefReal + "\n");
                     }

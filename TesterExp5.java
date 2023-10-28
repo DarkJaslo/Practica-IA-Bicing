@@ -1,6 +1,7 @@
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Random;
 
 import IA.Bicing.Estaciones;
 import aima.search.framework.Problem;
@@ -16,6 +17,7 @@ import practica.PracSuccessorFunction;
 public class TesterExp5 
 {
     private static final int NUM_SEEDS = 100;
+    private static final int PRUEBAS_RANDOM = 5;
     private static int seeds[];
     private static final int    SA_TEMP = 700000;
     private static final int    SA_ITER = 1;
@@ -35,6 +37,7 @@ public class TesterExp5
                 new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_1),
                 new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_2)
             };
+            PracHeuristicFunction.Function HEURS[] = {PracHeuristicFunction.Function.Heuristico_1, PracHeuristicFunction.Function.Heuristico_2};
 
             initVars(modos.length);
 
@@ -55,6 +58,7 @@ public class TesterExp5
             //Para que la primera ejecución no tenga un tiempo mucho mayor que el resto
             cargaEnCache();
 
+            //Busqueda Hill Climbing
             for(int i = 0; i < NUM_SEEDS; ++i) {
                 printProgreso(i);
 
@@ -64,23 +68,41 @@ public class TesterExp5
                 for (int j = 0; j < 2; ++j) {
                     setOperadores(successorFunction,modos[0]);
 
-                    PracBoard board = new PracBoard(estaciones, maxFurgonetas);
+                    double calidad = 0.0;
+                    double benefReal = 0.0;
+                    double travelDist = 0.0;
+                    double tiempo = 0.0;
+                    double heuristico = 1000000.0;
+
+                    Random random = new Random(seed);
+
+                    for(int k = 0; k < PRUEBAS_RANDOM; ++k)
+                    {
+                        int solSeed = random.nextInt();
+
+                        PracBoard board = new PracBoard(estaciones, maxFurgonetas);
                     
-                    board.creaSolucionInicial(tipoSol,seed);
+                        board.creaSolucionInicial(tipoSol,solSeed);
 
-                    Problem p = new Problem(board, successorFunction, new PracGoalTest(), heuristics[j]);
+                        Problem p = new Problem(board, successorFunction, new PracGoalTest(), heuristics[j]);
 
-                    Search alg = new HillClimbingSearch();
+                        Search alg = new HillClimbingSearch();
 
-                    double startTime = System.nanoTime();
-                    SearchAgent agent = new SearchAgent(p, alg);
-                    double endTime = System.nanoTime();
-                    PracBoard hcBoard = (PracBoard)alg.getGoalState();
-                    
-                    double calidad = hcBoard.beneficioTotal(false);
-                    double benefReal = hcBoard.getBeneficioReal();
-                    double travelDist = hcBoard.getTotalTravelDist();
-                    double tiempo = (endTime-startTime);
+                        double startTime = System.nanoTime();
+                        SearchAgent agent = new SearchAgent(p, alg);
+                        double endTime = System.nanoTime();
+                        PracBoard hcBoard = (PracBoard)alg.getGoalState();
+
+                        double heur = hcBoard.heuristicFunction(HEURS[j]);
+                        if(heur < heuristico)
+                        {
+                            calidad = hcBoard.beneficioTotal(false);
+                            benefReal = hcBoard.getBeneficioReal();
+                            travelDist = hcBoard.getTotalTravelDist();
+                            heuristico = heur;
+                        }
+                        tiempo += (endTime-startTime);
+                    }
 
                     calidadMedia[j] += calidad;
                     beneficioMedio[j] += benefReal;
