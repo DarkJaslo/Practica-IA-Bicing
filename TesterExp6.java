@@ -21,7 +21,7 @@ public class TesterExp6
     {
         try 
         {
-            PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.GREEDY2;
+            PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.RANDOM;
             String modos[] = { "ChangeSwapAdd", "ChangeChange2SwapAdd", "ChangeChange2Change3SwapAdd" };
             initVars(modos.length);
 
@@ -160,7 +160,7 @@ public class TesterExp6
             setOperadores(successorFunction,"ChangeSwapAdd");
 
             PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-            board.creaSolucionInicial(PracBoard.TipoSolucion.GREEDY2,seed);
+            board.creaSolucionInicial(PracBoard.TipoSolucion.RANDOM,seed);
 
             Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_2));
 

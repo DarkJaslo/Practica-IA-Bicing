@@ -1,5 +1,6 @@
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.util.Random;
 
 import IA.Bicing.Estaciones;
 import aima.search.framework.Problem;
@@ -19,9 +20,12 @@ public class TesterExp4
 
     private static final int ITERS = 8;
     private static final int SEEDS_PER_ITER = 50;
+    private static final int PRUEBAS_RANDOM = 1; //Nos da igual porque solo medimos el tiempo
 
     private static final int NUM_SEEDS = SEEDS_PER_ITER * ITERS;
     private static int seeds[];
+
+    private static PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.RANDOM;
 
     public static void main(String args[]) throws Exception
     {   
@@ -56,20 +60,27 @@ public class TesterExp4
                     PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
                     setOperadores(successorFunction,modos[0]);
 
-                    PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.GREEDY2;
-                    PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-                    board.creaSolucionInicial(tipoSol,seed);
+                    double totalTime = 0.0;
+                    Random random = new Random(seed);
 
-                    Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_1));
+                    for(int k = 0; k < PRUEBAS_RANDOM; ++k)
+                    {
+                        int solSeed = random.nextInt();
+                        PracBoard board = new PracBoard(estaciones, maxFurgonetas);
+                        board.creaSolucionInicial(tipoSol,solSeed);
 
-                    Search alg = new HillClimbingSearch();
+                        Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_1));
 
-                    long startTime = System.nanoTime();
-                    SearchAgent agent = new SearchAgent(p, alg);
-                    long endTime = System.nanoTime();
-                    PracBoard hcBoard = (PracBoard)alg.getGoalState();
+                        Search alg = new HillClimbingSearch();
 
-                    bufferedWriter.write(numEstaciones + "\t" + (endTime-startTime)/1000000 + "\n");
+                        long startTime = System.nanoTime();
+                        SearchAgent agent = new SearchAgent(p, alg);
+                        long endTime = System.nanoTime();
+                        //PracBoard hcBoard = (PracBoard)alg.getGoalState();
+
+                        totalTime+= (endTime-startTime)/1000000;
+                    }                    
+                    bufferedWriter.write(numEstaciones + "\t" + totalTime + "\n");
                 }
             }
 
