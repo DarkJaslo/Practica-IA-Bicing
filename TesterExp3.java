@@ -18,16 +18,8 @@ public class TesterExp3
 {
     private static final int NUM_SEEDS = 100;
     private static int seeds[];
-
-    static private void initSeeds()
-    {
-        seeds = new int[NUM_SEEDS];
-
-        for(int i = 0; i < seeds.length; ++i)
-        {
-            seeds[i] = i*3;
-        }
-    }    
+    private static final PracHeuristicFunction.Function HEUR = PracHeuristicFunction.Function.Heuristico_1;
+    private static final PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.RANDOM;
 
     public static void main(String args[])
     {
@@ -63,15 +55,8 @@ public class TesterExp3
 
                         Estaciones estaciones = new Estaciones(numEstaciones, numBicis, tipoDemanda, seed);
 
-                        //Búsqueda Hill Climbing
-
-                        //Enum para decir que heuristico usar
-                        PracHeuristicFunction.Function heuristico = PracHeuristicFunction.Function.Heuristico_1;
-                        PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.RANDOM;
-
-                        //Búsqueda Hill Climbing
-
-                        //Enum para decir que heuristico usar
+                        //Búsqueda Simulated Annealing
+                        
                         PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.SimulatedAnnealing);
                         successorFunction.disableChange2Est();
                         successorFunction.disableChange3Est();
@@ -79,7 +64,7 @@ public class TesterExp3
                         PracBoard board = new PracBoard(estaciones, maxFurgonetas);
                         board.creaSolucionInicial(tipoSol,seed);
 
-                        Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(heuristico));
+                        Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(HEUR));
 
                         Search alg = new SimulatedAnnealingSearch(TEMP, iter, K[i], L[j]);
                         
@@ -106,6 +91,16 @@ public class TesterExp3
         }
     }
 
+    static private void initSeeds()
+    {
+        seeds = new int[NUM_SEEDS];
+
+        for(int i = 0; i < seeds.length; ++i)
+        {
+            seeds[i] = i*3;
+        }
+    }  
+
     private static void cargaEnCache(int temp, int iter, int K, double L) throws Exception{
         try {
             int numEstaciones = 25;
@@ -119,12 +114,6 @@ public class TesterExp3
             //Búsqueda Hill Climbing
 
             //Enum para decir que heuristico usar
-            PracHeuristicFunction.Function heuristicoHC = PracHeuristicFunction.Function.Heuristico_1;
-            PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.GREEDY2;
-
-            //Búsqueda Hill Climbing
-
-            //Enum para decir que heuristico usar
             PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.SimulatedAnnealing);
             successorFunction.disableChange2Est();
             successorFunction.disableChange3Est();
@@ -132,7 +121,7 @@ public class TesterExp3
             PracBoard board = new PracBoard(estaciones, maxFurgonetas);
             board.creaSolucionInicial(tipoSol,seed);
 
-            Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(heuristicoHC));
+            Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(HEUR));
 
             Search alg = new SimulatedAnnealingSearch(temp, iter, K, L);
             
