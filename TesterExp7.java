@@ -45,7 +45,7 @@ public class TesterExp7
 
             for (int k = 0; k < 2; ++k) {
 
-                System.out.println("Demanda "+ tipoDemanda[k]);
+                System.out.println("Demanda "+ demandName[k]);
 
                 for(int i = FURGO_INICIALES; i <= FURGO_MAXIMAS; i += INC_VAL) {
                     int maxFurgonetas = i;
