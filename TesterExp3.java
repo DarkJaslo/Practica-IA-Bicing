@@ -44,6 +44,9 @@ public class TesterExp3
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             bufferedWriter.write("par\tk\tlambda\tcalidad\tbeneficio\ttiempo\n");
 
+            //Para que la primera ejecución no tenga un tiempo mucho mayor que el resto
+            cargaEnCache(TEMP, iter, 1, 0.1);
+
             for(int i = 0; i < K.length; ++i)
             {
                 for(int j = 0; j < L.length; ++j)
@@ -70,6 +73,7 @@ public class TesterExp3
 
                         //Enum para decir que heuristico usar
                         PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.SimulatedAnnealing);
+                        successorFunction.disableChange2Est();
                         successorFunction.disableChange3Est();
 
                         PracBoard board = new PracBoard(estaciones, maxFurgonetas);
@@ -96,6 +100,44 @@ public class TesterExp3
 
             bufferedWriter.close();
         } 
+        catch (Exception e) 
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private static void cargaEnCache(int temp, int iter, int K, double L) throws Exception{
+        try {
+            int numEstaciones = 25;
+            int numBicis = 1250;
+            int maxFurgonetas = 5;
+            int tipoDemanda = Estaciones.EQUILIBRIUM;
+            int seed = -1;
+
+            Estaciones estaciones = new Estaciones(numEstaciones, numBicis, tipoDemanda, seed);
+
+            //Búsqueda Hill Climbing
+
+            //Enum para decir que heuristico usar
+            PracHeuristicFunction.Function heuristicoHC = PracHeuristicFunction.Function.Heuristico_1;
+            PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.GREEDY2;
+
+            //Búsqueda Hill Climbing
+
+            //Enum para decir que heuristico usar
+            PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.SimulatedAnnealing);
+            successorFunction.disableChange2Est();
+            successorFunction.disableChange3Est();
+
+            PracBoard board = new PracBoard(estaciones, maxFurgonetas);
+            board.creaSolucionInicial(tipoSol,seed);
+
+            Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(heuristicoHC));
+
+            Search alg = new SimulatedAnnealingSearch(temp, iter, K, L);
+            
+            SearchAgent agent = new SearchAgent(p, alg);
+        }
         catch (Exception e) 
         {
             e.printStackTrace();

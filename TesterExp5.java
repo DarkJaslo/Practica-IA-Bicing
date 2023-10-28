@@ -62,7 +62,7 @@ public class TesterExp5
                 Estaciones estaciones = new Estaciones(numEstaciones, numBicis, tipoDemanda, seed);
 
                 for (int j = 0; j < 2; ++j) {
-                    setOperadores(successorFunction,modos[1]);
+                    setOperadores(successorFunction,modos[0]);
 
                     PracBoard board = new PracBoard(estaciones, maxFurgonetas);
                     
@@ -184,8 +184,8 @@ public class TesterExp5
         }
         else if(ops == "ChangeSwapAdd")
         {
-            successorFunction.disableChangeEst();
-            successorFunction.disableSwapEst();
+            successorFunction.disableChange2Est();
+            successorFunction.disableChange3Est();
         }
         else if(ops == "ChangeChange2SwapAdd")
         {
@@ -219,7 +219,7 @@ public class TesterExp5
 
             //Enum para decir que heuristico usar
             PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
-            setOperadores(successorFunction,"ChangeChange2SwapAdd");
+            setOperadores(successorFunction,"ChangeSwapAdd");
 
             PracBoard board = new PracBoard(estaciones, maxFurgonetas);
             board.creaSolucionInicial(PracBoard.TipoSolucion.GREEDY2,seed);

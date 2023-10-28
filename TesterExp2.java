@@ -72,6 +72,7 @@ public class TesterExp2
 
                     //Enum para decir que heuristico usar
                     PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
+                    successorFunction.disableChange2Est();
                     successorFunction.disableChange3Est();
 
                     PracBoard board = new PracBoard(estaciones, maxFurgonetas);
@@ -246,6 +247,7 @@ public class TesterExp2
 
             //Enum para decir que heuristico usar
             PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
+            successorFunction.disableChange2Est();
             successorFunction.disableChange3Est();
 
             PracBoard board = new PracBoard(estaciones, maxFurgonetas);

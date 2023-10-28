@@ -35,6 +35,9 @@ public class TesterExp1
             FileWriter fileWriter = new FileWriter(filePath);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             bufferedWriter.write("operadores\tcalidad\tbeneficio\ttiempo\n");
+
+            //Para que la primera ejecución no tenga un tiempo mucho mayor que el resto
+            cargaEnCache();
             
             for(int j = 0; j < modos.length; ++j) //Itera tipos de solución
             {
@@ -186,8 +189,8 @@ public class TesterExp1
         }
         else if(ops == "ChangeSwapAdd")
         {
-            successorFunction.disableChangeEst();
-            successorFunction.disableSwapEst();
+            successorFunction.disableChange2Est();
+            successorFunction.disableChange3Est();
         }
         else if(ops == "ChangeChange2SwapAdd")
         {
@@ -204,6 +207,36 @@ public class TesterExp1
         else if(ops == "ChangeChange2Change3Swap")
         {
             successorFunction.disableAddVan();
+        }
+    }
+
+    static private void cargaEnCache() throws Exception {
+        try
+        {
+            int seed = -1;
+            int numEstaciones = 25;
+            int numBicis = 1250;
+            int maxFurgonetas = 5;
+            
+
+            Estaciones estaciones = new Estaciones(numEstaciones, numBicis, Estaciones.EQUILIBRIUM, seed);
+
+            //Búsqueda Hill Climbing
+
+            //Enum para decir que heuristico usar
+            PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
+            setOperadores(successorFunction,"ChangeSwapAdd");
+
+            PracBoard board = new PracBoard(estaciones, maxFurgonetas);
+            board.creaSolucionInicial(PracBoard.TipoSolucion.RANDOM,seed);
+
+            Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_1));
+
+            Search alg = new HillClimbingSearch();
+            SearchAgent agent = new SearchAgent(p, alg);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

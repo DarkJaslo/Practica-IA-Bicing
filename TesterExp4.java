@@ -28,7 +28,7 @@ public class TesterExp4
         try 
         {
             initVars();
-            String modos[] = { "Change", "ChangeSwap", "ChangeSwapAdd", "ChangeChange2SwapAdd", "ChangeChange3SwapAdd", "ChangeChange2Change3SwapAdd", "ChangeChange2Change3Swap"};
+            String modos[] = { "ChangeSwapAdd", "ChangeChange2SwapAdd", "ChangeChange2Change3SwapAdd" };
 
             int tipoDemanda = Estaciones.EQUILIBRIUM;
 
@@ -54,7 +54,7 @@ public class TesterExp4
 
                     //Búsqueda Hill Climbing
                     PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
-                    setOperadores(successorFunction,modos[3]);
+                    setOperadores(successorFunction,modos[0]);
 
                     PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.GREEDY2;
                     PracBoard board = new PracBoard(estaciones, maxFurgonetas);
@@ -121,8 +121,8 @@ public class TesterExp4
         }
         else if(ops == "ChangeSwapAdd")
         {
-            successorFunction.disableChangeEst();
-            successorFunction.disableSwapEst();
+            successorFunction.disableChange2Est();
+            successorFunction.disableChange3Est();
         }
         else if(ops == "ChangeChange2SwapAdd")
         {

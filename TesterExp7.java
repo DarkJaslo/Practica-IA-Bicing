@@ -41,7 +41,8 @@ public class TesterExp7
 
             //Enum para decir que heuristico usar
             PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
-            setOperadores(successorFunction,modos[1]);
+            setOperadores(successorFunction,modos[0]);
+
             for (int k = 0; k < 2; ++k) {
 
                 System.out.println("Demanda "+ tipoDemanda[k]);
@@ -124,8 +125,8 @@ public class TesterExp7
         }
         else if(ops == "ChangeSwapAdd")
         {
-            successorFunction.disableChangeEst();
-            successorFunction.disableSwapEst();
+            successorFunction.disableChange2Est();
+            successorFunction.disableChange3Est();
         }
         else if(ops == "ChangeChange2SwapAdd")
         {
