@@ -36,8 +36,13 @@ public class TesterExp3
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             bufferedWriter.write("par\tk\tlambda\tcalidad\tbeneficio\ttiempo\n");
 
+            int numEstaciones = 25;
+            int numBicis = 1250;
+            int maxFurgonetas = 5;
+            int tipoDemanda = Estaciones.EQUILIBRIUM;
+            
             //Para que la primera ejecución no tenga un tiempo mucho mayor que el resto
-            cargaEnCache(TEMP, iter, 1, 0.1);
+            cargaEnCache(TEMP, iter, K[0], L[0]);
 
             for(int i = 0; i < K.length; ++i)
             {
@@ -47,10 +52,6 @@ public class TesterExp3
                     System.out.println(identif + "\t" + K[i] + "\t" + String.format("%.9f",L[j]));
                     for(int k = 0; k < seeds.length; ++k)
                     {
-                        int numEstaciones = 25;
-                        int numBicis = 1250;
-                        int maxFurgonetas = 5;
-                        int tipoDemanda = Estaciones.EQUILIBRIUM;
                         int seed = seeds[k];
 
                         Estaciones estaciones = new Estaciones(numEstaciones, numBicis, tipoDemanda, seed);
@@ -110,6 +111,7 @@ public class TesterExp3
             int seed = -1;
 
             Estaciones estaciones = new Estaciones(numEstaciones, numBicis, tipoDemanda, seed);
+
 
             //Búsqueda Hill Climbing
 

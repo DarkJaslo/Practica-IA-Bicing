@@ -8,9 +8,9 @@ if %count% equ 0 (
     echo "Usage: ejecuta.bat <MainClassName>"
     echo "Especifica que clase quieres ejecutar como main. Ejemplo: ejecuta.bat Tester1"
 ) else if %count% equ 9 (
-    java -Xmx8G -cp .;.\aima\AIMA.jar;Bicing\Bicing.jar %~1 %~1 %~2 %~3 %~4 %~5 %~6 %~7 %~8 %~9
+    java -Xmx10G -cp .;.\aima\AIMA.jar;Bicing\Bicing.jar %~1 %~1 %~2 %~3 %~4 %~5 %~6 %~7 %~8 %~9
 ) else (
-    java -Xmx8G -cp .;.\aima\AIMA.jar;Bicing\Bicing.jar %~1
+    java -Xmx10G -cp .;.\aima\AIMA.jar;Bicing\Bicing.jar %~1
 )
 
 endlocal

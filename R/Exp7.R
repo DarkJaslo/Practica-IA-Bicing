@@ -12,8 +12,8 @@ equiBenefMean <- aggregate(x=equi7$beneficio, by=list(equi7$furgonetas), FUN=mea
 puntaCalidadMean <- aggregate(x=punta7$calidad, by=list(punta7$furgonetas), FUN=mean)
 puntaBenefMean <- aggregate(x=punta7$beneficio, by=list(punta7$furgonetas), FUN=mean)
 
-plot(equiCalidadMean$x ~ equiCalidadMean$Group.1, type="l", ylab="Beneficio h1", xlab="#Furgonetas")
-plot(equiBenefMean$x ~ equiBenefMean$Group.1, type="l", ylab="Beneficio h2", xlab="#Furgonetas")
+plot(equiCalidadMean$x ~ equiCalidadMean$Group.1, type="b", ylab="Calidad", xlab="Furgonetas")
+plot(equiBenefMean$x ~ equiBenefMean$Group.1, type="b", ylab="Beneficio", xlab="Furgonetas")
 
-plot(puntaCalidadMean$x ~ puntaCalidadMean$Group.1, type="l", ylab="Beneficio h1", xlab="#Furgonetas")
-plot(puntaBenefMean$x ~ puntaBenefMean$Group.1, type="l", ylab="Beneficio h2", xlab="#Furgonetas")
+plot(puntaCalidadMean$x ~ puntaCalidadMean$Group.1, type="b", ylab="Calidad", xlab="Furgonetas")
+plot(puntaBenefMean$x ~ puntaBenefMean$Group.1, type="b", ylab="Beneficio", xlab="Furgonetas")

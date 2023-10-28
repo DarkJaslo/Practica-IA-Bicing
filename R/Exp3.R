@@ -1,22 +1,26 @@
-options(scipen = 10000)
+#Dibujar la funcion de probabilidad de aceptar un estado peor
 
+f <- function(t) (exp(E/(k*exp(-l*t))))
 E <- -1
 k <- 50
 l <- 0.00001
-
-f <- function(t) (exp(E/(k*exp(-l*t))))
-
 t <- 700000
-curve(f,from=0,to=t,n=100,ylim=range(0,1), xlab = "T", ylab = "F(T)")
+options(scipen = 10000)
+curve(f,from=0,to=t,n=100,ylim=range(0,1), xlab = "T", ylab = "P(estado)")
 
 exp(E/(k*exp(-l*t)))
 
-exp(E/(k*exp(-l*600000)))
+exp(E/(10000*exp(-0.001*700000)))
 
 setwd("C:/Users/Sandra/Documents/Uni/IA/Lab/IA-Practica-Bicing/R")
 if (!require("data.table")) install.packages("data.table")
 library(data.table)
-res3 <- read.table("exp3Final.txt", header = TRUE, sep = "\t")
+res3 <- read.table("exp3.txt", header = TRUE, sep = "\t")
+
+mean(subset(res3, par=="10000|0.001")$calidad)
+mean(subset(res3, par=="10000|0.001")$beneficio)
+mean(subset(res3, par=="10000|0.001")$tiempo)
+
 #############################################################################
 par1 <- subset(res3, par=="1|0.1")
 par2 <- subset(res3, par=="1|0.01")

@@ -16,8 +16,8 @@ import practica.PracSuccessorFunction;
 public class TesterExp7 
 {
     private static final int FURGO_INICIALES = 5;
-    private static final int FURGO_MAXIMAS = 20;
-    private static final int INC_VAL = 1;
+    private static final int FURGO_MAXIMAS = 30;
+    private static final int INC_VAL = 5;
 
     private static final int NUM_SEEDS = 100;
     private static final int PRUEBAS_RANDOM = 5;
@@ -42,7 +42,6 @@ public class TesterExp7
             int numEstaciones = 25;
             int numBicis = 1250;
 
-            //Enum para decir que heuristico usar
             PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
             setOperadores(successorFunction,modos[0]);
 

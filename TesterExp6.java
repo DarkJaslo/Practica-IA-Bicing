@@ -53,7 +53,6 @@ public class TesterExp6
 
                     //Búsqueda Hill Climbing
 
-                    //Enum para decir que heuristico usar
                     PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
                     setOperadores(successorFunction,modos[0]);
 
@@ -155,7 +154,6 @@ public class TesterExp6
 
             //Búsqueda Hill Climbing
 
-            //Enum para decir que heuristico usar
             PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
             setOperadores(successorFunction,"ChangeSwapAdd");
 

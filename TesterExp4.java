@@ -1,6 +1,6 @@
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.util.Random;
+import java.io.IOException;
 
 import IA.Bicing.Estaciones;
 import aima.search.framework.Problem;
@@ -18,14 +18,9 @@ public class TesterExp4
 {
     private static final int NUM_EST_INI = 25;
 
-    private static final int ITERS = 8;
-    private static final int SEEDS_PER_ITER = 50;
-    private static final int PRUEBAS_RANDOM = 1; //Nos da igual porque solo medimos el tiempo
-
-    private static final int NUM_SEEDS = SEEDS_PER_ITER * ITERS;
+    private static final int ITERS = 6;
+    private static final int NUM_SEEDS = 10;
     private static int seeds[];
-
-    private static PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.RANDOM;
 
     public static void main(String args[]) throws Exception
     {   
@@ -43,6 +38,9 @@ public class TesterExp4
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             bufferedWriter.write("estaciones\ttiempo\n");
 
+            //Para que la primera ejecución no tenga un tiempo mucho mayor que el resto
+            cargaEnCache();
+
             for(int i = 0; i < ITERS; ++i) {
 
                 //Inicialización estaciones ( en este caso, solo una vez )
@@ -50,8 +48,8 @@ public class TesterExp4
                 int numBicis = numEstaciones*50;
                 int maxFurgonetas = numEstaciones/5;
                 
-                for (int j = 0; j < SEEDS_PER_ITER; ++j) {
-                    printProgreso(i*SEEDS_PER_ITER+j);
+                for (int j = 0; j < NUM_SEEDS; ++j) {
+                    printProgreso(i*NUM_SEEDS+j);
 
                     int seed = seeds[i];
                     Estaciones estaciones = new Estaciones(numEstaciones, numBicis, tipoDemanda, seed);
@@ -60,27 +58,19 @@ public class TesterExp4
                     PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
                     setOperadores(successorFunction,modos[0]);
 
-                    double totalTime = 0.0;
-                    Random random = new Random(seed);
+                    PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.RANDOM;
+                    PracBoard board = new PracBoard(estaciones, maxFurgonetas);
+                    board.creaSolucionInicial(tipoSol,seed);
 
-                    for(int k = 0; k < PRUEBAS_RANDOM; ++k)
-                    {
-                        int solSeed = random.nextInt();
-                        PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-                        board.creaSolucionInicial(tipoSol,solSeed);
+                    Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_1));
 
-                        Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_1));
+                    Search alg = new HillClimbingSearch();
 
-                        Search alg = new HillClimbingSearch();
-
-                        long startTime = System.nanoTime();
-                        SearchAgent agent = new SearchAgent(p, alg);
-                        long endTime = System.nanoTime();
-                        //PracBoard hcBoard = (PracBoard)alg.getGoalState();
-
-                        totalTime+= (endTime-startTime)/1000000;
-                    }                    
-                    bufferedWriter.write(numEstaciones + "\t" + totalTime + "\n");
+                    long startTime = System.nanoTime();
+                    SearchAgent agent = new SearchAgent(p, alg);
+                    long endTime = System.nanoTime();
+                    
+                    bufferedWriter.write(numEstaciones + "\t" + (endTime-startTime)/1000000 + "\n");
                 }
             }
 
@@ -103,7 +93,7 @@ public class TesterExp4
 
     static private void printProgreso(int it)
     {
-        int valores[] = {(2*NUM_SEEDS)/10, (4*NUM_SEEDS)/10, (6*NUM_SEEDS)/10,(8*NUM_SEEDS)/10};
+        int valores[] = {(2*NUM_SEEDS*ITERS)/10, (4*NUM_SEEDS*ITERS)/10, (6*NUM_SEEDS*ITERS)/10,(8*NUM_SEEDS*ITERS)/10};
         for(int i = 0; i < valores.length; ++i)
         {
             if(it == valores[i])
@@ -150,6 +140,35 @@ public class TesterExp4
         else if(ops == "ChangeChange2Change3Swap")
         {
             successorFunction.disableAddVan();
+        }
+    }
+
+    static private void cargaEnCache() throws Exception {
+        try
+        {
+            int seed = -1;
+            int numEstaciones = 25;
+            int numBicis = numEstaciones*50;
+            int maxFurgonetas = numEstaciones/5;
+
+            Estaciones estaciones = new Estaciones(numEstaciones, numBicis, Estaciones.EQUILIBRIUM, seed);
+
+            //Búsqueda Hill Climbing
+
+            //Enum para decir que heuristico usar
+            PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
+            setOperadores(successorFunction,"ChangeSwapAdd");
+
+            PracBoard board = new PracBoard(estaciones, maxFurgonetas);
+            board.creaSolucionInicial(PracBoard.TipoSolucion.RANDOM,seed);
+
+            Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_1));
+
+            Search alg = new HillClimbingSearch();
+            SearchAgent agent = new SearchAgent(p, alg);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

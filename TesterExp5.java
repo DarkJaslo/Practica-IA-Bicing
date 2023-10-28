@@ -21,8 +21,8 @@ public class TesterExp5
     private static int seeds[];
     private static final int    SA_TEMP = 700000;
     private static final int    SA_ITER = 1;
-    private static final int    SA_K = 20;
-    private static final double SA_LAMBDA = 0.1;
+    private static final int    SA_K = 1;
+    private static final double SA_LAMBDA = 0.001;
 
     public static void main(String args[]) throws Exception
     {
@@ -31,7 +31,7 @@ public class TesterExp5
             double calidadMedia[] = {0.0,0.0,0.0,0.0};
             double beneficioMedio[] = {0.0,0.0,0.0,0.0};
 
-            PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.GREEDY2;
+            PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.RANDOM;
             String modos[] = { "ChangeSwapAdd", "ChangeChange2SwapAdd", "ChangeChange2Change3SwapAdd" };
             PracHeuristicFunction heuristics[] = {
                 new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_1),
@@ -123,7 +123,7 @@ public class TesterExp5
                 Estaciones estaciones = new Estaciones(numEstaciones, numBicis, tipoDemanda, seed);
 
                 for (int j = 0; j < 2; ++j) {
-                    setOperadores(successorFunction,modos[1]);
+                    setOperadores(successorFunction,modos[0]);
 
                     PracBoard board = new PracBoard(estaciones, maxFurgonetas);
                     
@@ -244,7 +244,7 @@ public class TesterExp5
             setOperadores(successorFunction,"ChangeSwapAdd");
 
             PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-            board.creaSolucionInicial(PracBoard.TipoSolucion.GREEDY2,seed);
+            board.creaSolucionInicial(PracBoard.TipoSolucion.RANDOM,seed);
 
             Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_1));
 
