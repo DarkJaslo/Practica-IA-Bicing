@@ -26,7 +26,7 @@ public class TesterExp2
     private static double distPorTipo[];
 
     private static final PracHeuristicFunction.Function HEUR = PracHeuristicFunction.Function.Heuristico_1;
-
+    private static final String RESULTADO_RANDOM = "media"; //valores: media, maximo
     public static void main(String args[]) throws Exception
     {
         try 
@@ -115,9 +115,9 @@ public class TesterExp2
                     int seed = seeds[i];
                     Random random = new Random(seed);
 
-                    double calidadMax = 0.0;
-                    double beneficioMax = 0.0;
-                    double distanciaMax = 0.0;
+                    double calidadFinal = 0.0;
+                    double beneficioFinal = 0.0;
+                    double distanciaFinal = 0.0;
                     double tiempoTotal = 0.0;
                     double heurMin = 100000.0;
 
@@ -144,6 +144,7 @@ public class TesterExp2
 
                         //Enum para decir que heuristico usar
                         PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
+                        successorFunction.disableChange2Est();
                         successorFunction.disableChange3Est();
 
                         PracBoard board = new PracBoard(estaciones, maxFurgonetas);
@@ -162,26 +163,42 @@ public class TesterExp2
                         double calidad = hcBoard.beneficioTotal(false);
                         double beneficio = hcBoard.getBeneficioReal();
                         double tiempo = (endTime-startTime);
-                        tiempoTotal += tiempo;
-
-                        double heur = 0.0;
-                        if(HEUR == PracHeuristicFunction.Function.Heuristico_1) 
-                            heur = hcBoard.heuristicFunction1();
-                        else heur = hcBoard.heuristicFunction2();
-
-                        if(heur < heurMin)
+                        
+                        if (RESULTADO_RANDOM == "maximo")
                         {
-                            heurMin = heur;
-                            calidadMax = calidad;
-                            beneficioMax = beneficio;
-                            distanciaMax = hcBoard.getTotalTravelDist();
+                            tiempoTotal += tiempo;
+                            double heur = 0.0;
+                            if(HEUR == PracHeuristicFunction.Function.Heuristico_1) 
+                                heur = hcBoard.heuristicFunction1();
+                            else heur = hcBoard.heuristicFunction2();
+
+                            if(heur < heurMin)
+                            {
+                                heurMin = heur;
+                                calidadFinal = calidad;
+                                beneficioFinal = beneficio;
+                                distanciaFinal = hcBoard.getTotalTravelDist();
+                            }
+                        }
+                        else if(RESULTADO_RANDOM == "media") {
+                            tiempoTotal += tiempo;
+                            calidadFinal += calidad;
+                            beneficioFinal += beneficio;
+                            distanciaFinal += hcBoard.getTotalTravelDist();
                         }
                     }
-                    calidadTotal += calidadMax;
-                    beneficioTotal += beneficioMax;
-                    distanciaTotal += distanciaMax;
+                    if(RESULTADO_RANDOM == "media")
+                    {
+                        tiempoTotal /= PRUEBAS_RANDOM;
+                        calidadFinal /= PRUEBAS_RANDOM;
+                        beneficioFinal /= PRUEBAS_RANDOM;
+                        distanciaFinal /= PRUEBAS_RANDOM;
+                    }
+                    calidadTotal += calidadFinal;
+                    beneficioTotal += beneficioFinal;
+                    distanciaTotal += distanciaFinal;
 
-                    bufferedWriter.write(nombresTiposSol[j] + "\t" + calidadMax + "\t" + beneficioMax + "\t" + tiempoTotal/1000000 + "\n");
+                    bufferedWriter.write(nombresTiposSol[j] + "\t" + calidadFinal + "\t" + beneficioFinal + "\t" + tiempoTotal/1000000 + "\n");
                 }
                 mediaPorTipo[j] = calidadTotal/seeds.length;
                 mediaRealPorTipo[j] = beneficioTotal/seeds.length;
@@ -251,9 +268,9 @@ public class TesterExp2
             successorFunction.disableChange3Est();
 
             PracBoard board = new PracBoard(estaciones, maxFurgonetas);
-            board.creaSolucionInicial(PracBoard.TipoSolucion.GREEDY2,seed);
+            board.creaSolucionInicial(PracBoard.TipoSolucion.VACIA,seed);
 
-            Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_1));
+            Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(HEUR));
 
             Search alg = new HillClimbingSearch();
             SearchAgent agent = new SearchAgent(p, alg);

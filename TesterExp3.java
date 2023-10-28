@@ -66,8 +66,8 @@ public class TesterExp3
                         //Búsqueda Hill Climbing
 
                         //Enum para decir que heuristico usar
-                        PracHeuristicFunction.Function heuristicoHC = PracHeuristicFunction.Function.Heuristico_1;
-                        PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.GREEDY2;
+                        PracHeuristicFunction.Function heuristico = PracHeuristicFunction.Function.Heuristico_1;
+                        PracBoard.TipoSolucion tipoSol = PracBoard.TipoSolucion.RANDOM;
 
                         //Búsqueda Hill Climbing
 
@@ -79,7 +79,7 @@ public class TesterExp3
                         PracBoard board = new PracBoard(estaciones, maxFurgonetas);
                         board.creaSolucionInicial(tipoSol,seed);
 
-                        Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(heuristicoHC));
+                        Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(heuristico));
 
                         Search alg = new SimulatedAnnealingSearch(TEMP, iter, K[i], L[j]);
                         
@@ -87,10 +87,10 @@ public class TesterExp3
                         SearchAgent agent = new SearchAgent(p, alg);
                         double endTime = System.nanoTime();
 
-                        PracBoard hcBoard = (PracBoard)alg.getGoalState();
+                        PracBoard saBoard = (PracBoard)alg.getGoalState();
 
-                        double calidad = hcBoard.beneficioTotal(false);
-                        double beneficio = hcBoard.getBeneficioReal();
+                        double calidad = saBoard.beneficioTotal(false);
+                        double beneficio = saBoard.getBeneficioReal();
                         double tiempo = (endTime-startTime);
 
                         bufferedWriter.write(identif + "\t" + K[i] + "\t" + String.format("%.9f",L[j]) + "\t" + calidad + "\t" + beneficio + "\t" + tiempo/1000000 + "\n");

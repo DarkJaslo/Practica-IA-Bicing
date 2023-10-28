@@ -35,6 +35,7 @@ public class TesterExp8
             board.creaSolucionInicial(tipoSol,seed);
 
             PracSuccessorFunction successorFunction = new PracSuccessorFunction(PracSuccessorFunction.SearchType.HillClimbing);
+            successorFunction.disableChange2Est();
             successorFunction.disableChange3Est();
 
             Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(heuristicoHC));

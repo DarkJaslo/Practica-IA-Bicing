@@ -77,7 +77,7 @@ public class TesterExp1
 
                         board.creaSolucionInicial(tipoSol,random.nextInt());
 
-                        Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_1));
+                        Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(PracHeuristicFunction.Function.Heuristico_2));
 
                         Search alg = new HillClimbingSearch();
 
