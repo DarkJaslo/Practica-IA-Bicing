@@ -1,5 +1,4 @@
-#Dibujar la funcion de probabilidad de aceptar un estado peor
-
+#Dibuja la funcion de probabilidad de aceptar un estado peor
 f <- function(t) (exp(E/(k*exp(-l*t))))
 E <- -1
 k <- 50
@@ -8,20 +7,16 @@ t <- 700000
 options(scipen = 10000)
 curve(f,from=0,to=t,n=100,ylim=range(0,1), xlab = "T", ylab = "P(estado)")
 
-exp(E/(k*exp(-l*t)))
+###################################IMPORANTE####################################
+#Escribe en el siguiente comando el path del directorio donde se encuentre la 
+#carpeta y después /R
 
-exp(E/(10000*exp(-0.001*700000)))
-
-setwd("C:/Users/Sandra/Documents/Uni/IA/Lab/IA-Practica-Bicing/R")
+setwd("")
 if (!require("data.table")) install.packages("data.table")
 library(data.table)
-res3 <- read.table("exp3.txt", header = TRUE, sep = "\t")
+it2 <- read.table("exp3.txt", header = TRUE, sep = "\t")
 
-mean(subset(res3, par=="10000|0.001")$calidad)
-mean(subset(res3, par=="10000|0.001")$beneficio)
-mean(subset(res3, par=="10000|0.001")$tiempo)
 
-#############################################################################
 par1 <- subset(res3, par=="1|0.1")
 par2 <- subset(res3, par=="1|0.01")
 par3 <- subset(res3, par=="1|0.001")
@@ -48,32 +43,6 @@ par23 <- subset(res3, par=="50|0.001")
 par24 <- subset(res3, par=="50|1.0E-4")
 par25 <- subset(res3, par=="50|1.0E-5")
 
-
-mean(par1$beneficio)
-mean(par2$beneficio)
-mean(par3$beneficio)
-mean(par4$beneficio)
-mean(par5$beneficio)
-mean(par6$beneficio)
-mean(par7$beneficio)
-mean(par8$beneficio)
-mean(par9$beneficio)
-mean(par10$beneficio)
-mean(par11$beneficio)
-mean(par12$beneficio)
-mean(par13$beneficio)
-mean(par14$beneficio)
-mean(par15$beneficio)
-mean(par16$beneficio)
-mean(par17$beneficio)
-mean(par18$beneficio)
-mean(par19$beneficio)
-mean(par20$beneficio)
-mean(par21$beneficio)
-mean(par22$beneficio)
-mean(par23$beneficio)
-mean(par24$beneficio)
-mean(par25$beneficio)
 
 mean(par1$calidad)
 mean(par2$calidad)
@@ -126,7 +95,3 @@ mean(par22$tiempo)
 mean(par23$tiempo)
 mean(par24$tiempo)
 mean(par25$tiempo)
-################################################################################
-
-dif <- sum(par2$calidad < par7$calidad)
-
