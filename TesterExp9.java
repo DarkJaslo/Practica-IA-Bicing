@@ -8,6 +8,7 @@ import aima.search.framework.Problem;
 import aima.search.framework.Search;
 import aima.search.framework.SearchAgent;
 import aima.search.informed.HillClimbingSearch;
+import aima.search.informed.SimulatedAnnealingSearch;
 import practica.PracBoard;
 import practica.PracGoalTest;
 import practica.PracHeuristicFunction;
@@ -16,8 +17,13 @@ import practica.PracSuccessorFunction;
 /*
  * Clase de ejemplo para un tester.
  */
-public class TesterExp2
+public class TesterExp9
 {
+    private static final int    SA_TEMP = 700000;
+    private static final int    SA_ITER = 1;
+    private static final int    SA_K = 1;
+    private static final double SA_LAMBDA = 0.001;
+
     private static final int NUM_SEEDS = 100;
     private static final int PRUEBAS_RANDOM = 5;
     private static int seeds[];
@@ -25,7 +31,7 @@ public class TesterExp2
     private static double mediaRealPorTipo[];
     private static double distPorTipo[];
 
-    private static final PracSuccessorFunction.SearchType algoritmo = PracSuccessorFunction.SearchType.HillClimbing;
+    private static final PracSuccessorFunction.SearchType algoritmo = PracSuccessorFunction.SearchType.SimulatedAnnealing;
     private static final PracHeuristicFunction.Function HEUR = PracHeuristicFunction.Function.Heuristico_1;
     private static final String RESULTADO_RANDOM = "media"; //valores: media, maximo
     public static void main(String args[]) throws Exception
@@ -37,7 +43,7 @@ public class TesterExp2
             String nombresTiposSol[] = {"Vacia", "Greedy", "Random"};
             initVars(tiposSol.length);
 
-            String filePath = "./R/exp2.txt";
+            String filePath = "./R/exp9.txt";
             FileWriter fileWriter = new FileWriter(filePath);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             bufferedWriter.write("sol_ini\tcalidad\tbeneficio\ttiempo\n");
@@ -81,7 +87,7 @@ public class TesterExp2
 
                     Problem p = new Problem(board, successorFunction, new PracGoalTest(), new PracHeuristicFunction(HEUR));
 
-                    Search alg = new HillClimbingSearch();
+                    Search alg = new SimulatedAnnealingSearch(SA_TEMP,SA_ITER,SA_K,SA_LAMBDA);
                     
                     double startTime = System.nanoTime();
                     SearchAgent agent = new SearchAgent(p, alg);
